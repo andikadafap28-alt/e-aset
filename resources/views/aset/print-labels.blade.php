@@ -22,7 +22,7 @@
 
         .stiker-label {
             background: white;
-            border: 1.5px solid #000;
+            border: 2.5px solid #000;
             border-radius: 12px;
             width: 3.21in;
             height: 1.45in;
@@ -64,16 +64,23 @@
             line-height: 1.3;
         }
 
-        .label-text .kode {
-            font-size: 8.5pt;
+        .label-text .kategori {
+            font-size: 9pt;
             font-weight: bold;
-            letter-spacing: 0.5px;
+            color: #333;
         }
 
-        .label-text .nama {
-            font-size: 6.5pt;
-            font-weight: normal;
+        .label-text .kode {
+            font-size: 10pt;
+            font-weight: bold;
             margin-top: 2px;
+        }
+
+        .label-text .tahun {
+            font-size: 9pt;
+            font-weight: bold;
+            margin-top: 2px;
+            color: #333;
         }
 
         .label-qr {
@@ -90,6 +97,7 @@
             font-weight: bold;
             padding: 3px 0 5px 0;
             border-top: 1px dashed #000;
+            text-transform: uppercase;
         }
 
         /* Styling khusus saat diprint ke kertas */
@@ -104,7 +112,7 @@
             }
             .stiker-label {
                 box-shadow: none;
-                border: 1.5px solid #000;
+                border: 2.5px solid #000;
                 border-radius: 12px;
             }
             @page { 
@@ -137,14 +145,15 @@
                 <div class="label-body">
                     <img src="{{ asset('images/logo-lamongan.png') }}" class="label-logo" alt="Logo">
                     <div class="label-text">
+                        <div class="kategori">13.17.07.03.12.00</div>
                         <div class="kode">{{ $asset->asset_code }}</div>
-                        <div class="nama">{{ Str::limit($asset->name, 35) }}</div>
+                        <div class="tahun">{{ $asset->year_purchased }}</div>
                     </div>
                     <div class="label-qr">
                         {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(45)->margin(0)->generate(url('/item/' . $asset->asset_code)) !!}
                     </div>
                 </div>
-                <div class="label-footer">Puskesmas Mantup - Dinas Kesehatan</div>
+                <div class="label-footer">PUSKESMAS MANTUP - DINAS KESEHATAN</div>
             </div>
             @endforeach
         </div>
