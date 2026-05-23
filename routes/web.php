@@ -117,7 +117,7 @@ Route::prefix('asisten')->name('asisten.')->group(function () {
 */
 
 // API Dropdown Kode 108
-Route::get('/api/kode-108', [InventoryController::class, 'getKode108']);
+Route::get('/ajax/kode-108', [InventoryController::class, 'getKode108']);
 
 // QR Scanner
 Route::get('/scanner', [InventoryController::class, 'scannerPage']);

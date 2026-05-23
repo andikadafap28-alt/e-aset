@@ -255,7 +255,7 @@
         }
 
         function loadDropdown(level, parentCode = '') {
-            const url = `/api/kode-108?level=${level}&parent=${parentCode}`;
+            const url = `/ajax/kode-108?level=${level}&parent=${parentCode}`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
