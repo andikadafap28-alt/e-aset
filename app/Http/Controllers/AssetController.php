@@ -86,6 +86,12 @@ class AssetController extends Controller
         $validated['pengadaan_id'] = $pengadaanId;
         $validated['harga_perolehan'] = $hargaPerolehan;
         $validated['status_aktif'] = true;
+        
+        // Fix for legacy 'category' column which is NOT NULL in database
+        if (empty($validated['category'])) {
+            $catObj = \App\Models\AssetCategory::find($request->category_id);
+            $validated['category'] = $catObj ? $catObj->nama_kategori : '-';
+        }
 
         $startRegister = 1;
         if ($kode108) {
@@ -173,6 +179,12 @@ class AssetController extends Controller
             'longitude' => 'nullable|numeric',
             'document_link' => 'nullable|url',
         ]);
+
+        // Fix for legacy 'category' column which is NOT NULL in database
+        if (empty($validated['category'])) {
+            $catObj = \App\Models\AssetCategory::find($request->category_id);
+            $validated['category'] = $catObj ? $catObj->nama_kategori : '-';
+        }
 
         $asset->update($validated);
 
