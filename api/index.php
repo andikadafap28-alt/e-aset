@@ -46,5 +46,4 @@ putenv('APP_ROUTES_CACHE=' . $_ENV['APP_ROUTES_CACHE']);
 putenv('APP_EVENTS_CACHE=' . $_ENV['APP_EVENTS_CACHE']);
 
 // Handle the Request
-$response = $app->handleRequest(Request::capture());
-$response->send();
+$app->handleRequest(Request::capture());
