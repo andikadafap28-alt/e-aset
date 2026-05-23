@@ -28,5 +28,13 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 // Force Laravel to use /tmp for its storage directory
 $app->useStoragePath('/tmp/storage');
 
-// Handle the Request
-$app->handleRequest(Request::capture());
+try {
+    $response = $app->handleRequest(Request::capture());
+    $response->send();
+} catch (\Throwable $e) {
+    header('Content-Type: text/plain');
+    echo "VERCEL BOOT ERROR:\n";
+    echo $e->getMessage() . "\n\n";
+    echo $e->getTraceAsString();
+    exit(1);
+}
