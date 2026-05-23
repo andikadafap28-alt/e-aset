@@ -17,11 +17,5 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (\Throwable $e) {
-            header('Content-Type: text/plain');
-            echo "ORIGINAL KERNEL EXCEPTION:\n";
-            echo $e->getMessage() . "\n\n";
-            echo $e->getTraceAsString();
-            exit(1);
-        });
+        //
     })->create();
