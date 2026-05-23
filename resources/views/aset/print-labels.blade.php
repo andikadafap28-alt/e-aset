@@ -31,7 +31,7 @@
             justify-content: space-between;
             box-sizing: border-box;
             page-break-inside: avoid;
-            font-family: Arial, sans-serif;
+            font-family: 'Times New Roman', Times, serif;
             overflow: hidden;
             color: #000;
         }
@@ -48,39 +48,44 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 10px;
+            padding: 0 12px;
             flex: 1;
         }
 
         .label-logo {
-            width: 38px;
+            width: 42px;
             height: auto;
         }
 
         .label-text {
             flex: 1;
-            padding: 0 10px;
+            padding: 0 12px;
             text-align: left;
-            line-height: 1.3;
+            line-height: 1.2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .label-text .kategori {
-            font-size: 9pt;
+            font-size: 9.5pt;
             font-weight: bold;
-            color: #333;
+            color: #000;
         }
 
         .label-text .kode {
-            font-size: 10pt;
+            font-size: 11pt;
             font-weight: bold;
-            margin-top: 2px;
+            margin-top: 4px;
+            color: #000;
+            letter-spacing: 0.3px;
         }
 
         .label-text .tahun {
-            font-size: 9pt;
+            font-size: 9.5pt;
             font-weight: bold;
-            margin-top: 2px;
-            color: #333;
+            margin-top: 4px;
+            color: #000;
         }
 
         .label-qr {
@@ -93,11 +98,12 @@
 
         .label-footer {
             text-align: center;
-            font-size: 7.5pt;
+            font-size: 8pt;
             font-weight: bold;
             padding: 3px 0 5px 0;
             border-top: 1px dashed #000;
             text-transform: uppercase;
+            color: #000;
         }
 
         /* Styling khusus saat diprint ke kertas */
