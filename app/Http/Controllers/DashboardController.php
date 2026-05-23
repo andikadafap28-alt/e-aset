@@ -193,19 +193,27 @@ class DashboardController extends Controller
         }
         $chartMax = $this->calculateChartMax($globalMax);
 
-        // 8. Statistik Aset
-        $assets = \App\Models\Asset::all();
-        $totalPurchaseValue = $assets->sum('harga_perolehan');
-        $totalDepreciation = $assets->sum(function($asset) { return $asset->accumulated_depreciation; });
-        $totalBookValue = $assets->sum(function($asset) { return $asset->book_value; });
+        // 8. Statistik Aset (Dioptimalkan agar tidak memuat semua data ke memori/N+1 Query)
+        $totalPurchaseValue = \App\Models\Asset::sum('harga_perolehan');
+        
+        $totalDepreciation = 0;
+        $totalBookValue = 0;
+        
+        // Gunakan chunking dan eager load kategori untuk mencegah N+1 Query & Out of Memory
+        \App\Models\Asset::with('category')->chunk(500, function($chunk) use (&$totalDepreciation, &$totalBookValue) {
+            foreach ($chunk as $asset) {
+                $totalDepreciation += $asset->accumulated_depreciation;
+                $totalBookValue += $asset->book_value;
+            }
+        });
 
         $assetStats = [
-            'total' => $assets->count(),
-            'aktif' => $assets->where('status_aktif', true)->count(),
-            'disposed' => $assets->where('status_aktif', false)->count(),
-            'baik' => $assets->where('condition', 'Baik')->count(),
-            'rusak' => $assets->whereIn('condition', ['Rusak Ringan', 'Rusak Berat'])->count(),
-            'perlu_kalibrasi' => $assets->whereNotNull('last_calibration')
+            'total' => \App\Models\Asset::count(),
+            'aktif' => \App\Models\Asset::where('status_aktif', true)->count(),
+            'disposed' => \App\Models\Asset::where('status_aktif', false)->count(),
+            'baik' => \App\Models\Asset::where('condition', 'Baik')->count(),
+            'rusak' => \App\Models\Asset::whereIn('condition', ['Rusak Ringan', 'Rusak Berat'])->count(),
+            'perlu_kalibrasi' => \App\Models\Asset::whereNotNull('last_calibration')
                                     ->where('last_calibration', '<', now()->subDays(365))
                                     ->count(),
             'total_purchase' => $totalPurchaseValue,

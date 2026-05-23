@@ -1,6 +1,11 @@
 {
     "version": 2,
     "framework": null,
+    "functions": {
+        "api/index.php": {
+            "excludeFiles": "{node_modules/**,tests/**,storage/logs/**,storage/framework/cache/**,storage/framework/sessions/**,bootstrap/cache/**,resources/js/**,resources/css/**,public/build/**,vendor/**/tests/**,vendor/**/Tests/**,vendor/**/docs/**}"
+        }
+    },
     "builds": [
         {
             "src": "api/index.php",
