@@ -730,16 +730,29 @@ class InventoryController extends Controller
             $insertData = [];
             $now = now();
             foreach ($dataArray[0] as $index => $row) {
-                // Lewati baris header jika kolom pertama mengandung kata 'kode'
-                if ($index === 0 && isset($row[0]) && stripos($row[0], 'kode') !== false) {
+                // Lewati baris header
+                if ($index === 0) {
                     continue;
                 }
 
-                // Cek jika baris memiliki minimal 2 kolom (kode dan uraian)
-                if (isset($row[0]) && isset($row[1]) && !empty(trim($row[0]))) {
+                // Auto-detect format: Jika kolom 0 adalah angka/urutan dan kolom 1 adalah kode (ada titiknya), geser index
+                $kodeIdx = 0;
+                $uraianIdx = 1;
+
+                if (isset($row[0], $row[1], $row[2])) {
+                    $col0 = trim($row[0]);
+                    $col1 = trim($row[1]);
+                    // Jika col0 hanya angka (tidak ada titik) dan col1 mengandung titik ATAU col0 adalah string pendek seperti nomor
+                    if (is_numeric($col0) && strpos($col1, '.') !== false) {
+                        $kodeIdx = 1;
+                        $uraianIdx = 2;
+                    }
+                }
+
+                if (isset($row[$kodeIdx]) && isset($row[$uraianIdx]) && !empty(trim($row[$kodeIdx]))) {
                     $insertData[] = [
-                        'kode' => trim($row[0]),
-                        'uraian' => trim($row[1]),
+                        'kode' => trim($row[$kodeIdx]),
+                        'uraian' => trim($row[$uraianIdx]),
                         'created_at' => $now,
                         'updated_at' => $now
                     ];
