@@ -10,13 +10,15 @@ class SettingController extends Controller
     public function index()
     {
         $password = Setting::where('key', 'public_asset_password')->value('value') ?? 'Mantup135';
-        return view('settings.index', compact('password'));
+        $telegramChats = Setting::where('key', 'authorized_telegram_chats')->value('value') ?? '';
+        return view('settings.index', compact('password', 'telegramChats'));
     }
 
     public function update(Request $request)
     {
         $request->validate([
-            'public_asset_password' => 'required|string|min:4'
+            'public_asset_password' => 'required|string|min:4',
+            'authorized_telegram_chats' => 'nullable|string'
         ]);
 
         Setting::updateOrCreate(
@@ -24,6 +26,11 @@ class SettingController extends Controller
             ['value' => $request->public_asset_password]
         );
 
-        return back()->with('success', 'Kata sandi berhasil diperbarui.');
+        Setting::updateOrCreate(
+            ['key' => 'authorized_telegram_chats'],
+            ['value' => $request->authorized_telegram_chats]
+        );
+
+        return back()->with('success', 'Pengaturan berhasil diperbarui.');
     }
 }

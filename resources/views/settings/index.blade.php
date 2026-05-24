@@ -41,6 +41,21 @@
                 <p class="text-xs text-slate-500 mt-2">Pastikan memberitahukan kata sandi baru ke seluruh staf terkait jika ada perubahan.</p>
             </div>
 
+            <div class="pt-4 border-t border-slate-100">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2 mb-2">
+                    <svg class="w-5 h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    Keamanan Bot Telegram
+                </h3>
+                <p class="text-sm text-slate-500 mb-4">Daftarkan ID Telegram yang diizinkan untuk berinteraksi dengan Bot. Jika dikosongkan, pengguna pertama yang mengirim pesan akan otomatis ditolak namun akan diberitahu ID Chat-nya untuk didaftarkan di sini.</p>
+                
+                <label for="authorized_telegram_chats" class="block text-sm font-medium text-slate-700 mb-2">ID Chat Telegram Sah (Pisahkan dengan koma)</label>
+                <textarea id="authorized_telegram_chats" name="authorized_telegram_chats" rows="3" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm" placeholder="Contoh: 12345678, 87654321">{{ old('authorized_telegram_chats', $telegramChats) }}</textarea>
+                @error('authorized_telegram_chats')
+                    <p class="text-rose-500 text-xs mt-2 font-medium">{{ $message }}</p>
+                @enderror
+                <p class="text-xs text-slate-500 mt-2">Gunakan koma tanpa spasi untuk memasukkan lebih dari satu ID.</p>
+            </div>
+
             <div class="pt-4 border-t border-slate-100 flex justify-end">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg shadow-sm transition-colors flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
