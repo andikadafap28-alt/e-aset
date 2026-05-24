@@ -10,6 +10,7 @@ class BotConversation extends Model
         'phone_number',
         'sender',
         'message',
-        'intent'
+        'intent',
+        'platform'
     ];
 }
