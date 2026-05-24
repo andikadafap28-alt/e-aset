@@ -19,6 +19,10 @@ Route::get('/', function () {
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index']);
 
+// Pengaturan Sistem
+Route::get('/settings', [\App\Http\Controllers\SettingController::class, 'index'])->name('settings.index');
+Route::post('/settings', [\App\Http\Controllers\SettingController::class, 'update'])->name('settings.update');
+
 // Rute Bantuan untuk Testing Role (Tanpa Password)
 Route::get('/dev/login/{id}', function ($id) {
     auth()->loginUsingId($id);
@@ -90,6 +94,10 @@ Route::prefix('aset')->name('aset.')->group(function () {
 // Verifikasi BAST (Publik)
 Route::get('/verify/bast/loan/{id}', [\App\Http\Controllers\AssetLoanController::class, 'verifyBast'])->name('verify.bast');
 
+// Halaman Publik Detail Aset (Scan QR)
+Route::get('/item/{asset_code}', [AssetController::class, 'publicShow'])->name('public.show');
+Route::post('/item/{asset_code}/verify', [AssetController::class, 'verifyPublicPassword'])->name('public.verify');
+
 // Resource route diletakkan di bawah
 Route::resource('aset', AssetController::class);
 
@@ -105,9 +113,10 @@ Route::get('/procurement-file/{id}', [InventoryController::class, 'viewProcureme
 Route::delete('/procurement-file/{id}', [InventoryController::class, 'destroyProcurementFile'])->name('procurement.destroy-file');
 
 
-// Asisten AI WhatsApp
+// Asisten AI
 Route::prefix('asisten')->name('asisten.')->group(function () {
-    Route::get('/chats', [\App\Http\Controllers\AssistantController::class, 'index'])->name('chats');
+    Route::get('/wa', [\App\Http\Controllers\AssistantController::class, 'waChats'])->name('wa');
+    Route::get('/tele', [\App\Http\Controllers\AssistantController::class, 'teleChats'])->name('tele');
 });
 
 /*
@@ -194,3 +203,7 @@ Route::get('/webhook', [\App\Http\Controllers\WhatsAppWebhookController::class, 
 Route::post('/webhook', [\App\Http\Controllers\WhatsAppWebhookController::class, 'handle']);
 Route::get('/webhook/', [\App\Http\Controllers\WhatsAppWebhookController::class, 'verify']);
 Route::post('/webhook/', [\App\Http\Controllers\WhatsAppWebhookController::class, 'handle']);
+
+// Rute untuk Webhook Telegram
+Route::get('/webhook/telegram/setup', [\App\Http\Controllers\TelegramWebhookController::class, 'setupWebhook']);
+Route::post('/webhook/telegram', [\App\Http\Controllers\TelegramWebhookController::class, 'handle']);

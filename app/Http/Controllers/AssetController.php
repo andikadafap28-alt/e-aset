@@ -13,8 +13,29 @@ class AssetController extends Controller
      */
     public function index()
     {
-        $assets = Asset::latest()->get();
+        $assets = Asset::with('category')->latest()->get();
         return view('aset.data', compact('assets'));
+    }
+
+    public function publicShow($asset_code)
+    {
+        $asset = Asset::with('category', 'mutations', 'maintenances')->where('asset_code', $asset_code)->firstOrFail();
+        $isAuthenticated = session('public_authenticated_' . $asset->id, false);
+        return view('aset.public-show', compact('asset', 'isAuthenticated'));
+    }
+
+    public function verifyPublicPassword(Request $request, $asset_code)
+    {
+        $asset = Asset::where('asset_code', $asset_code)->firstOrFail();
+        $password = $request->input('password');
+        $correctPassword = \App\Models\Setting::where('key', 'public_asset_password')->value('value') ?? 'Mantup135';
+        
+        if ($password === $correctPassword) {
+            session(['public_authenticated_' . $asset->id => true]);
+            return back()->with('success', 'Akses detail terbuka.');
+        }
+        
+        return back()->withErrors(['password' => 'Kata sandi salah!']);
     }
 
     /**
