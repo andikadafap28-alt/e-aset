@@ -63,6 +63,14 @@ Route::prefix('aset')->name('aset.')->group(function () {
         ->defaults('kategori_besar', 'pengadaan')
         ->name('pengadaan.detail');
 
+    Route::get('/bantuan-sarpras/items', [\App\Http\Controllers\InventoryController::class, 'index'])
+        ->defaults('kategori_besar', 'bantuan_sarpras')
+        ->name('bantuan_sarpras.items');
+
+    Route::get('/bantuan-sarpras/{id}/detail', [\App\Http\Controllers\InventoryController::class, 'show'])
+        ->defaults('kategori_besar', 'bantuan_sarpras')
+        ->name('bantuan_sarpras.detail');
+
     // 2. Pemeliharaan Aset
     Route::get('/pemeliharaan', [\App\Http\Controllers\AssetMaintenanceController::class, 'index'])->name('pemeliharaan.index');
     Route::post('/pemeliharaan', [\App\Http\Controllers\AssetMaintenanceController::class, 'store'])->name('pemeliharaan.store');

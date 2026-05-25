@@ -15,7 +15,7 @@
             </div>
         </div>
         
-        @if($kategori_besar === 'pengadaan')
+        @if(in_array($kategori_besar, ['pengadaan', 'bantuan_sarpras']))
         @php
             $terdaftar = \App\Models\Asset::where('pengadaan_id', $item->id)->count();
             $sisa = $item->stok_sekarang - $terdaftar;

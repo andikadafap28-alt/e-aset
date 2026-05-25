@@ -26,6 +26,7 @@ class InventoryController extends Controller
             'bahan_lainnya' => 'Bahan Lainnya',
             'natura_pakan_lainnya' => 'Natura & Pakan Lainnya',
             'pengadaan' => 'Pengadaan',
+            'bantuan_sarpras' => 'Bantuan Sarpras',
             'vaksin' => 'Vaksin',
             'obat_apbd' => 'Obat APBD'
         ];

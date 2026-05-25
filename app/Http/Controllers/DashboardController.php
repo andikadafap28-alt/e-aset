@@ -200,7 +200,7 @@ class DashboardController extends Controller
         $totalBookValue = 0;
         
         // Gunakan chunking dan eager load kategori untuk mencegah N+1 Query & Out of Memory
-        \App\Models\Asset::with('category')->chunk(500, function($chunk) use (&$totalDepreciation, &$totalBookValue) {
+        \App\Models\Asset::with('category')->orderBy('id')->chunk(500, function($chunk) use (&$totalDepreciation, &$totalBookValue) {
             foreach ($chunk as $asset) {
                 $totalDepreciation += $asset->accumulated_depreciation;
                 $totalBookValue += $asset->book_value;

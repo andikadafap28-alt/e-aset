@@ -33,7 +33,8 @@ class Asset extends Model
      */
     public function getAnnualDepreciationAttribute()
     {
-        if (!$this->harga_perolehan || !$this->category || !$this->category->umur_ekonomis) {
+        $category = $this->getRelationValue('category');
+        if (!$this->harga_perolehan || !$category || !$category->umur_ekonomis) {
             return 0;
         }
 
@@ -41,7 +42,7 @@ class Asset extends Model
         $depreciableCost = $this->harga_perolehan - 1;
         if ($depreciableCost <= 0) return 0;
 
-        return $depreciableCost / $this->category->umur_ekonomis;
+        return $depreciableCost / $category->umur_ekonomis;
     }
 
     /**
@@ -49,7 +50,8 @@ class Asset extends Model
      */
     public function getAccumulatedDepreciationAttribute()
     {
-        if (!$this->harga_perolehan || !$this->category || !$this->category->umur_ekonomis || !$this->year_purchased) {
+        $category = $this->getRelationValue('category');
+        if (!$this->harga_perolehan || !$category || !$category->umur_ekonomis || !$this->year_purchased) {
             return 0;
         }
 
