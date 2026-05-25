@@ -249,6 +249,98 @@
         </div>
 
     </div>
+
+    <!-- Widgets: Reminders (Kalibrasi, Servis, ED) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        
+        <!-- Widget: Peringatan Kalibrasi -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Jadwal Kalibrasi
+                </h3>
+            </div>
+            <div class="p-0">
+                <ul class="divide-y divide-slate-100">
+                    @forelse($calibrationReminders as $asset)
+                    <li class="p-4 hover:bg-slate-50 transition-colors">
+                        <a href="{{ route('aset.show', $asset->id) }}" class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-slate-800">{{ $asset->name }}</p>
+                                <p class="text-xs text-slate-500">{{ $asset->asset_code }} - {{ $asset->location }}</p>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ \Carbon\Carbon::parse($asset->next_calibration)->isPast() ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800' }}">
+                                {{ \Carbon\Carbon::parse($asset->next_calibration)->translatedFormat('d M Y') }}
+                            </span>
+                        </a>
+                    </li>
+                    @empty
+                    <li class="p-6 text-center text-slate-500 text-sm">Tidak ada jadwal kalibrasi dalam 30 hari kedepan.</li>
+                    @endforelse
+                </ul>
+            </div>
+        </div>
+
+        <!-- Widget: Peringatan Servis -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Jadwal Servis Berkala
+                </h3>
+            </div>
+            <div class="p-0">
+                <ul class="divide-y divide-slate-100">
+                    @forelse($serviceReminders as $asset)
+                    <li class="p-4 hover:bg-slate-50 transition-colors">
+                        <a href="{{ route('aset.show', $asset->id) }}" class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-slate-800">{{ $asset->name }}</p>
+                                <p class="text-xs text-slate-500">{{ $asset->asset_code }} - {{ $asset->location }}</p>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ \Carbon\Carbon::parse($asset->next_service)->isPast() ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800' }}">
+                                {{ \Carbon\Carbon::parse($asset->next_service)->translatedFormat('d M Y') }}
+                            </span>
+                        </a>
+                    </li>
+                    @empty
+                    <li class="p-6 text-center text-slate-500 text-sm">Tidak ada jadwal servis dalam 30 hari kedepan.</li>
+                    @endforelse
+                </ul>
+            </div>
+        </div>
+
+        <!-- Widget: Peringatan Obat/Vaksin Kedaluwarsa -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Akan Kedaluwarsa (ED)
+                </h3>
+            </div>
+            <div class="p-0">
+                <ul class="divide-y divide-slate-100 max-h-72 overflow-y-auto">
+                    @forelse($expiryReminders as $trx)
+                    <li class="p-4 hover:bg-slate-50 transition-colors">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-slate-800">{{ $trx->item ? $trx->item->nama_barang : 'Barang Terhapus' }}</p>
+                                <p class="text-xs text-slate-500">Masuk: {{ \Carbon\Carbon::parse($trx->tanggal_transaksi)->translatedFormat('d M Y') }}</p>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ \Carbon\Carbon::parse($trx->expired_date)->isPast() ? 'bg-rose-600 text-white' : 'bg-rose-100 text-rose-800' }}">
+                                ED: {{ \Carbon\Carbon::parse($trx->expired_date)->translatedFormat('d M Y') }}
+                            </span>
+                        </div>
+                    </li>
+                    @empty
+                    <li class="p-6 text-center text-slate-500 text-sm">Tidak ada barang yang akan kedaluwarsa dalam 90 hari.</li>
+                    @endforelse
+                </ul>
+            </div>
+        </div>
+
+    </div>
 </div>
 @endsection
 

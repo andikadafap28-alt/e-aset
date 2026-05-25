@@ -84,7 +84,12 @@
                 @forelse($item->transactions as $tx)
                 <tr class="hover:bg-slate-50/50">
                     <td class="py-3 px-5 whitespace-nowrap">{{ \Carbon\Carbon::parse($tx->tanggal_transaksi)->translatedFormat('d M Y') }}</td>
-                    <td class="py-3 px-5 text-slate-600 max-w-xs truncate" title="{{ $tx->keterangan }}">{{ $tx->keterangan ?: '-' }}</td>
+                    <td class="py-3 px-5 text-slate-600 max-w-xs truncate" title="{{ $tx->keterangan }}">
+                        {{ $tx->keterangan ?: '-' }}
+                        @if($tx->expired_date)
+                            <br><span class="text-xs font-semibold text-rose-500">ED: {{ \Carbon\Carbon::parse($tx->expired_date)->translatedFormat('d M Y') }}</span>
+                        @endif
+                    </td>
                     <td class="py-3 px-5 text-center font-bold text-emerald-600">{{ $tx->jenis_transaksi == 'masuk' ? $tx->jumlah : '-' }}</td>
                     <td class="py-3 px-5 text-center font-bold text-rose-600">{{ $tx->jenis_transaksi == 'keluar' ? $tx->jumlah : '-' }}</td>
                     <td class="py-3 px-5 text-center font-bold text-indigo-600">{{ $tx->running_balance }}</td>

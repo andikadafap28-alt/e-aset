@@ -41,6 +41,7 @@ class DashboardController extends Controller
 
         $kategoriList = [
             'atk' => ['label' => 'ATK', 'icon' => 'indigo', 'total' => 0, 'jenis' => 0],
+            'kertas_cover' => ['label' => 'Kertas & Cover', 'icon' => 'slate', 'total' => 0, 'jenis' => 0],
             'bahan_cetak' => ['label' => 'Bahan Cetak', 'icon' => 'blue', 'total' => 0, 'jenis' => 0],
             'benda_pos' => ['label' => 'Benda Pos', 'icon' => 'sky', 'total' => 0, 'jenis' => 0],
             'bahan_komputer' => ['label' => 'Bahan Komputer', 'icon' => 'purple', 'total' => 0, 'jenis' => 0],
@@ -176,7 +177,7 @@ class DashboardController extends Controller
         // 6. Low Stock Items
         $lowStockItems = Item::where('stok_sekarang', '<', 10)
             ->where('stok_sekarang', '>', 0)
-            ->whereIn('kategori_besar', ['atk', 'persediaan', 'bahan_komputer', 'bahan_cetak', 'benda_pos', 'obat', 'bahan_lainnya', 'natura_pakan_lainnya', 'vaksin', 'obat_apbd'])
+            ->whereIn('kategori_besar', ['atk', 'kertas_cover', 'persediaan', 'bahan_komputer', 'bahan_cetak', 'benda_pos', 'obat', 'bahan_lainnya', 'natura_pakan_lainnya', 'vaksin', 'obat_apbd'])
             ->orderBy('stok_sekarang', 'asc')
             ->take(10) // taking 10 for UI fit
             ->get();
@@ -231,6 +232,27 @@ class DashboardController extends Controller
             ->groupBy('kat_name')
             ->pluck('count', 'kat_name');
 
+        // 9. Reminders System
+        $calibrationReminders = \App\Models\Asset::where('status_aktif', true)
+            ->whereNotNull('next_calibration')
+            ->where('next_calibration', '<=', now()->addDays(30))
+            ->orderBy('next_calibration', 'asc')
+            ->take(5)->get();
+
+        $serviceReminders = \App\Models\Asset::where('status_aktif', true)
+            ->whereNotNull('next_service')
+            ->where('next_service', '<=', now()->addDays(30))
+            ->orderBy('next_service', 'asc')
+            ->take(5)->get();
+
+        $expiryReminders = \App\Models\InventoryTransaction::with('item')
+            ->where('jenis_transaksi', 'masuk')
+            ->whereNotNull('expired_date')
+            ->where('expired_date', '<=', now()->addDays(90))
+            ->orderBy('expired_date', 'asc')
+            ->take(10)
+            ->get();
+
         return view('dashboard', compact(
             'kategoriList', 
             'masukBulanIni', 
@@ -245,7 +267,10 @@ class DashboardController extends Controller
             'chartMaxData',
             'assetStats',
             'chartKondisi',
-            'chartKategori'
+            'chartKategori',
+            'calibrationReminders',
+            'serviceReminders',
+            'expiryReminders'
         ));
     }
 }

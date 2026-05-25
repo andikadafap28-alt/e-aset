@@ -63,7 +63,12 @@
             <tr>
                 <td class="text-center">{{ $index + 1 }}</td>
                 <td class="text-center">{{ \Carbon\Carbon::parse($tx->tanggal_transaksi)->translatedFormat('d M Y') }}</td>
-                <td>{{ $tx->keterangan ?: '-' }}</td>
+                <td>
+                    {{ $tx->keterangan ?: '-' }}
+                    @if($tx->expired_date)
+                        <br><small style="color: red;">ED: {{ \Carbon\Carbon::parse($tx->expired_date)->translatedFormat('d M Y') }}</small>
+                    @endif
+                </td>
                 <td class="text-center">{{ $tx->jenis_transaksi == 'masuk' ? $tx->jumlah : '-' }}</td>
                 <td class="text-center">{{ $tx->jenis_transaksi == 'keluar' ? $tx->jumlah : '-' }}</td>
                 <td class="text-center"><strong>{{ $tx->running_balance }}</strong></td>

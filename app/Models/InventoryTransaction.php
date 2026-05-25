@@ -14,7 +14,8 @@ class InventoryTransaction extends Model
         'keterangan', 
         'tanggal_transaksi', 
         'tanggal_spj',
-        'status_hutang'
+        'status_hutang',
+        'expired_date'
     ];
 
     // Memberitahu Laravel bahwa transaksi ini milik satu barang (Item)

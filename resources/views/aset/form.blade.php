@@ -165,6 +165,18 @@
                 <input type="date" name="last_calibration" id="last_calibration" value="{{ old('last_calibration', $asset->last_calibration ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
             </div>
 
+            <!-- Next Calibration -->
+            <div>
+                <label for="next_calibration" class="block text-sm font-medium text-slate-700 mb-1">Tanggal Kalibrasi Berikutnya <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
+                <input type="date" name="next_calibration" id="next_calibration" value="{{ old('next_calibration', $asset->next_calibration ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+
+            <!-- Next Service -->
+            <div>
+                <label for="next_service" class="block text-sm font-medium text-slate-700 mb-1">Tanggal Servis Berikutnya <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
+                <input type="date" name="next_service" id="next_service" value="{{ old('next_service', $asset->next_service ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+
             <!-- Condition -->
             <div>
                 <label for="condition" class="block text-sm font-medium text-slate-700 mb-1">Kondisi</label>

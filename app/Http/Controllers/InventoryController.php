@@ -19,6 +19,7 @@ class InventoryController extends Controller
     private function getKategoriName($kategori_besar) {
         $map = [
             'atk' => 'ATK',
+            'kertas_cover' => 'Kertas dan Cover',
             'bahan_cetak' => 'Bahan Cetak',
             'benda_pos' => 'Benda Pos',
             'bahan_komputer' => 'Bahan Komputer',
@@ -107,7 +108,8 @@ class InventoryController extends Controller
             'jenis_transaksi' => 'required',
             'jumlah' => 'required|numeric|min:1',
             'tanggal_transaksi' => 'required|date',
-            'harga_satuan' => 'required|numeric'
+            'harga_satuan' => 'required|numeric',
+            'expired_date' => 'nullable|date'
         ]);
 
         $hargaInput = $request->harga_satuan;
@@ -157,7 +159,8 @@ class InventoryController extends Controller
                 'tanggal_transaksi' => $request->tanggal_transaksi,
                 'tanggal_spj' => $isHutang ? null : $request->tanggal_transaksi,
                 'status_hutang' => $isHutang,
-                'keterangan' => $request->keterangan
+                'keterangan' => $request->keterangan,
+                'expired_date' => $request->jenis_transaksi == 'masuk' ? $request->expired_date : null
             ]);
 
             if ($request->jenis_transaksi == 'masuk') {

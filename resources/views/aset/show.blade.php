@@ -84,6 +84,26 @@
                         </p>
                     </div>
                     <div>
+                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Jadwal Kalibrasi Berikutnya</p>
+                        <p class="text-sm font-medium text-slate-800 mt-1">
+                            @if($asset->next_calibration)
+                                {{ \Carbon\Carbon::parse($asset->next_calibration)->format('d F Y') }}
+                            @else
+                                <span class="italic text-slate-400">Belum dijadwalkan</span>
+                            @endif
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Jadwal Servis Berikutnya</p>
+                        <p class="text-sm font-medium text-slate-800 mt-1">
+                            @if($asset->next_service)
+                                {{ \Carbon\Carbon::parse($asset->next_service)->format('d F Y') }}
+                            @else
+                                <span class="italic text-slate-400">Belum dijadwalkan</span>
+                            @endif
+                        </p>
+                    </div>
+                    <div>
                         <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Lokasi Penempatan</p>
                         <p class="text-sm font-medium text-slate-800 mt-1">{{ $asset->location }}</p>
                     </div>
