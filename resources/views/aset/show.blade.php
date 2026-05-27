@@ -67,7 +67,7 @@
                 <div class="space-y-4">
                     <div>
                         <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Kategori Master</p>
-                        <p class="text-sm font-medium text-slate-800 mt-1">{{ $asset->category ? $asset->category->nama_kategori : ($asset->getAttribute('category') ?: '-') }}</p>
+                        <p class="text-sm font-medium text-slate-800 mt-1">{{ is_object($asset->category) ? $asset->category->nama_kategori : ($asset->getAttribute('category') ?: '-') }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Tahun Pengadaan</p>
@@ -196,7 +196,7 @@
                     </div>
                     <div class="bg-sky-50/50 p-4 rounded-xl border border-sky-100">
                         <p class="text-xs text-sky-600 font-semibold uppercase tracking-wider mb-1">Umur Ekonomis</p>
-                        <p class="text-xl font-bold text-slate-800">{{ $asset->category ? $asset->category->umur_ekonomis : '-' }} Tahun</p>
+                        <p class="text-xl font-bold text-slate-800">{{ is_object($asset->category) ? $asset->category->umur_ekonomis : '-' }} Tahun</p>
                     </div>
                     <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
                         <p class="text-xs text-amber-600 font-semibold uppercase tracking-wider mb-1">Akumulasi Penyusutan</p>

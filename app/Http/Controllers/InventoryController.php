@@ -84,7 +84,17 @@ class InventoryController extends Controller
         $data = $request->only(['nama_barang', 'kategori', 'harga_satuan', 'tahun_pengadaan']);
         $data['satuan'] = $request->satuan === 'Lainnya' ? $request->satuan_lainnya : $request->satuan;
         
+        $oldHarga = $item->harga_satuan;
+        $newHarga = $data['harga_satuan'];
+        $hargaChanged = $oldHarga != $newHarga;
+
         $item->update($data);
+
+        if ($hargaChanged && in_array($kategori_besar, ['bantuan_sarpras', 'pengadaan'])) {
+            \App\Models\InventoryTransaction::where('item_id', $id)->update(['harga_satuan' => $newHarga]);
+            \App\Models\Asset::where('pengadaan_id', $id)->update(['harga_perolehan' => $newHarga]);
+            return redirect("/{$kategori_besar}/master")->with('success', 'Master Barang berhasil diperbarui! Harga pada riwayat transaksi dan aset terkait juga telah otomatis disesuaikan.');
+        }
 
         return redirect("/{$kategori_besar}/master")->with('success', 'Master Barang berhasil diperbarui!');
     }

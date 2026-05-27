@@ -11,7 +11,7 @@ class AssetMaintenanceController extends Controller
     public function index()
     {
         $maintenances = AssetMaintenance::with('asset')->orderBy('tanggal_jadwal', 'asc')->get();
-        $assets = Asset::all();
+        $assets = Asset::where('status_aktif', true)->get(['id', 'name', 'asset_code']);
         return view('aset.pemeliharaan', compact('maintenances', 'assets'));
     }
 

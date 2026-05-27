@@ -114,6 +114,11 @@ Route::prefix('laporan')->name('laporan.')->group(function () {
     Route::get('/', [\App\Http\Controllers\ReportController::class, 'index'])->name('index');
     Route::post('/generate', [\App\Http\Controllers\ReportController::class, 'generate'])->name('generate');
     Route::get('/aset/pdf', [\App\Http\Controllers\ReportController::class, 'downloadAssetReport'])->name('aset.pdf');
+    
+    Route::get('/rekap', [\App\Http\Controllers\ReportController::class, 'rekap'])->name('rekap');
+    Route::get('/rekap/export', [\App\Http\Controllers\ReportController::class, 'exportRekap'])->name('rekap.export');
+    Route::post('/persediaan-global/export', [\App\Http\Controllers\ReportController::class, 'exportPersediaanGlobal'])->name('persediaan-global.export');
+    Route::post('/aktivitas-aset/export', [\App\Http\Controllers\ReportController::class, 'exportAktivitasAset'])->name('aktivitas-aset.export');
 });
 
 // Melihat/Mengunduh Dokumen Pengadaan langsung dari Google Drive

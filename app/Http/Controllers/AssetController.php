@@ -72,10 +72,9 @@ class AssetController extends Controller
                 if (!$hargaPerolehan) {
                     $hargaPerolehan = $item->harga_satuan;
                 }
-                $terdaftar = Asset::where('pengadaan_id', $pengadaanId)->count();
-                $sisa = $item->stok_sekarang - $terdaftar;
+                $sisa = $item->stok_sekarang;
                 if ($jumlah > $sisa) {
-                    return back()->withErrors(['jumlah' => "Jumlah maksimal yang bisa didaftarkan adalah {$sisa} dari {$item->stok_sekarang} total barang pengadaan."])->withInput();
+                    return back()->withErrors(['jumlah' => "Jumlah maksimal yang bisa didaftarkan adalah {$sisa} karena sisa stok hanya tinggal segitu."])->withInput();
                 }
             }
         }
@@ -140,8 +139,26 @@ class AssetController extends Controller
                     return back()->withErrors(['asset_code' => 'Kode aset ' . $data['asset_code'] . ' sudah digunakan.'])->withInput();
                 }
                 
-                Asset::create($data);
+                $asset = Asset::create($data);
             }
+            
+            // Record inventory transaction
+            if ($pengadaanId) {
+                $item = \App\Models\Item::find($pengadaanId);
+                if ($item) {
+                    \App\Models\InventoryTransaction::create([
+                        'item_id' => $item->id,
+                        'jenis_transaksi' => 'keluar',
+                        'jumlah' => $jumlah,
+                        'harga_satuan' => $hargaPerolehan ?? $item->harga_satuan,
+                        'keterangan' => 'Didaftarkan sebagai Aset (' . $jumlah . ' unit)',
+                        'tanggal_transaksi' => now(),
+                        'status_hutang' => false
+                    ]);
+                    $item->decrement('stok_sekarang', $jumlah);
+                }
+            }
+            
             return redirect()->route('aset.index')->with('success', $jumlah . ' Aset berhasil ditambahkan.');
         } else {
             $data = $validated;
@@ -155,7 +172,25 @@ class AssetController extends Controller
                 $data['asset_code'] = $request->asset_code;
             }
 
-            Asset::create($data);
+            $asset = Asset::create($data);
+            
+            // Record inventory transaction
+            if ($pengadaanId) {
+                $item = \App\Models\Item::find($pengadaanId);
+                if ($item) {
+                    \App\Models\InventoryTransaction::create([
+                        'item_id' => $item->id,
+                        'jenis_transaksi' => 'keluar',
+                        'jumlah' => 1,
+                        'harga_satuan' => $hargaPerolehan ?? $item->harga_satuan,
+                        'keterangan' => 'Didaftarkan sebagai Aset (' . $asset->asset_code . ')',
+                        'tanggal_transaksi' => now(),
+                        'status_hutang' => false
+                    ]);
+                    $item->decrement('stok_sekarang', 1);
+                }
+            }
+            
             return redirect()->route('aset.index')->with('success', 'Aset berhasil ditambahkan.');
         }
     }
@@ -286,7 +321,7 @@ class AssetController extends Controller
 
     public function createMutasi()
     {
-        $assets = Asset::where('status_aktif', true)->get();
+        $assets = Asset::where('status_aktif', true)->get(['id', 'name', 'asset_code', 'location', 'penanggung_jawab']);
         return view('aset.mutasi_create', compact('assets'));
     }
 
