@@ -209,10 +209,10 @@
             
             <div class="flex items-center gap-md pl-md border-l border-outline-variant/30">
                 <div class="text-right hidden sm:block">
-                    <p class="font-label-md text-label-md text-on-surface">{{ auth()->user()->name ?? 'Admin Utama' }}</p>
+                    <p class="font-label-md text-label-md text-on-surface">{{ auth()->user()?->name ?? 'Admin Utama' }}</p>
                     <p class="text-[10px] text-on-surface-variant font-medium uppercase tracking-wider">Super Administrator</p>
                 </div>
-                <img alt="Admin Profile Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-primary-container" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=006c49&color=fff"/>
+                <img alt="Admin Profile Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-primary-container" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()?->name ?? 'Admin') }}&background=006c49&color=fff"/>
             </div>
         </div>
     </header>

@@ -8,7 +8,7 @@
     <!-- Hero Greeting Banner -->
     <section class="relative overflow-hidden glass-card mesh-gradient rounded-lg p-lg flex flex-col md:flex-row items-center justify-between border-none">
         <div class="z-10 text-center md:text-left">
-            <h2 class="font-display-lg text-display-lg text-on-surface mb-xs">Selamat Datang, {{ auth()->user()->name ?? 'Admin' }}</h2>
+            <h2 class="font-display-lg text-display-lg text-on-surface mb-xs">Selamat Datang, {{ auth()->user()?->name ?? 'Admin' }}</h2>
             <div class="flex items-center justify-center md:justify-start gap-sm">
                 <span class="flex h-3 w-3 relative">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
