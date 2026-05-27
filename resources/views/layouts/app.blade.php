@@ -140,26 +140,26 @@
                 </button>
                 <ul x-show="asetOpen" class="space-y-1 mt-1 ml-4 pl-4 border-l border-outline-variant/20">
                     <li>
-                        <a href="{{ route('aset.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('aset.index') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('aset.index') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
-                            Data Aset & Pengadaan
+                        <a href="{{ route('aset.data.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('aset.data.items') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('aset.data.items') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
+                            Data Aset
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('asset-maintenance.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('asset-maintenance.*') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('asset-maintenance.*') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
+                        <a href="{{ route('aset.pengadaan.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('aset.pengadaan.items') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('aset.pengadaan.items') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
+                            Pengadaan Aset
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('aset.pemeliharaan.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('aset.pemeliharaan.*') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('aset.pemeliharaan.*') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
                             Pemeliharaan
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('asset-disposals.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('asset-disposals.*') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('asset-disposals.*') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
-                            Penghapusan Aset
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('print-labels.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('print-labels.index') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('print-labels.index') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
+                        <a href="{{ route('aset.pelabelan.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('aset.pelabelan.*') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('aset.pelabelan.*') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
                             Label QR Code
                         </a>
                     </li>
@@ -168,16 +168,16 @@
 
             <!-- Pusat Laporan -->
             <li>
-                <a href="{{ route('reports.index') }}" class="flex items-center gap-md px-md py-sm {{ request()->routeIs('reports.*') ? 'bg-primary-container text-on-primary-container' : 'text-surface-variant hover:text-surface hover:bg-on-surface-variant/10' }} rounded-lg transition-all group">
-                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('reports.*') ? '1' : '0' }};">analytics</span>
+                <a href="{{ route('laporan.index') }}" class="flex items-center gap-md px-md py-sm {{ request()->routeIs('laporan.*') ? 'bg-primary-container text-on-primary-container' : 'text-surface-variant hover:text-surface hover:bg-on-surface-variant/10' }} rounded-lg transition-all group">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('laporan.*') ? '1' : '0' }};">analytics</span>
                     <span class="font-label-md text-label-md group-hover:translate-x-1 duration-200">Pusat Laporan</span>
                 </a>
             </li>
 
             <!-- Pengaturan -->
             <li>
-                <a href="#" class="flex items-center gap-md px-md py-sm text-surface-variant hover:text-surface hover:bg-on-surface-variant/10 rounded-lg transition-all group">
-                    <span class="material-symbols-outlined">settings</span>
+                <a href="{{ route('settings.index') }}" class="flex items-center gap-md px-md py-sm {{ request()->routeIs('settings.*') ? 'bg-primary-container text-on-primary-container' : 'text-surface-variant hover:text-surface hover:bg-on-surface-variant/10' }} rounded-lg transition-all group">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('settings.*') ? '1' : '0' }};">settings</span>
                     <span class="font-label-md text-label-md group-hover:translate-x-1 duration-200">Pengaturan</span>
                 </a>
             </li>
@@ -199,7 +199,7 @@
                     <span class="material-symbols-outlined">notifications</span>
                     <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
                 </button>
-                <form method="POST" action="{{ route('logout') }}" class="inline">
+                <form method="POST" action="{{ url('/logout') }}" class="inline">
                     @csrf
                     <button type="submit" class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-full transition-colors active:scale-95" title="Logout">
                         <span class="material-symbols-outlined">logout</span>
