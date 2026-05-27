@@ -32,6 +32,17 @@ class DashboardController extends Controller
         return $step * 6;
     }
 
+    private function formatRupiahRingkas($value) {
+        if ($value >= 1000000000) {
+            return 'Rp ' . number_format($value / 1000000000, 1, ',', '.') . ' M';
+        } elseif ($value >= 1000000) {
+            return 'Rp ' . number_format($value / 1000000, 1, ',', '.') . ' Jt';
+        } elseif ($value >= 1000) {
+            return 'Rp ' . number_format($value / 1000, 1, ',', '.') . ' Rb';
+        }
+        return 'Rp ' . number_format($value, 0, ',', '.');
+    }
+
     public function index()
     {
         // 1. Ringkasan Total Item per Kategori Besar
@@ -101,6 +112,16 @@ class DashboardController extends Controller
         foreach ($transaksiBulanLalu as $row) {
             if ($row->jenis_transaksi == 'masuk') $masukBulanLalu = $row->nilai_rupiah;
             if ($row->jenis_transaksi == 'keluar') $keluarBulanLalu = $row->nilai_rupiah;
+        }
+
+        // Calculate MoM Growth
+        $masukGrowth = 0;
+        $keluarGrowth = 0;
+        if ($masukBulanLalu > 0) {
+            $masukGrowth = (($masukBulanIni - $masukBulanLalu) / $masukBulanLalu) * 100;
+        }
+        if ($keluarBulanLalu > 0) {
+            $keluarGrowth = (($keluarBulanIni - $keluarBulanLalu) / $keluarBulanLalu) * 100;
         }
 
         // 4. Data untuk Chart (6 Bulan Terakhir - Pemasukan & Pengeluaran untuk semua kategori)
@@ -221,6 +242,9 @@ class DashboardController extends Controller
             'total_purchase' => $totalPurchaseValue,
             'total_depreciation' => $totalDepreciation,
             'total_book_value' => $totalBookValue,
+            'formatted_purchase' => $this->formatRupiahRingkas($totalPurchaseValue),
+            'formatted_depreciation' => $this->formatRupiahRingkas($totalDepreciation),
+            'formatted_book_value' => $this->formatRupiahRingkas($totalBookValue),
         ];
 
         // Data untuk Chart Aset Kondisi
@@ -254,12 +278,19 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
+        $formattedMasukBulanIni = $this->formatRupiahRingkas($masukBulanIni);
+        $formattedKeluarBulanIni = $this->formatRupiahRingkas($keluarBulanIni);
+
         return view('dashboard', compact(
             'kategoriList', 
             'masukBulanIni', 
             'keluarBulanIni', 
+            'formattedMasukBulanIni',
+            'formattedKeluarBulanIni',
             'masukBulanLalu',
             'keluarBulanLalu',
+            'masukGrowth',
+            'keluarGrowth',
             'chartLabels',
             'allChartData',
             'recentTransactions',

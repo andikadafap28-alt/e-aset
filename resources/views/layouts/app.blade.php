@@ -28,12 +28,12 @@
             <!-- Logo -->
             <div class="h-20 flex items-center px-6 border-b border-slate-800">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
+                    <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
                         <span class="material-symbols-outlined text-white">health_and_safety</span>
                     </div>
                     <div>
                         <h1 class="text-xl font-bold text-white tracking-wide">RAKSA</h1>
-                        <p class="text-[10px] font-medium text-teal-400 uppercase tracking-widest">Puskesmas Mantup</p>
+                        <p class="text-[10px] font-medium text-blue-400 uppercase tracking-widest">Puskesmas Mantup</p>
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                 
                 <!-- Section 1: Dashboard -->
                 <div>
-                    <a href="{{ url('/dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->is('dashboard') ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
+                    <a href="{{ url('/dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->is('dashboard') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
                         <span class="material-symbols-outlined {{ request()->is('dashboard') ? 'icon-fill' : '' }}">dashboard</span>
                         <span>Dashboard</span>
                     </a>
@@ -60,17 +60,17 @@
                         <span class="material-symbols-outlined text-sm transition-transform duration-200" :class="persediaanOpen ? 'rotate-180' : ''">expand_more</span>
                     </button>
                     <div x-show="persediaanOpen" x-collapse class="pl-11 pr-4 mt-1 space-y-1">
-                        <a href="/atk/items" class="{{ request()->segment(1) == 'atk' ? 'bg-slate-800 text-teal-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">ATK</a>
-                        <a href="/kertas_cover/items" class="{{ request()->segment(1) == 'kertas_cover' ? 'bg-slate-800 text-teal-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Kertas & Cover</a>
-                        <a href="/bahan_cetak/items" class="{{ request()->segment(1) == 'bahan_cetak' ? 'bg-slate-800 text-teal-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Bahan Cetak</a>
-                        <a href="/benda_pos/items" class="{{ request()->segment(1) == 'benda_pos' ? 'bg-slate-800 text-teal-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Benda Pos</a>
-                        <a href="/bahan_komputer/items" class="{{ request()->segment(1) == 'bahan_komputer' ? 'bg-slate-800 text-teal-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Bahan Komputer</a>
-                        <a href="/obat/items" class="{{ request()->segment(1) == 'obat' ? 'bg-slate-800 text-teal-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Obat</a>
-                        <a href="/bahan_lainnya/items" class="{{ request()->segment(1) == 'bahan_lainnya' ? 'bg-slate-800 text-teal-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Bahan Lainnya</a>
-                        <a href="/natura_pakan_lainnya/items" class="{{ request()->segment(1) == 'natura_pakan_lainnya' ? 'bg-slate-800 text-teal-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Natura & Pakan</a>
-                        <a href="/vaksin/items" class="{{ request()->segment(1) == 'vaksin' ? 'bg-slate-800 text-teal-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Vaksin</a>
-                        <a href="/obat_apbd/items" class="{{ request()->segment(1) == 'obat_apbd' ? 'bg-slate-800 text-teal-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Obat APBD</a>
-                        <a href="/obat_apbn/items" class="{{ request()->segment(1) == 'obat_apbn' ? 'bg-slate-800 text-teal-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Obat APBN</a>
+                        <a href="/atk/items" class="{{ request()->segment(1) == 'atk' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">ATK</a>
+                        <a href="/kertas_cover/items" class="{{ request()->segment(1) == 'kertas_cover' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Kertas & Cover</a>
+                        <a href="/bahan_cetak/items" class="{{ request()->segment(1) == 'bahan_cetak' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Bahan Cetak</a>
+                        <a href="/benda_pos/items" class="{{ request()->segment(1) == 'benda_pos' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Benda Pos</a>
+                        <a href="/bahan_komputer/items" class="{{ request()->segment(1) == 'bahan_komputer' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Bahan Komputer</a>
+                        <a href="/obat/items" class="{{ request()->segment(1) == 'obat' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Obat</a>
+                        <a href="/bahan_lainnya/items" class="{{ request()->segment(1) == 'bahan_lainnya' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Bahan Lainnya</a>
+                        <a href="/natura_pakan_lainnya/items" class="{{ request()->segment(1) == 'natura_pakan_lainnya' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Natura & Pakan</a>
+                        <a href="/vaksin/items" class="{{ request()->segment(1) == 'vaksin' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Vaksin</a>
+                        <a href="/obat_apbd/items" class="{{ request()->segment(1) == 'obat_apbd' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Obat APBD</a>
+                        <a href="/obat_apbn/items" class="{{ request()->segment(1) == 'obat_apbn' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Obat APBN</a>
                     </div>
                 </div>
 
@@ -123,7 +123,7 @@
                 <!-- Section 4: Laporan -->
                 <div>
                     <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pelaporan</p>
-                    <a href="{{ route('laporan.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('laporan.*') ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
+                    <a href="{{ route('laporan.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('laporan.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
                         <span class="material-symbols-outlined {{ request()->routeIs('laporan.*') ? 'icon-fill' : '' }}">analytics</span>
                         <span>Pusat Laporan</span>
                     </a>
@@ -184,9 +184,9 @@
                 </div>
                 
                 <div class="flex items-center gap-6">
-                    <div class="hidden md:flex px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-full items-center gap-2 shadow-sm">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wide">Sistem Aktif</span>
+                    <div class="hidden md:flex px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-full items-center gap-2 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        <span class="text-[11px] font-bold text-blue-700 uppercase tracking-wide">Sistem Aktif</span>
                     </div>
                     
                     <button class="relative text-slate-400 hover:text-slate-600 transition-colors">
@@ -213,7 +213,7 @@
     <!-- Floating Print Cart -->
     <div x-data="printCart()" x-init="init()" class="fixed bottom-6 right-6 z-50">
         <!-- Floating Button -->
-        <button @click="open = !open" class="relative bg-teal-600 hover:bg-teal-700 text-white p-4 rounded-full shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-teal-300">
+        <button @click="open = !open" class="relative bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
             <span x-show="count > 0" x-text="count" class="absolute -top-2 -right-2 bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-full border-2 border-white shadow-sm" style="display: none;"></span>
         </button>
@@ -222,10 +222,10 @@
         <div x-show="open" @click.away="open = false" x-transition.opacity class="absolute bottom-full right-0 mb-4 w-80 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-96" style="display: none;">
             <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
                 <h3 class="font-bold text-slate-800 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                     Antrean Cetak
                 </h3>
-                <span x-text="count + ' Aset'" class="text-xs font-medium bg-teal-100 text-teal-700 px-2 py-1 rounded"></span>
+                <span x-text="count + ' Aset'" class="text-xs font-medium bg-blue-100 text-blue-700 px-2 py-1 rounded"></span>
             </div>
             
             <div class="flex-1 overflow-y-auto p-2 min-h-[100px]">
@@ -249,7 +249,7 @@
             </div>
 
             <div class="p-3 bg-slate-50 border-t border-slate-100 space-y-2">
-                <a :href="count > 0 ? '{{ route('aset.print-queue.print') }}' : '#'" :target="count > 0 ? '_blank' : ''" :class="count > 0 ? 'bg-teal-600 hover:bg-teal-700 text-white' : 'bg-slate-300 text-slate-500 cursor-not-allowed'" class="w-full block text-center py-2 rounded-lg text-sm font-medium transition-colors" @click="open = false">
+                <a :href="count > 0 ? '{{ route('aset.print-queue.print') }}' : '#'" :target="count > 0 ? '_blank' : ''" :class="count > 0 ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-slate-300 text-slate-500 cursor-not-allowed'" class="w-full block text-center py-2 rounded-lg text-sm font-medium transition-colors" @click="open = false">
                     Cetak Semua Label
                 </a>
                 <button x-show="count > 0" @click="clear()" class="w-full py-1.5 text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors">
@@ -319,3 +319,4 @@
     @yield('scripts')
 </body>
 </html>
+

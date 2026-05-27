@@ -6,14 +6,14 @@
 <div class="max-w-7xl mx-auto space-y-6">
 
     <!-- Hero Section (Welcome) -->
-    <div class="relative overflow-hidden bg-gradient-to-br from-teal-500 to-emerald-700 rounded-3xl p-8 md:p-10 text-white shadow-xl shadow-teal-500/20 flex flex-col justify-center">
+    <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-8 md:p-10 text-white shadow-xl shadow-blue-600/20 flex flex-col justify-center">
         <!-- Abstract Shapes -->
         <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-        <div class="absolute bottom-0 left-0 w-48 h-48 bg-teal-300 opacity-20 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4"></div>
+        <div class="absolute bottom-0 left-0 w-48 h-48 bg-blue-300 opacity-20 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4"></div>
         
         <div class="relative z-10 max-w-2xl">
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">Selamat Datang di RAKSA</h1>
-            <p class="text-teal-50 text-base md:text-lg font-medium leading-relaxed">
+            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight mb-2">Selamat Datang di RAKSA</h1>
+            <p class="text-blue-50 text-base md:text-lg font-medium leading-relaxed">
                 Respons Akurat Kelola Seluruh Aset. Sistem Informasi Inventaris dan Logistik Terpadu untuk menunjang pelayanan optimal di Puskesmas Mantup.
             </p>
         </div>
@@ -21,47 +21,65 @@
 
     <!-- Stats Bento Grid -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        <!-- Card 1 -->
-        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col items-start gap-4 hover:-translate-y-1 transition-transform duration-300">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                <span class="material-symbols-outlined icon-fill">inventory_2</span>
+        <!-- Card 1: Valuasi Aset Bersih -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col items-start gap-4 hover:-translate-y-1 transition-transform duration-300 relative group cursor-help" title="Rp {{ number_format($assetStats['total_book_value'], 0, ',', '.') }}">
+            <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
+                <span class="material-symbols-outlined icon-fill">account_balance_wallet</span>
             </div>
-            <div>
-                <p class="text-sm font-semibold text-slate-500">Total Aset Aktif</p>
-                <h3 class="text-2xl font-bold text-slate-800 mt-1">{{ number_format($assetStats['aktif'], 0, ',', '.') }}</h3>
-            </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col items-start gap-4 hover:-translate-y-1 transition-transform duration-300">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                <span class="material-symbols-outlined icon-fill">verified</span>
-            </div>
-            <div>
-                <p class="text-sm font-semibold text-slate-500">Kondisi Baik</p>
-                <h3 class="text-2xl font-bold text-slate-800 mt-1">{{ number_format($assetStats['baik'], 0, ',', '.') }}</h3>
+            <div class="w-full">
+                <p class="text-sm font-semibold text-slate-500">Valuasi Aset Bersih</p>
+                <h3 class="text-xl md:text-2xl font-bold text-slate-800 mt-1">{{ $assetStats['formatted_book_value'] }}</h3>
+                <p class="text-xs text-slate-400 mt-2">Nilai buku saat ini (Book Value)</p>
             </div>
         </div>
 
-        <!-- Card 3 -->
-        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col items-start gap-4 hover:-translate-y-1 transition-transform duration-300">
-            <div class="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600">
-                <span class="material-symbols-outlined icon-fill">warning</span>
-            </div>
-            <div>
-                <p class="text-sm font-semibold text-slate-500">Rusak / Perlu Servis</p>
-                <h3 class="text-2xl font-bold text-slate-800 mt-1">{{ number_format($assetStats['rusak'], 0, ',', '.') }}</h3>
-            </div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col items-start gap-4 hover:-translate-y-1 transition-transform duration-300">
+        <!-- Card 2: Total Akumulasi Penyusutan -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col items-start gap-4 hover:-translate-y-1 transition-transform duration-300 relative group cursor-help" title="Rp {{ number_format($assetStats['total_depreciation'], 0, ',', '.') }}">
             <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600">
-                <span class="material-symbols-outlined icon-fill">thermostat</span>
+                <span class="material-symbols-outlined icon-fill">trending_down</span>
             </div>
-            <div>
-                <p class="text-sm font-semibold text-slate-500">Perlu Kalibrasi</p>
-                <h3 class="text-2xl font-bold text-slate-800 mt-1">{{ number_format($assetStats['perlu_kalibrasi'], 0, ',', '.') }}</h3>
+            <div class="w-full">
+                <p class="text-sm font-semibold text-slate-500">Total Depresiasi</p>
+                <h3 class="text-xl md:text-2xl font-bold text-slate-800 mt-1">{{ $assetStats['formatted_depreciation'] }}</h3>
+                <p class="text-xs text-slate-400 mt-2">Penyusutan nilai aset keseluruhan</p>
+            </div>
+        </div>
+
+        <!-- Card 3: Pengadaan Logistik -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col items-start gap-4 hover:-translate-y-1 transition-transform duration-300 relative group cursor-help" title="Rp {{ number_format($masukBulanIni, 0, ',', '.') }}">
+            <div class="w-12 h-12 rounded-2xl bg-sky-50 flex items-center justify-center text-sky-600">
+                <span class="material-symbols-outlined icon-fill">add_shopping_cart</span>
+            </div>
+            <div class="w-full">
+                <p class="text-sm font-semibold text-slate-500">Pengadaan (Bulan Ini)</p>
+                <div class="flex items-center gap-2 mt-1">
+                    <h3 class="text-xl md:text-2xl font-bold text-slate-800">{{ $formattedMasukBulanIni }}</h3>
+                    @if($masukBulanLalu > 0)
+                        <span class="text-xs font-bold px-2 py-0.5 rounded-md {{ $masukGrowth > 0 ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600' }}">
+                            {{ $masukGrowth > 0 ? '▲' : '▼' }} {{ number_format(abs($masukGrowth), 1) }}%
+                        </span>
+                    @endif
+                </div>
+                <p class="text-xs text-slate-400 mt-2">Vs Bulan Lalu: Rp {{ number_format($masukBulanLalu, 0, ',', '.') }}</p>
+            </div>
+        </div>
+
+        <!-- Card 4: Distribusi Logistik -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col items-start gap-4 hover:-translate-y-1 transition-transform duration-300 relative group cursor-help" title="Rp {{ number_format($keluarBulanIni, 0, ',', '.') }}">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                <span class="material-symbols-outlined icon-fill">local_shipping</span>
+            </div>
+            <div class="w-full">
+                <p class="text-sm font-semibold text-slate-500">Distribusi (Bulan Ini)</p>
+                <div class="flex items-center gap-2 mt-1">
+                    <h3 class="text-xl md:text-2xl font-bold text-slate-800">{{ $formattedKeluarBulanIni }}</h3>
+                    @if($keluarBulanLalu > 0)
+                        <span class="text-xs font-bold px-2 py-0.5 rounded-md {{ $keluarGrowth > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600' }}">
+                            {{ $keluarGrowth > 0 ? '▲' : '▼' }} {{ number_format(abs($keluarGrowth), 1) }}%
+                        </span>
+                    @endif
+                </div>
+                <p class="text-xs text-slate-400 mt-2">Vs Bulan Lalu: Rp {{ number_format($keluarBulanLalu, 0, ',', '.') }}</p>
             </div>
         </div>
     </div>
@@ -72,7 +90,7 @@
         <!-- Area Chart: Aktivitas Transaksi (Span 2 Cols) -->
         <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-slate-800">Dinamika Transaksi Logistik</h3>
+                <h3 class="text-base font-bold text-slate-800">Dinamika Transaksi Logistik</h3>
                 <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full">6 Bulan Terakhir</span>
             </div>
             <div class="flex-1 min-h-[300px]">
@@ -83,7 +101,7 @@
         <!-- Pie Chart: Distribusi Kondisi Aset -->
         <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col">
             <div class="flex items-center justify-between mb-2">
-                <h3 class="text-lg font-bold text-slate-800">Kondisi Aset</h3>
+                <h3 class="text-base font-bold text-slate-800">Kondisi Aset</h3>
             </div>
             <p class="text-xs text-slate-500 mb-4">Persentase kondisi seluruh aset terdaftar.</p>
             <div class="flex-1 flex items-center justify-center">
@@ -99,7 +117,7 @@
         <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
             <div class="flex items-center gap-2 mb-6">
                 <span class="material-symbols-outlined text-rose-500 icon-fill">campaign</span>
-                <h3 class="text-lg font-bold text-slate-800">Peringatan Sistem</h3>
+                <h3 class="text-base font-bold text-slate-800">Peringatan Sistem</h3>
             </div>
             
             <div class="space-y-4">
@@ -141,8 +159,8 @@
         <!-- Aktivitas Terbaru -->
         <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
             <div class="flex items-center gap-2 mb-6">
-                <span class="material-symbols-outlined text-teal-500 icon-fill">history</span>
-                <h3 class="text-lg font-bold text-slate-800">Aktivitas Transaksi Terbaru</h3>
+                <span class="material-symbols-outlined text-blue-500 icon-fill">history</span>
+                <h3 class="text-base font-bold text-slate-800">Aktivitas Transaksi Terbaru</h3>
             </div>
             
             <div class="space-y-4">
@@ -150,7 +168,7 @@
                 <div class="flex items-center justify-between p-4 rounded-2xl border border-slate-50 hover:bg-slate-50 transition-colors">
                     <div class="flex items-center gap-4">
                         @if($trx->jenis_transaksi == 'masuk')
-                            <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 shrink-0">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
                                 <span class="material-symbols-outlined">arrow_downward</span>
                             </div>
                         @else
@@ -165,7 +183,7 @@
                         </div>
                     </div>
                     <div class="text-right shrink-0">
-                        <p class="text-sm font-bold {{ $trx->jenis_transaksi == 'masuk' ? 'text-teal-600' : 'text-rose-600' }}">
+                        <p class="text-sm font-bold {{ $trx->jenis_transaksi == 'masuk' ? 'text-blue-600' : 'text-rose-600' }}">
                             {{ $trx->jenis_transaksi == 'masuk' ? '+' : '-' }}{{ $trx->jumlah }} {{ $trx->item->satuan }}
                         </p>
                     </div>
@@ -215,7 +233,7 @@
                 zoom: { enabled: false },
                 background: 'transparent'
             },
-            colors: ['#0d9488', '#e11d48'], // Teal-600 and Rose-600
+            colors: ['#2563eb', '#e11d48'], // Teal-600 and Rose-600
             fill: {
                 type: 'gradient',
                 gradient: {
@@ -335,3 +353,4 @@
     });
 </script>
 @endsection
+
