@@ -110,6 +110,27 @@
         </div>
     </div>
 
+    <!-- Kategori Persediaan Section -->
+    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+        <div class="flex items-center gap-2 mb-6">
+            <span class="material-symbols-outlined text-blue-500 icon-fill">category</span>
+            <h3 class="text-base font-bold text-slate-800">Ringkasan Kategori Persediaan</h3>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            @foreach($kategoriList as $key => $cat)
+            <div class="flex flex-col p-4 rounded-2xl bg-{{ $cat['icon'] }}-50/50 border border-{{ $cat['icon'] }}-100 hover:bg-{{ $cat['icon'] }}-50 transition-colors group cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-{{ $cat['icon'] }}-100 flex items-center justify-center text-{{ $cat['icon'] }}-600 mb-3 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-sm">inventory_2</span>
+                </div>
+                <h4 class="text-sm font-bold text-slate-800 line-clamp-1" title="{{ $cat['label'] }}">{{ $cat['label'] }}</h4>
+                <div class="mt-2 flex items-center justify-between text-xs">
+                    <span class="text-slate-500">Stok: <strong class="text-{{ $cat['icon'] }}-600">{{ number_format($cat['total'], 0, ',', '.') }}</strong></span>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
     <!-- Alert & Tables Bento Section -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
