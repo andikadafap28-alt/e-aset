@@ -20,23 +20,23 @@
 
             <div>
                 <label class="block font-semibold text-slate-700 mb-1.5 text-sm">Periode Bulan <span class="text-rose-500">*</span></label>
-                <input type="month" name="bulan" required class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all text-sm">
+                <input type="month" name="bulan" required class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-sm">
             </div>
 
             <div>
                 <label class="block font-semibold text-slate-700 mb-1.5 text-sm">Peruntukan Laporan <span class="text-rose-500">*</span></label>
                 
                 <div class="space-y-3 mt-2">
-                    <label class="flex items-start gap-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors has-[:checked]:border-teal-500 has-[:checked]:bg-teal-50/50">
-                        <input type="radio" name="jenis_laporan" value="internal" required class="mt-0.5 w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500">
+                    <label class="flex items-start gap-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/50">
+                        <input type="radio" name="jenis_laporan" value="internal" required class="mt-0.5 w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500">
                         <div>
                             <span class="block font-semibold text-slate-800 text-sm">Laporan Internal Puskesmas</span>
                             <span class="block text-xs text-slate-500 mt-0.5">Mencatat seluruh mutasi barang fisik, termasuk barang hutang.</span>
                         </div>
                     </label>
 
-                    <label class="flex items-start gap-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors has-[:checked]:border-teal-500 has-[:checked]:bg-teal-50/50">
-                        <input type="radio" name="jenis_laporan" value="dinas" class="mt-0.5 w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500">
+                    <label class="flex items-start gap-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/50">
+                        <input type="radio" name="jenis_laporan" value="dinas" class="mt-0.5 w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500">
                         <div>
                             <span class="block font-semibold text-slate-800 text-sm">Laporan Dinas (SPJ)</span>
                             <span class="block text-xs text-slate-500 mt-0.5">Hanya menampilkan transaksi yang sudah lunas. Barang hutang akan diabaikan.</span>

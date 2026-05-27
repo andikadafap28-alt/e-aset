@@ -17,7 +17,7 @@ Route::get('/', function () {
 });
 
 // Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index']);
 
 // Pengaturan Sistem
 Route::get('/settings', [\App\Http\Controllers\SettingController::class, 'index'])->name('settings.index');

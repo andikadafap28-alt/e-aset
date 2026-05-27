@@ -8,7 +8,7 @@
         <h2 class="text-2xl font-bold text-slate-800">Sistem Peminjaman Aset</h2>
         <p class="text-slate-500 text-sm mt-1">Kelola dan lacak peminjaman barang tetap/inventaris</p>
     </div>
-    <button onclick="document.getElementById('modalTambahPeminjaman').classList.remove('hidden')" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg shadow-sm font-medium transition-colors flex items-center gap-2">
+    <button onclick="document.getElementById('modalTambahPeminjaman').classList.remove('hidden')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm font-medium transition-colors flex items-center gap-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         Catat Peminjaman Baru
     </button>
@@ -31,7 +31,7 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Aset</label>
-                            <select name="asset_id" required class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-teal-500 focus:border-teal-500">
+                            <select name="asset_id" required class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
                                 <option value="">-- Pilih Aset --</option>
                                 @foreach($assets as $asset)
                                     <option value="{{ $asset->id }}">{{ $asset->asset_code }} - {{ $asset->name }}</option>
@@ -40,30 +40,30 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nama Peminjam</label>
-                            <input type="text" name="borrower_name" required class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-teal-500 focus:border-teal-500" placeholder="Cth: Dr. Andi / Ruang Mawar">
+                            <input type="text" name="borrower_name" required class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Cth: Dr. Andi / Ruang Mawar">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Kontak Peminjam (Opsional)</label>
-                            <input type="text" name="borrower_contact" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-teal-500 focus:border-teal-500" placeholder="Nomor WA / Ekstensi">
+                            <input type="text" name="borrower_contact" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Nomor WA / Ekstensi">
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pinjam</label>
-                                <input type="date" name="loan_date" required value="{{ date('Y-m-d') }}" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-teal-500 focus:border-teal-500">
+                                <input type="date" name="loan_date" required value="{{ date('Y-m-d') }}" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Rencana Kembali</label>
-                                <input type="date" name="expected_return_date" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-teal-500 focus:border-teal-500">
+                                <input type="date" name="expected_return_date" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
-                            <textarea name="notes" rows="2" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-teal-500 focus:border-teal-500" placeholder="Keperluan peminjaman..."></textarea>
+                            <textarea name="notes" rows="2" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Keperluan peminjaman..."></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-teal-600 text-base font-medium text-white hover:bg-teal-700 sm:ml-3 sm:w-auto sm:text-sm">Simpan</button>
+                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 sm:ml-3 sm:w-auto sm:text-sm">Simpan</button>
                     <button type="button" onclick="document.getElementById('modalTambahPeminjaman').classList.add('hidden')" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Batal</button>
                 </div>
             </form>
@@ -96,7 +96,7 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {{ $loan->loan_date->format('d M Y') }}
                     @if($loan->expected_return_date)
-                        <br><span class="text-xs text-teal-500">Batas: {{ $loan->expected_return_date->format('d M Y') }}</span>
+                        <br><span class="text-xs text-indigo-500">Batas: {{ $loan->expected_return_date->format('d M Y') }}</span>
                     @endif
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -130,7 +130,7 @@
                     @endif
 
                     @if($loan->approval_status == 'approved' && $loan->status == 'dipinjam')
-                        <button onclick="document.getElementById('modalKembali-{{ $loan->id }}').classList.remove('hidden')" class="text-teal-600 hover:text-indigo-900">Kembalikan</button>
+                        <button onclick="document.getElementById('modalKembali-{{ $loan->id }}').classList.remove('hidden')" class="text-indigo-600 hover:text-indigo-900">Kembalikan</button>
                         
                         <!-- Modal Kembalikan -->
                         <div id="modalKembali-{{ $loan->id }}" class="hidden fixed inset-0 z-50 overflow-y-auto text-left" aria-modal="true">
@@ -146,11 +146,11 @@
                                             
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Kembali Aktual</label>
-                                                <input type="date" name="actual_return_date" required value="{{ date('Y-m-d') }}" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-teal-500 focus:border-teal-500">
+                                                <input type="date" name="actual_return_date" required value="{{ date('Y-m-d') }}" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
                                             </div>
                                         </div>
                                         <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-teal-600 text-base font-medium text-white hover:bg-teal-700 sm:ml-3 sm:w-auto sm:text-sm">Konfirmasi Pengembalian</button>
+                                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 sm:ml-3 sm:w-auto sm:text-sm">Konfirmasi Pengembalian</button>
                                             <button type="button" onclick="document.getElementById('modalKembali-{{ $loan->id }}').classList.add('hidden')" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Batal</button>
                                         </div>
                                     </form>
@@ -169,4 +169,3 @@
     </table>
 </div>
 @endsection
-

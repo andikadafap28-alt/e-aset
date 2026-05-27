@@ -42,14 +42,14 @@
 
             <div>
                 <label class="block font-semibold text-slate-700 mb-1.5">Tanggal Transaksi (Fisik) <span class="text-rose-500">*</span></label>
-                <input type="date" name="tanggal_transaksi" required value="{{ \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d') }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all">
+                <input type="date" name="tanggal_transaksi" required value="{{ \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d') }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
             </div>
 
             @if($transaksi->jenis_transaksi == 'masuk')
             <div x-data="{ isHutang: {{ $transaksi->status_hutang ? 'true' : 'false' }} }" class="space-y-4">
                 <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-3">
                     <div class="flex items-center h-5">
-                        <input type="checkbox" x-model="isHutang" name="status_hutang" id="hutang" class="w-4 h-4 text-teal-600 bg-white border-slate-300 rounded focus:ring-teal-500 focus:ring-2">
+                        <input type="checkbox" x-model="isHutang" name="status_hutang" id="hutang" class="w-4 h-4 text-indigo-600 bg-white border-slate-300 rounded focus:ring-indigo-500 focus:ring-2">
                     </div>
                     <label for="hutang" class="cursor-pointer">
                         <span class="block font-semibold text-slate-800">Status Pengadaan Masih Hutang</span>
@@ -59,7 +59,7 @@
 
                 <div x-show="!isHutang" x-transition>
                     <label class="block font-semibold text-slate-700 mb-1.5">Tanggal SPJ (Pelunasan)</label>
-                    <input type="date" name="tanggal_spj" value="{{ $transaksi->tanggal_spj ? \Carbon\Carbon::parse($transaksi->tanggal_spj)->format('Y-m-d') : '' }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all">
+                    <input type="date" name="tanggal_spj" value="{{ $transaksi->tanggal_spj ? \Carbon\Carbon::parse($transaksi->tanggal_spj)->format('Y-m-d') : '' }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
                     <p class="text-xs text-slate-500 mt-1">Hanya diisi jika sudah lunas. Jika dikosongkan, akan otomatis disamakan dengan Tanggal Transaksi.</p>
                 </div>
             </div>
@@ -67,11 +67,11 @@
 
             <div>
                 <label class="block font-semibold text-slate-700 mb-1.5">Keterangan / Sumber Dana</label>
-                <textarea name="keterangan" rows="2" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all">{{ $transaksi->keterangan }}</textarea>
+                <textarea name="keterangan" rows="2" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">{{ $transaksi->keterangan }}</textarea>
             </div>
 
             <div class="pt-4 flex justify-end gap-3 border-t border-slate-100">
-                <button type="submit" class="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium shadow-sm shadow-indigo-600/20 transition-all">
+                <button type="submit" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium shadow-sm shadow-indigo-600/20 transition-all">
                     Simpan Perubahan
                 </button>
             </div>
@@ -79,4 +79,3 @@
     </div>
 </div>
 @endsection
-

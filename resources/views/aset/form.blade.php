@@ -44,7 +44,7 @@
                 <!-- Level 1 -->
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Level 1 (Akun)</label>
-                    <select id="level_1" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 outline-none">
+                    <select id="level_1" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
                         <option value="">-- Pilih Akun --</option>
                     </select>
                 </div>
@@ -52,7 +52,7 @@
                 <!-- Level 2 -->
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Level 2 (Kelompok)</label>
-                    <select id="level_2" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-slate-100 focus:ring-2 focus:ring-teal-500 outline-none">
+                    <select id="level_2" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
                         <option value="">-- Pilih Kelompok --</option>
                     </select>
                 </div>
@@ -60,7 +60,7 @@
                 <!-- Level 3 -->
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Level 3 (Jenis)</label>
-                    <select id="level_3" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-slate-100 focus:ring-2 focus:ring-teal-500 outline-none">
+                    <select id="level_3" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
                         <option value="">-- Pilih Jenis --</option>
                     </select>
                 </div>
@@ -68,7 +68,7 @@
                 <!-- Level 4 -->
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Level 4 (Objek)</label>
-                    <select id="level_4" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-slate-100 focus:ring-2 focus:ring-teal-500 outline-none">
+                    <select id="level_4" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
                         <option value="">-- Pilih Objek --</option>
                     </select>
                 </div>
@@ -76,7 +76,7 @@
                 <!-- Level 5 -->
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Level 5 (Rincian Objek)</label>
-                    <select id="level_5" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-slate-100 focus:ring-2 focus:ring-teal-500 outline-none">
+                    <select id="level_5" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
                         <option value="">-- Pilih Rincian Objek --</option>
                     </select>
                 </div>
@@ -84,7 +84,7 @@
                 <!-- Level 6 -->
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-slate-700 mb-1">Level 6 (Sub Rincian Objek / Kode Barang Final)</label>
-                    <select name="kode_108" id="level_6" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-slate-100 focus:ring-2 focus:ring-teal-500 outline-none">
+                    <select name="kode_108" id="level_6" disabled class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
                         <option value="">-- Pilih Sub Rincian Objek --</option>
                     </select>
                     <p class="text-xs text-slate-500 mt-1">NUP/Register akan di-generate otomatis oleh sistem (berurutan) setelah formulir disimpan.</p>
@@ -97,7 +97,7 @@
             <!-- Asset Code -->
             <div>
                 <label for="asset_code" class="block text-sm font-medium text-slate-700 mb-1">Kode Aset</label>
-                <input type="text" name="asset_code" id="asset_code" value="{{ old('asset_code', $asset->asset_code ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" placeholder="Contoh: ALKES-001" {{ isset($asset) ? 'required' : '' }}>
+                <input type="text" name="asset_code" id="asset_code" value="{{ old('asset_code', $asset->asset_code ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: ALKES-001" {{ isset($asset) ? 'required' : '' }}>
                 @if(!isset($asset))
                 <p class="text-xs text-slate-500 mt-1">Isi manual jika tidak menggunakan Kode 108. Jika Kode 108 dipilih, kolom ini akan diabaikan.</p>
                 @endif
@@ -107,7 +107,7 @@
             <!-- Quantity -->
             <div>
                 <label for="jumlah" class="block text-sm font-medium text-slate-700 mb-1">Jumlah Aset (Banyaknya)</label>
-                <input type="number" name="jumlah" id="jumlah" value="{{ old('jumlah', $pengadaanData['jumlah'] ?? 1) }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" required min="1" max="{{ !empty($pengadaanData['jumlah']) ? $pengadaanData['jumlah'] : 1000 }}">
+                <input type="number" name="jumlah" id="jumlah" value="{{ old('jumlah', $pengadaanData['jumlah'] ?? 1) }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required min="1" max="{{ !empty($pengadaanData['jumlah']) ? $pengadaanData['jumlah'] : 1000 }}">
                 <p class="text-xs text-slate-500 mt-1">Jika &gt; 1, kode otomatis ditambah nomor (contoh: ALKES-001-1, dst).</p>
             </div>
             @endif
@@ -115,13 +115,13 @@
             <!-- Name -->
             <div>
                 <label for="name" class="block text-sm font-medium text-slate-700 mb-1">Nama Aset</label>
-                <input type="text" name="name" id="name" value="{{ old('name', $asset->name ?? ($pengadaanData['name'] ?? '')) }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" placeholder="Contoh: USG Mindray" required>
+                <input type="text" name="name" id="name" value="{{ old('name', $asset->name ?? ($pengadaanData['name'] ?? '')) }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: USG Mindray" required>
             </div>
 
             <!-- Category -->
             <div>
                 <label for="category_id" class="block text-sm font-medium text-slate-700 mb-1">Kategori (Umur Ekonomis)</label>
-                <select name="category_id" id="category_id" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" required>
+                <select name="category_id" id="category_id" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
                     <option value="">-- Pilih Kategori --</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ old('category_id', $asset->category_id ?? '') == $cat->id ? 'selected' : '' }}>
@@ -135,7 +135,7 @@
             <!-- Harga Perolehan -->
             <div>
                 <label for="harga_perolehan" class="block text-sm font-medium text-slate-700 mb-1">Harga Perolehan Aset (Rp)</label>
-                <input type="number" name="harga_perolehan" id="harga_perolehan" value="{{ old('harga_perolehan', $asset->harga_perolehan ?? ($pengadaanData['harga_satuan'] ?? '')) }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" placeholder="Contoh: 15000000" {{ !isset($asset) && !empty($pengadaanData['pengadaan_id']) ? '' : 'required' }}>
+                <input type="number" name="harga_perolehan" id="harga_perolehan" value="{{ old('harga_perolehan', $asset->harga_perolehan ?? ($pengadaanData['harga_satuan'] ?? '')) }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: 15000000" {{ !isset($asset) && !empty($pengadaanData['pengadaan_id']) ? '' : 'required' }}>
                 @if(!isset($asset) && !empty($pengadaanData['pengadaan_id']))
                 <p class="text-xs text-slate-500 mt-1">Bisa dikosongkan. Sistem akan otomatis mengambil harga dari data pengadaan jika kosong.</p>
                 @endif
@@ -144,43 +144,43 @@
             <!-- Location -->
             <div>
                 <label for="location" class="block text-sm font-medium text-slate-700 mb-1">Lokasi</label>
-                <input type="text" name="location" id="location" value="{{ old('location', $asset->location ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" placeholder="Contoh: Ruang UGD / Pustu A" required>
+                <input type="text" name="location" id="location" value="{{ old('location', $asset->location ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: Ruang UGD / Pustu A" required>
             </div>
 
             <!-- Penanggung Jawab -->
             <div>
                 <label for="penanggung_jawab" class="block text-sm font-medium text-slate-700 mb-1">Penanggung Jawab Ruangan <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
-                <input type="text" name="penanggung_jawab" id="penanggung_jawab" value="{{ old('penanggung_jawab', $asset->penanggung_jawab ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" placeholder="Contoh: Dr. Budi / Kepala Ruangan">
+                <input type="text" name="penanggung_jawab" id="penanggung_jawab" value="{{ old('penanggung_jawab', $asset->penanggung_jawab ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: Dr. Budi / Kepala Ruangan">
             </div>
 
             <!-- Year Purchased -->
             <div>
                 <label for="year_purchased" class="block text-sm font-medium text-slate-700 mb-1">Tahun Pengadaan</label>
-                <input type="number" name="year_purchased" id="year_purchased" value="{{ old('year_purchased', $asset->year_purchased ?? ($pengadaanData['year_purchased'] ?? date('Y'))) }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" required min="1900" max="2100">
+                <input type="number" name="year_purchased" id="year_purchased" value="{{ old('year_purchased', $asset->year_purchased ?? ($pengadaanData['year_purchased'] ?? date('Y'))) }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required min="1900" max="2100">
             </div>
 
             <!-- Last Calibration -->
             <div>
                 <label for="last_calibration" class="block text-sm font-medium text-slate-700 mb-1">Tanggal Kalibrasi Terakhir <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
-                <input type="date" name="last_calibration" id="last_calibration" value="{{ old('last_calibration', $asset->last_calibration ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                <input type="date" name="last_calibration" id="last_calibration" value="{{ old('last_calibration', $asset->last_calibration ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
             </div>
 
             <!-- Next Calibration -->
             <div>
                 <label for="next_calibration" class="block text-sm font-medium text-slate-700 mb-1">Tanggal Kalibrasi Berikutnya <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
-                <input type="date" name="next_calibration" id="next_calibration" value="{{ old('next_calibration', $asset->next_calibration ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                <input type="date" name="next_calibration" id="next_calibration" value="{{ old('next_calibration', $asset->next_calibration ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
             </div>
 
             <!-- Next Service -->
             <div>
                 <label for="next_service" class="block text-sm font-medium text-slate-700 mb-1">Tanggal Servis Berikutnya <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
-                <input type="date" name="next_service" id="next_service" value="{{ old('next_service', $asset->next_service ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                <input type="date" name="next_service" id="next_service" value="{{ old('next_service', $asset->next_service ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
             </div>
 
             <!-- Condition -->
             <div>
                 <label for="condition" class="block text-sm font-medium text-slate-700 mb-1">Kondisi</label>
-                <select name="condition" id="condition" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" required>
+                <select name="condition" id="condition" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
                     <option value="Baik" {{ old('condition', $asset->condition ?? '') == 'Baik' ? 'selected' : '' }}>Baik</option>
                     <option value="Rusak Ringan" {{ old('condition', $asset->condition ?? '') == 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
                     <option value="Rusak Berat" {{ old('condition', $asset->condition ?? '') == 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
@@ -190,7 +190,7 @@
             <!-- Document Link -->
             <div>
                 <label for="document_link" class="block text-sm font-medium text-slate-700 mb-1">Link Dokumen Pengadaan <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
-                <input type="url" name="document_link" id="document_link" value="{{ old('document_link', $asset->document_link ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" placeholder="https://drive.google.com/...">
+                <input type="url" name="document_link" id="document_link" value="{{ old('document_link', $asset->document_link ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="https://drive.google.com/...">
             </div>
         </div>
 
@@ -199,11 +199,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                 <div>
                     <label for="latitude" class="block text-sm font-medium text-slate-700 mb-1">Latitude</label>
-                    <input type="text" name="latitude" id="latitude" value="{{ old('latitude', $asset->latitude ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm bg-slate-50 focus:border-teal-500 focus:ring-teal-500 sm:text-sm" readonly>
+                    <input type="text" name="latitude" id="latitude" value="{{ old('latitude', $asset->latitude ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm bg-slate-50 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" readonly>
                 </div>
                 <div>
                     <label for="longitude" class="block text-sm font-medium text-slate-700 mb-1">Longitude</label>
-                    <input type="text" name="longitude" id="longitude" value="{{ old('longitude', $asset->longitude ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm bg-slate-50 focus:border-teal-500 focus:ring-teal-500 sm:text-sm" readonly>
+                    <input type="text" name="longitude" id="longitude" value="{{ old('longitude', $asset->longitude ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm bg-slate-50 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" readonly>
                 </div>
             </div>
             
@@ -213,7 +213,7 @@
 
         <div class="mt-8 flex justify-end gap-3">
             <a href="{{ route('aset.index') }}" class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Batal</a>
-            <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
                 {{ isset($asset) ? 'Simpan Perubahan' : 'Tambahkan Aset' }}
             </button>
         </div>
@@ -328,4 +328,3 @@
     });
 </script>
 @endsection
-

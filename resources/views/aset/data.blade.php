@@ -13,7 +13,7 @@
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             Import Kode 108
         </button>
-        <a href="{{ route('aset.create') }}" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
+        <a href="{{ route('aset.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             Tambah Aset
         </a>
@@ -83,7 +83,7 @@
                 @empty
                 <tr>
                     <td colspan="7" class="py-8 text-center text-slate-500 text-sm">
-                        Belum ada data aset. <a href="{{ route('aset.create') }}" class="text-teal-600 hover:underline">Tambahkan sekarang</a>.
+                        Belum ada data aset. <a href="{{ route('aset.create') }}" class="text-indigo-600 hover:underline">Tambahkan sekarang</a>.
                     </td>
                 </tr>
                 @endforelse
@@ -125,4 +125,3 @@
         </div>
     </div>
 @endsection
-

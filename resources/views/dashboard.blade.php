@@ -1,342 +1,585 @@
 @extends('layouts.app')
 
+@section('header_title', 'Dashboard RAKSA')
+
 @section('content')
-<div class="space-y-6">
-
-    <!-- Hero / Greeting Banner -->
-    <div class="relative overflow-hidden bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
-        <!-- Subtle mesh gradient background effect -->
-        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-400 via-emerald-100 to-transparent"></div>
-        
-        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-                <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight">Selamat Datang, {{ auth()->user()?->name ?? 'Admin' }}</h2>
-                <p class="text-slate-500 mt-2 font-medium">Sistem Informasi Manajemen Aset & Logistik (RAKSA) siap digunakan.</p>
-            </div>
-            <div class="hidden md:flex gap-3">
-                <button class="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl font-semibold shadow-sm hover:bg-slate-50 transition-all">Laporan Cepat</button>
-                <button class="px-5 py-2.5 bg-teal-600 text-white rounded-xl font-semibold shadow-sm shadow-teal-500/30 hover:bg-teal-700 transition-all flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm">add</span> Input Data Baru
-                </button>
-            </div>
+<div class="max-w-7xl mx-auto space-y-6">
+    
+    <!-- Welcome Banner -->
+    <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-2xl p-8 text-white shadow-lg shadow-indigo-600/20 relative overflow-hidden">
+        <div class="relative z-10">
+            <h1 class="text-3xl font-bold mb-2">Selamat datang di RAKSA</h1>
+            <p class="text-indigo-100 max-w-xl">Respons Akurat Kelola Seluruh Aset. Sistem manajemen logistik terintegrasi untuk Puskesmas Mantup. Pantau pergerakan aset Anda secara real-time.</p>
         </div>
+        <!-- Decorative bg -->
+        <div class="absolute right-0 top-0 w-64 h-full bg-white opacity-5 transform skew-x-12 -mr-16"></div>
+        <div class="absolute right-32 top-0 w-32 h-full bg-white opacity-5 transform skew-x-12"></div>
     </div>
 
-    <!-- Top Metrics Grid (Bento Box) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Card 1 -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all">
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <span class="material-symbols-outlined text-6xl text-teal-600">account_balance_wallet</span>
-            </div>
-            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Nilai Perolehan</p>
-            <h3 class="text-3xl font-extrabold text-slate-800">Rp {{ number_format($assetStats['total_purchase'] ?? 0, 0, ',', '.') }}</h3>
-            <div class="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-600 bg-emerald-50 w-fit px-2 py-1 rounded-md">
-                <span class="material-symbols-outlined text-[14px]">trending_up</span> Total Keseluruhan
-            </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden group hover:border-red-300 transition-all">
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <span class="material-symbols-outlined text-6xl text-red-600">trending_down</span>
-            </div>
-            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Akumulasi Penyusutan</p>
-            <h3 class="text-3xl font-extrabold text-slate-800">Rp {{ number_format($assetStats['total_depreciation'] ?? 0, 0, ',', '.') }}</h3>
-            <div class="mt-4 flex items-center gap-2 text-xs font-medium text-red-600 bg-red-50 w-fit px-2 py-1 rounded-md">
-                <span class="material-symbols-outlined text-[14px]">info</span> Estimasi Penurunan Nilai
-            </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all">
-            <div class="absolute inset-0 opacity-[0.03] bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-teal-500 to-transparent"></div>
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <span class="material-symbols-outlined text-6xl text-teal-600">savings</span>
-            </div>
-            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Nilai Buku Saat Ini</p>
-            <h3 class="text-3xl font-extrabold text-teal-700">Rp {{ number_format($assetStats['total_book_value'] ?? 0, 0, ',', '.') }}</h3>
-            <div class="mt-4 flex items-center gap-2 text-xs font-medium text-slate-600 bg-slate-100 w-fit px-2 py-1 rounded-md">
-                <span class="material-symbols-outlined text-[14px]">calculate</span> Nilai Aktif Riil
-            </div>
-        </div>
-    </div>
-
-    <!-- Asset Health Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-white rounded-xl p-5 border border-slate-200 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined">inventory</span>
-            </div>
-            <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Aset Aktif</p>
-                <p class="text-2xl font-bold text-slate-800">{{ number_format($assetStats['aktif'] ?? 0, 0, ',', '.') }}</p>
-            </div>
-        </div>
-        
-        <div class="bg-white rounded-xl p-5 border border-slate-200 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined">verified</span>
-            </div>
-            <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Kondisi Baik</p>
-                <p class="text-2xl font-bold text-slate-800">{{ number_format($assetStats['baik'] ?? 0, 0, ',', '.') }}</p>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl p-5 border border-slate-200 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-            <div class="w-12 h-12 bg-red-50 text-red-600 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined">warning</span>
-            </div>
-            <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Rusak</p>
-                <p class="text-2xl font-bold text-slate-800">{{ number_format($assetStats['rusak'] ?? 0, 0, ',', '.') }}</p>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl p-5 border border-slate-200 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined">build</span>
-            </div>
-            <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Perlu Kalibrasi</p>
-                <p class="text-2xl font-bold text-slate-800">{{ number_format($assetStats['perlu_kalibrasi'] ?? 0, 0, ',', '.') }}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Main Area Chart -->
-        <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-slate-800">Tren Transaksi Logistik (6 Bulan)</h3>
-                <div class="text-xs font-medium bg-slate-100 text-slate-600 px-3 py-1 rounded-full">Semua Kategori</div>
-            </div>
-            <div id="mainChart" class="h-72 w-full"></div>
-        </div>
-
-        <!-- Pie Charts -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
-            <div>
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Distribusi Kondisi Aset</h3>
-                <div id="kondisiChart" class="flex justify-center"></div>
-            </div>
-            <div class="border-t border-slate-100 mt-4 pt-4">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Kategori Aset Terbanyak</h3>
-                <div id="kategoriChart" class="flex justify-center"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bottom Panels -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        <!-- Panel 1: Recent Transactions -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-indigo-500">history</span>
-                    <h3 class="text-lg font-bold text-slate-800">Aktivitas Terbaru</h3>
+    <!-- Quick Stats (Dynamic Grid) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        @foreach($kategoriList as $key => $kat)
+        <div onclick="updateChart('{{ $key }}')" class="cursor-pointer bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group category-card" id="card-{{ $key }}">
+            <!-- Decorative accent line -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-{{ $kat['icon'] }}-500 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 transition-active"></div>
+            
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ $kat['label'] }}</p>
+                    <h3 class="text-2xl font-bold text-slate-900 mt-1">{{ number_format($kat['jenis'], 0, ',', '.') }} <span class="text-sm font-medium text-slate-500">Jenis</span></h3>
                 </div>
-                <a href="#" class="text-sm font-semibold text-teal-600 hover:text-teal-700">Lihat Semua</a>
-            </div>
-            <div class="p-0 flex-1">
-                @if(count($recentTransactions ?? []) > 0)
-                    <ul class="divide-y divide-slate-100">
-                        @foreach($recentTransactions as $trx)
-                        <li class="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between">
-                            <div class="flex items-center gap-4">
-                                @if($trx->jenis_transaksi == 'masuk')
-                                    <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-[20px]">arrow_downward</span>
-                                    </div>
-                                @else
-                                    <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-[20px]">arrow_upward</span>
-                                    </div>
-                                @endif
-                                <div>
-                                    <p class="text-sm font-bold text-slate-800">{{ $trx->item->nama_barang ?? 'Barang Dihapus' }}</p>
-                                    <p class="text-xs text-slate-500">{{ \Carbon\Carbon::parse($trx->tanggal_transaksi)->translatedFormat('d M Y') }} • {{ ucfirst($trx->jenis_transaksi) }}</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                @if($trx->jenis_transaksi == 'masuk')
-                                    <p class="text-sm font-bold text-emerald-600">+{{ number_format($trx->jumlah, 0, ',', '.') }}</p>
-                                @else
-                                    <p class="text-sm font-bold text-red-600">-{{ number_format($trx->jumlah, 0, ',', '.') }}</p>
-                                @endif
-                            </div>
-                        </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <div class="p-8 text-center text-slate-500">
-                        <span class="material-symbols-outlined text-4xl mb-2 opacity-50">inbox</span>
-                        <p class="text-sm">Belum ada aktivitas transaksi</p>
-                    </div>
-                @endif
-            </div>
-        </div>
-
-        <!-- Panel 2: System Alerts -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-amber-500">notifications_active</span>
-                    <h3 class="text-lg font-bold text-slate-800">Peringatan Sistem</h3>
+                <div class="w-10 h-10 rounded-full bg-{{ $kat['icon'] }}-50 flex items-center justify-center text-{{ $kat['icon'] }}-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                 </div>
             </div>
-            <div class="p-0 flex-1 overflow-y-auto max-h-[400px]">
-                <ul class="divide-y divide-slate-100">
-                    
-                    <!-- Low Stock Alerts -->
-                    @if(isset($lowStockItems) && count($lowStockItems) > 0)
-                        @foreach($lowStockItems as $item)
-                        <li class="p-4 hover:bg-slate-50 transition-colors flex items-start gap-4">
-                            <div class="w-8 h-8 mt-1 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
-                                <span class="material-symbols-outlined text-[16px]">warning</span>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">Stok Menipis: {{ $item->nama_barang }}</p>
-                                <p class="text-xs text-slate-600 mt-1">Sisa stok saat ini hanya <strong class="text-amber-600">{{ $item->stok_sekarang }}</strong> unit.</p>
-                            </div>
-                        </li>
-                        @endforeach
-                    @endif
+            <p class="text-sm text-slate-500">Total <span class="font-bold text-slate-700">{{ number_format($kat['total'], 0, ',', '.') }}</span> item aset.</p>
+        </div>
+        @endforeach
+    </div>
 
-                    <!-- Calibration Alerts -->
-                    @if(isset($calibrationReminders) && count($calibrationReminders) > 0)
-                        @foreach($calibrationReminders as $asset)
-                        <li class="p-4 hover:bg-slate-50 transition-colors flex items-start gap-4">
-                            <div class="w-8 h-8 mt-1 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
-                                <span class="material-symbols-outlined text-[16px]">build</span>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">Jadwal Kalibrasi: {{ $asset->asset_name }}</p>
-                                <p class="text-xs text-slate-600 mt-1">Jatuh tempo pada <strong class="text-blue-600">{{ \Carbon\Carbon::parse($asset->next_calibration)->translatedFormat('d M Y') }}</strong>.</p>
-                            </div>
-                        </li>
-                        @endforeach
-                    @endif
+    <!-- Asset Stats (Glassmorphism) -->
+    <div class="mt-8 mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                Ringkasan Manajemen Aset Tetap
+            </h3>
+            <a href="{{ route('laporan.aset.pdf') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-rose-600 text-white text-sm font-medium rounded-lg hover:bg-rose-700 transition-colors shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Export PDF
+            </a>
+        </div>
+        
+        <!-- Financial Metrics (New) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-xl">
+                <p class="text-xs text-indigo-600 font-semibold uppercase">Total Nilai Perolehan</p>
+                <h4 class="text-xl font-bold text-indigo-900 mt-1">Rp {{ number_format($assetStats['total_purchase'], 0, ',', '.') }}</h4>
+            </div>
+            <div class="bg-rose-50 border border-rose-100 p-4 rounded-xl">
+                <p class="text-xs text-rose-600 font-semibold uppercase">Total Akumulasi Penyusutan</p>
+                <h4 class="text-xl font-bold text-rose-900 mt-1">Rp {{ number_format($assetStats['total_depreciation'], 0, ',', '.') }}</h4>
+            </div>
+            <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
+                <p class="text-xs text-emerald-600 font-semibold uppercase">Total Nilai Buku Saat Ini</p>
+                <h4 class="text-xl font-bold text-emerald-900 mt-1">Rp {{ number_format($assetStats['total_book_value'], 0, ',', '.') }}</h4>
+            </div>
+        </div>
 
-                    @if((!isset($lowStockItems) || count($lowStockItems) == 0) && (!isset($calibrationReminders) || count($calibrationReminders) == 0))
-                        <div class="p-8 text-center text-slate-500">
-                            <span class="material-symbols-outlined text-4xl mb-2 opacity-50">check_circle</span>
-                            <p class="text-sm">Semua sistem dalam kondisi aman.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <!-- Left: 4 Stat Cards -->
+            <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-white/60 backdrop-blur-md p-5 rounded-2xl border border-white/80 shadow-sm relative overflow-hidden group">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all"></div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider relative z-10">Total Aset</p>
+                    <div class="flex items-end gap-3 mt-1 relative z-10">
+                        <h3 class="text-3xl font-bold text-blue-600">{{ number_format($assetStats['total'], 0, ',', '.') }}</h3>
+                        <div class="text-[11px] text-slate-500 pb-1 flex flex-col">
+                            <span>Aktif: <span class="font-bold text-slate-700">{{ number_format($assetStats['aktif'], 0, ',', '.') }}</span></span>
+                            <span>Dihapus: <span class="font-bold text-rose-600">{{ number_format($assetStats['disposed'], 0, ',', '.') }}</span></span>
                         </div>
-                    @endif
+                    </div>
+                </div>
+                <div class="bg-white/60 backdrop-blur-md p-5 rounded-2xl border border-white/80 shadow-sm relative overflow-hidden group">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider relative z-10">Kondisi Baik</p>
+                    <h3 class="text-3xl font-bold text-emerald-600 mt-1 relative z-10">{{ number_format($assetStats['baik'], 0, ',', '.') }}</h3>
+                </div>
+                <div class="bg-white/60 backdrop-blur-md p-5 rounded-2xl border border-white/80 shadow-sm relative overflow-hidden group">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl group-hover:bg-rose-500/20 transition-all"></div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider relative z-10">Rusak</p>
+                    <h3 class="text-3xl font-bold text-rose-600 mt-1 relative z-10">{{ number_format($assetStats['rusak'], 0, ',', '.') }}</h3>
+                </div>
+                <div class="bg-white/60 backdrop-blur-md p-5 rounded-2xl border border-white/80 shadow-sm relative overflow-hidden group">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-all"></div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider relative z-10">Perlu Kalibrasi</p>
+                    <h3 class="text-3xl font-bold text-amber-600 mt-1 relative z-10">{{ number_format($assetStats['perlu_kalibrasi'], 0, ',', '.') }}</h3>
+                </div>
+            </div>
+            <!-- Right: Doughnut Charts -->
+            <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex flex-col justify-center items-center h-full">
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider w-full text-left mb-2">Kondisi Aset</h4>
+                    <div id="assetConditionChart" class="w-full flex justify-center mt-2"></div>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex flex-col justify-center items-center h-full">
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider w-full text-left mb-2">Kategori Aset</h4>
+                    <div id="assetCategoryChart" class="w-full flex justify-center mt-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Charts & Financials -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left Column: Chart -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <h3 class="text-lg font-bold text-slate-900 mb-6" id="chartTitle">Tren Mutasi - Pilih Kategori</h3>
+            <p class="text-sm text-slate-500 mb-4">Klik salah satu kartu kategori di atas untuk melihat rincian grafik pemasukan dan pengeluaran.</p>
+            <div id="expenseChart" class="w-full h-80"></div>
+        </div>
+
+        <!-- Right Column: Financial Summary -->
+        <div class="space-y-6">
+            <!-- Financial Card 1 -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Nilai Mutasi Bulan Ini</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-slate-500 mb-1 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Barang Masuk (Aset)
+                        </p>
+                        <p class="text-xl font-bold text-slate-900">Rp {{ number_format($masukBulanIni, 0, ',', '.') }}</p>
+                    </div>
+                    <div class="border-t border-slate-100"></div>
+                    <div>
+                        <p class="text-sm text-slate-500 mb-1 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-rose-500"></span> Barang Keluar (Beban)
+                        </p>
+                        <p class="text-xl font-bold text-slate-900">Rp {{ number_format($keluarBulanIni, 0, ',', '.') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Card 2 -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 opacity-90">
+                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Nilai Mutasi Bulan Lalu</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-slate-500 mb-1 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Barang Masuk (Aset)
+                        </p>
+                        <p class="text-xl font-bold text-slate-900">Rp {{ number_format($masukBulanLalu, 0, ',', '.') }}</p>
+                    </div>
+                    <div class="border-t border-slate-100"></div>
+                    <div>
+                        <p class="text-sm text-slate-500 mb-1 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-rose-500"></span> Barang Keluar (Beban)
+                        </p>
+                        <p class="text-xl font-bold text-slate-900">Rp {{ number_format($keluarBulanLalu, 0, ',', '.') }}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Widgets: Recent Transactions & Low Stock -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        
+        <!-- Left Widget: Riwayat Transaksi Terakhir -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Riwayat Transaksi Terakhir
+                </h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <tbody class="text-sm divide-y divide-slate-100">
+                        @forelse($recentTransactions as $trx)
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="py-3 px-5">
+                                <p class="font-medium text-slate-900">{{ $trx->item ? $trx->item->nama_barang : 'Barang Dihapus' }}</p>
+                                <p class="text-xs text-slate-500">{{ \Carbon\Carbon::parse($trx->tanggal_transaksi)->translatedFormat('d M Y') }}</p>
+                            </td>
+                            <td class="py-3 px-5 text-right">
+                                @if($trx->jenis_transaksi == 'masuk')
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                                        +{{ number_format($trx->jumlah, 0, ',', '.') }}
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                                        -{{ number_format($trx->jumlah, 0, ',', '.') }}
+                                    </span>
+                                @endif
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="2" class="py-6 px-5 text-center text-slate-500 text-sm">Belum ada transaksi.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Right Widget: Peringatan Stok Kritis -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    Peringatan Stok Kritis
+                </h3>
+            </div>
+            <div class="p-5 space-y-4">
+                @forelse($lowStockItems as $item)
+                @php
+                    // Hitung persentase untuk progress bar (misal batas aman adalah 10)
+                    $percentage = ($item->stok_sekarang / 10) * 100;
+                    if($percentage < 0) $percentage = 0;
+                    if($percentage > 100) $percentage = 100;
+                @endphp
+                <div>
+                    <div class="flex justify-between items-end mb-1">
+                        <span class="text-sm font-medium text-slate-800">{{ $item->nama_barang }}</span>
+                        <span class="text-xs font-bold text-rose-600">{{ number_format($item->stok_sekarang, 0, ',', '.') }} {{ $item->satuan }}</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                        <div class="bg-rose-500 h-2 rounded-full" style="width: {{ $percentage }}%"></div>
+                    </div>
+                </div>
+                @empty
+                <div class="py-4 text-center">
+                    <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-50 text-emerald-500 mb-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <p class="text-sm text-slate-500">Semua stok barang dalam kondisi aman (≥ 10).</p>
+                </div>
+                @endforelse
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Widgets: Reminders (Kalibrasi, Servis, ED) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        
+        <!-- Widget: Peringatan Kalibrasi -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Jadwal Kalibrasi
+                </h3>
+            </div>
+            <div class="p-0">
+                <ul class="divide-y divide-slate-100">
+                    @forelse($calibrationReminders as $asset)
+                    <li class="p-4 hover:bg-slate-50 transition-colors">
+                        <a href="{{ route('aset.show', $asset->id) }}" class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-slate-800">{{ $asset->name }}</p>
+                                <p class="text-xs text-slate-500">{{ $asset->asset_code }} - {{ $asset->location }}</p>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ \Carbon\Carbon::parse($asset->next_calibration)->isPast() ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800' }}">
+                                {{ \Carbon\Carbon::parse($asset->next_calibration)->translatedFormat('d M Y') }}
+                            </span>
+                        </a>
+                    </li>
+                    @empty
+                    <li class="p-6 text-center text-slate-500 text-sm">Tidak ada jadwal kalibrasi dalam 30 hari kedepan.</li>
+                    @endforelse
+                </ul>
+            </div>
+        </div>
+
+        <!-- Widget: Peringatan Servis -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Jadwal Servis Berkala
+                </h3>
+            </div>
+            <div class="p-0">
+                <ul class="divide-y divide-slate-100">
+                    @forelse($serviceReminders as $asset)
+                    <li class="p-4 hover:bg-slate-50 transition-colors">
+                        <a href="{{ route('aset.show', $asset->id) }}" class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-slate-800">{{ $asset->name }}</p>
+                                <p class="text-xs text-slate-500">{{ $asset->asset_code }} - {{ $asset->location }}</p>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ \Carbon\Carbon::parse($asset->next_service)->isPast() ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800' }}">
+                                {{ \Carbon\Carbon::parse($asset->next_service)->translatedFormat('d M Y') }}
+                            </span>
+                        </a>
+                    </li>
+                    @empty
+                    <li class="p-6 text-center text-slate-500 text-sm">Tidak ada jadwal servis dalam 30 hari kedepan.</li>
+                    @endforelse
+                </ul>
+            </div>
+        </div>
+
+        <!-- Widget: Peringatan Obat/Vaksin Kedaluwarsa -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Akan Kedaluwarsa (ED)
+                </h3>
+            </div>
+            <div class="p-0">
+                <ul class="divide-y divide-slate-100 max-h-72 overflow-y-auto">
+                    @forelse($expiryReminders as $trx)
+                    <li class="p-4 hover:bg-slate-50 transition-colors">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-slate-800">{{ $trx->item ? $trx->item->nama_barang : 'Barang Terhapus' }}</p>
+                                <p class="text-xs text-slate-500">Masuk: {{ \Carbon\Carbon::parse($trx->tanggal_transaksi)->translatedFormat('d M Y') }}</p>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ \Carbon\Carbon::parse($trx->expired_date)->isPast() ? 'bg-rose-600 text-white' : 'bg-rose-100 text-rose-800' }}">
+                                ED: {{ \Carbon\Carbon::parse($trx->expired_date)->translatedFormat('d M Y') }}
+                            </span>
+                        </div>
+                    </li>
+                    @empty
+                    <li class="p-6 text-center text-slate-500 text-sm">Tidak ada barang yang akan kedaluwarsa dalam 90 hari.</li>
+                    @endforelse
                 </ul>
             </div>
         </div>
 
     </div>
-
 </div>
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+    const allChartData = {!! json_encode($allChartData) !!};
+    const chartMaxData = {!! json_encode($chartMaxData) !!};
+    const chartLabels = {!! json_encode($chartLabels) !!};
+    const categoryNames = {!! json_encode(array_map(function($k) { return $k['label']; }, $kategoriList)) !!};
     
-    // --- MAIN TREND CHART ---
-    // Prepare Data for Area Chart
-    const rawData = {!! json_encode($allChartData ?? []) !!};
-    const labels = {!! json_encode($chartLabels ?? []) !!};
-    
-    // Aggregate total masuk & keluar for all categories
-    let totalMasuk = [0,0,0,0,0,0];
-    let totalKeluar = [0,0,0,0,0,0];
-
-    Object.keys(rawData).forEach(cat => {
-        if(rawData[cat].masuk) {
-            rawData[cat].masuk.forEach((val, i) => totalMasuk[i] += val);
+    const yAxisFormatter = function(value) {
+        let num = Number(value); 
+        if (isNaN(num) || num === 0) return "0";
+        if(num >= 1000000000000) {
+            return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + " T";
+        } else if(num >= 1000000000) {
+            return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + " M";
+        } else if(num >= 1000000) {
+            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + " jt";
+        } else if(num >= 1000) {
+            return (num / 1000).toFixed(1).replace(/\.0$/, '') + " rb";
         }
-        if(rawData[cat].keluar) {
-            rawData[cat].keluar.forEach((val, i) => totalKeluar[i] += val);
+        return num.toString();
+    };
+
+    let chart;
+    
+    function updateChart(category) {
+        // Update Title
+        document.getElementById('chartTitle').innerText = 'Tren Mutasi (6 Bulan Terakhir) - ' + categoryNames[category];
+        
+        // Highlight Selected Card
+        document.querySelectorAll('.category-card').forEach(el => {
+            el.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-50/50');
+            el.querySelector('.transition-active').classList.remove('scale-x-100');
+        });
+        const activeCard = document.getElementById('card-' + category);
+        activeCard.classList.add('ring-2', 'ring-indigo-500', 'bg-indigo-50/50');
+        activeCard.querySelector('.transition-active').classList.add('scale-x-100');
+
+        // Update Chart Data
+        const masukData = allChartData[category].masuk;
+        const keluarData = allChartData[category].keluar;
+        const newMax = chartMaxData[category] || {{ $chartMax }};
+
+        chart.updateOptions({
+            yaxis: {
+                max: newMax,
+                tickAmount: 6,
+                labels: {
+                    formatter: yAxisFormatter
+                }
+            }
+        });
+
+        chart.updateSeries([
+            {
+                name: 'Pemasukan (Rp)',
+                data: masukData
+            },
+            {
+                name: 'Pengeluaran (Rp)',
+                data: keluarData
+            }
+        ]);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var options = {
+            series: [
+                { name: 'Pemasukan (Rp)', data: [0,0,0,0,0,0] },
+                { name: 'Pengeluaran (Rp)', data: [0,0,0,0,0,0] }
+            ],
+            chart: {
+                height: 320,
+                type: 'area',
+                fontFamily: 'Inter, sans-serif',
+                toolbar: {
+                    show: false
+                },
+                zoom: {
+                    enabled: false
+                }
+            },
+            colors: ['#10b981', '#f43f5e'], // Emerald for In, Rose for Out
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 3
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.4,
+                    opacityTo: 0.05,
+                    stops: [0, 90, 100]
+                }
+            },
+            xaxis: {
+                categories: chartLabels,
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                },
+                labels: {
+                    style: {
+                        colors: '#64748b'
+                    }
+                }
+            },
+            yaxis: {
+                min: 0,
+                max: {{ $chartMax ?? 'undefined' }},
+                tickAmount: 6,
+                labels: {
+                    formatter: yAxisFormatter,
+                    style: {
+                        colors: '#64748b'
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#e2e8f0',
+                strokeDashArray: 4,
+                yaxis: {
+                    lines: {
+                        show: true
+                    }
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (value) {
+                        return 'Rp ' + new Intl.NumberFormat('id-ID').format(Number(value));
+                    }
+                }
+            }
+        };
+
+        chart = new ApexCharts(document.querySelector("#expenseChart"), options);
+        chart.render();
+
+        // Initialize with first category
+        const firstCategory = Object.keys(categoryNames)[0];
+        updateChart(firstCategory);
+
+        // Asset Condition Chart
+        const chartKondisi = {!! json_encode($chartKondisi) !!};
+        const conditionLabels = Object.keys(chartKondisi);
+        const conditionData = Object.values(chartKondisi);
+        
+        if(conditionData.length > 0) {
+            var assetChartOptions = {
+                series: conditionData,
+                chart: {
+                    type: 'donut',
+                    height: 180,
+                    fontFamily: 'Inter, sans-serif',
+                },
+                labels: conditionLabels,
+                colors: ['#10b981', '#f59e0b', '#f43f5e', '#3b82f6'],
+                dataLabels: {
+                    enabled: false
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '75%'
+                        }
+                    }
+                },
+                stroke: {
+                    width: 2
+                },
+                legend: {
+                    position: 'right',
+                    fontSize: '11px',
+                    markers: {
+                        width: 8,
+                        height: 8
+                    }
+                }
+            };
+
+            var assetChart = new ApexCharts(document.querySelector("#assetConditionChart"), assetChartOptions);
+            assetChart.render();
+        } else {
+            document.querySelector("#assetConditionChart").innerHTML = '<p class="text-xs text-slate-400 text-center py-6 w-full italic">Belum ada data aset</p>';
+        }
+
+        // Asset Category Chart
+        const chartKategori = {!! json_encode($chartKategori) !!};
+        const categoryLabels = Object.keys(chartKategori);
+        const categoryData = Object.values(chartKategori);
+        
+        if(categoryData.length > 0) {
+            var categoryChartOptions = {
+                series: categoryData,
+                chart: {
+                    type: 'donut',
+                    height: 180,
+                    fontFamily: 'Inter, sans-serif',
+                },
+                labels: categoryLabels,
+                colors: ['#4f46e5', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#f43f5e'],
+                dataLabels: {
+                    enabled: false
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '75%'
+                        }
+                    }
+                },
+                stroke: {
+                    width: 2
+                },
+                legend: {
+                    position: 'bottom',
+                    fontSize: '10px',
+                    markers: {
+                        width: 8,
+                        height: 8
+                    }
+                }
+            };
+
+            var categoryChart = new ApexCharts(document.querySelector("#assetCategoryChart"), categoryChartOptions);
+            categoryChart.render();
+        } else {
+            document.querySelector("#assetCategoryChart").innerHTML = '<p class="text-xs text-slate-400 text-center py-6 w-full italic">Belum ada data aset</p>';
         }
     });
-
-    var optionsMain = {
-        series: [{
-            name: 'Pemasukan (Rp)',
-            data: totalMasuk
-        }, {
-            name: 'Pengeluaran (Rp)',
-            data: totalKeluar
-        }],
-        chart: {
-            type: 'area',
-            height: 300,
-            toolbar: { show: false },
-            fontFamily: 'Plus Jakarta Sans, sans-serif'
-        },
-        colors: ['#0d9488', '#e11d48'], // Teal & Rose
-        dataLabels: { enabled: false },
-        stroke: { curve: 'smooth', width: 2 },
-        fill: {
-            type: 'gradient',
-            gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 90, 100] }
-        },
-        xaxis: {
-            categories: labels,
-            axisBorder: { show: false },
-            axisTicks: { show: false },
-            labels: { style: { colors: '#64748b' } }
-        },
-        yaxis: {
-            labels: {
-                formatter: function (value) {
-                    return "Rp " + (value / 1000000).toFixed(1) + "M";
-                },
-                style: { colors: '#64748b' }
-            }
-        },
-        grid: { borderColor: '#f1f5f9', strokeDashArray: 4 },
-        legend: { position: 'top', horizontalAlign: 'right' }
-    };
-    var chartMain = new ApexCharts(document.querySelector("#mainChart"), optionsMain);
-    chartMain.render();
-
-    // --- KONDISI PIE CHART ---
-    const kondisiDataRaw = {!! json_encode($chartKondisi ?? []) !!};
-    const kondisiLabels = Object.keys(kondisiDataRaw);
-    const kondisiSeries = Object.values(kondisiDataRaw);
-
-    var optionsKondisi = {
-        series: kondisiSeries.length > 0 ? kondisiSeries : [1],
-        labels: kondisiLabels.length > 0 ? kondisiLabels : ['Data Kosong'],
-        chart: { type: 'donut', height: 220, fontFamily: 'Plus Jakarta Sans, sans-serif' },
-        colors: ['#10b981', '#f59e0b', '#ef4444', '#6366f1', '#8b5cf6'],
-        plotOptions: {
-            pie: { donut: { size: '70%' } }
-        },
-        dataLabels: { enabled: false },
-        legend: { position: 'right', fontSize: '12px' },
-        stroke: { show: false }
-    };
-    var chartKondisi = new ApexCharts(document.querySelector("#kondisiChart"), optionsKondisi);
-    chartKondisi.render();
-
-    // --- KATEGORI PIE CHART ---
-    const kategoriDataRaw = {!! json_encode($chartKategori ?? []) !!};
-    const kategoriLabels = Object.keys(kategoriDataRaw);
-    const kategoriSeries = Object.values(kategoriDataRaw);
-
-    var optionsKategori = {
-        series: kategoriSeries.length > 0 ? kategoriSeries : [1],
-        labels: kategoriLabels.length > 0 ? kategoriLabels : ['Data Kosong'],
-        chart: { type: 'pie', height: 220, fontFamily: 'Plus Jakarta Sans, sans-serif' },
-        colors: ['#0ea5e9', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#64748b'],
-        dataLabels: { enabled: false },
-        legend: { position: 'right', fontSize: '12px' },
-        stroke: { width: 1, colors: ['#fff'] }
-    };
-    var chartKategori = new ApexCharts(document.querySelector("#kategoriChart"), optionsKategori);
-    chartKategori.render();
-
-});
 </script>
 @endsection

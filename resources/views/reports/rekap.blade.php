@@ -7,7 +7,7 @@
     <div class="flex items-center justify-between mb-6">
         <div>
             <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                <a href="{{ route('laporan.index') }}" class="text-slate-400 hover:text-teal-600 transition-colors">
+                <a href="{{ route('laporan.index') }}" class="text-slate-400 hover:text-indigo-600 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 </a>
                 Rekapitulasi Aset
@@ -39,7 +39,7 @@
         <form action="{{ route('laporan.rekap') }}" method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
             <div>
                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Group By</label>
-                <select name="group_by" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                <select name="group_by" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     <option value="category" {{ request('group_by') == 'category' ? 'selected' : '' }}>Kategori Aset</option>
                     <option value="location" {{ request('group_by') == 'location' ? 'selected' : '' }}>Ruangan / Lokasi</option>
                 </select>
@@ -47,7 +47,7 @@
             
             <div>
                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Kategori</label>
-                <select name="category_id" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                <select name="category_id" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     <option value="all">Semua Kategori</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->nama_kategori }}</option>
@@ -57,7 +57,7 @@
             
             <div>
                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Lokasi</label>
-                <select name="location" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                <select name="location" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     <option value="all">Semua Lokasi</option>
                     @foreach($locations as $loc)
                         <option value="{{ $loc }}" {{ request('location') == $loc ? 'selected' : '' }}>{{ $loc }}</option>
@@ -68,16 +68,16 @@
             <div class="flex gap-2">
                 <div class="flex-1">
                     <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Tahun</label>
-                    <input type="number" name="year_start" value="{{ request('year_start') }}" placeholder="Mulai" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                    <input type="number" name="year_start" value="{{ request('year_start') }}" placeholder="Mulai" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                 </div>
                 <div class="flex-1">
                     <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">&nbsp;</label>
-                    <input type="number" name="year_end" value="{{ request('year_end') }}" placeholder="Akhir" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                    <input type="number" name="year_end" value="{{ request('year_end') }}" placeholder="Akhir" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                 </div>
             </div>
 
             <div>
-                <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex justify-center items-center gap-2 h-[38px]">
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex justify-center items-center gap-2 h-[38px]">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                     Terapkan Filter
                 </button>
@@ -124,11 +124,11 @@
                 <tfoot>
                     <tr class="bg-slate-100 border-t border-slate-200 font-bold">
                         <td colspan="2" class="py-3 px-4 text-sm text-slate-800 text-right">TOTAL KESELURUHAN</td>
-                        <td class="py-3 px-4 text-sm text-teal-700 text-center">{{ array_sum(array_column($rekapResult, 'total_aset')) }}</td>
+                        <td class="py-3 px-4 text-sm text-indigo-700 text-center">{{ array_sum(array_column($rekapResult, 'total_aset')) }}</td>
                         <td class="py-3 px-4 text-sm text-emerald-700 text-center">{{ array_sum(array_column($rekapResult, 'baik')) }}</td>
                         <td class="py-3 px-4 text-sm text-amber-700 text-center">{{ array_sum(array_column($rekapResult, 'rusak_ringan')) }}</td>
                         <td class="py-3 px-4 text-sm text-rose-700 text-center">{{ array_sum(array_column($rekapResult, 'rusak_berat')) }}</td>
-                        <td class="py-3 px-4 text-sm text-teal-700 text-right">Rp {{ number_format(array_sum(array_column($rekapResult, 'total_nilai')), 0, ',', '.') }}</td>
+                        <td class="py-3 px-4 text-sm text-indigo-700 text-right">Rp {{ number_format(array_sum(array_column($rekapResult, 'total_nilai')), 0, ',', '.') }}</td>
                     </tr>
                 </tfoot>
                 @endif
@@ -137,4 +137,3 @@
     </div>
 </div>
 @endsection
-

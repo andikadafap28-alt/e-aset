@@ -32,7 +32,7 @@
             <!-- Asset Selection -->
             <div>
                 <label for="asset_id" class="block text-sm font-medium text-slate-700 mb-1">Aset yang Dimutasi <span class="text-rose-500">*</span></label>
-                <select name="asset_id" id="asset_id" required class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                <select name="asset_id" id="asset_id" required class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     <option value="">-- Pilih Aset --</option>
                     @foreach($assets as $asset)
                         <option value="{{ $asset->id }}" data-lokasi="{{ $asset->location }}" data-pj="{{ $asset->penanggung_jawab }}">
@@ -50,33 +50,33 @@
             <!-- Tanggal Mutasi -->
             <div>
                 <label for="tanggal_mutasi" class="block text-sm font-medium text-slate-700 mb-1">Tanggal Mutasi <span class="text-rose-500">*</span></label>
-                <input type="date" name="tanggal_mutasi" id="tanggal_mutasi" value="{{ old('tanggal_mutasi', date('Y-m-d')) }}" required class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm">
+                <input type="date" name="tanggal_mutasi" id="tanggal_mutasi" value="{{ old('tanggal_mutasi', date('Y-m-d')) }}" required class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
                 <!-- Lokasi Baru -->
                 <div>
                     <label for="lokasi_baru" class="block text-sm font-medium text-slate-700 mb-1">Lokasi Tujuan Baru <span class="text-rose-500">*</span></label>
-                    <input type="text" name="lokasi_baru" id="lokasi_baru" value="{{ old('lokasi_baru') }}" required class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" placeholder="Contoh: Ruang Rapat Lt 2">
+                    <input type="text" name="lokasi_baru" id="lokasi_baru" value="{{ old('lokasi_baru') }}" required class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: Ruang Rapat Lt 2">
                 </div>
 
                 <!-- Penanggung Jawab Baru -->
                 <div>
                     <label for="penanggung_jawab_baru" class="block text-sm font-medium text-slate-700 mb-1">Penanggung Jawab Baru <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
-                    <input type="text" name="penanggung_jawab_baru" id="penanggung_jawab_baru" value="{{ old('penanggung_jawab_baru') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" placeholder="Contoh: Bpk. Agus">
+                    <input type="text" name="penanggung_jawab_baru" id="penanggung_jawab_baru" value="{{ old('penanggung_jawab_baru') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: Bpk. Agus">
                 </div>
             </div>
 
             <!-- Keterangan -->
             <div>
                 <label for="keterangan" class="block text-sm font-medium text-slate-700 mb-1">Keterangan / Alasan Mutasi <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
-                <textarea name="keterangan" id="keterangan" rows="3" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm" placeholder="Contoh: Perpindahan staf, perombakan ruangan..."></textarea>
+                <textarea name="keterangan" id="keterangan" rows="3" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: Perpindahan staf, perombakan ruangan..."></textarea>
             </div>
         </div>
 
         <div class="mt-8 flex justify-end gap-3">
             <a href="{{ route('aset.mutasi.items') }}" class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Batal</a>
-            <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                 Simpan Mutasi
             </button>
@@ -108,4 +108,3 @@
     });
 </script>
 @endsection
-
