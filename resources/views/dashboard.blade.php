@@ -3,244 +3,251 @@
 @section('header_title', 'Dashboard RAKSA')
 
 @section('content')
-<div class="max-w-7xl mx-auto space-y-6" x-data="{ show: false }" x-init="setTimeout(() => show = true, 50)">
+<div class="space-y-md">
     
-    <!-- Gen Z / Neo-Bento Banner -->
-    <div x-show="show" x-transition.duration.500ms.opacity.translate.y.-20px class="bg-white/80 backdrop-blur-xl border border-white/50 rounded-3xl p-8 shadow-sm relative overflow-hidden group">
-        <!-- Mesh Gradient Background Effect -->
-        <div class="absolute -right-20 -top-20 w-72 h-72 bg-teal-400/20 rounded-full blur-[80px] group-hover:bg-teal-400/30 transition-colors duration-700"></div>
-        <div class="absolute right-40 -bottom-20 w-72 h-72 bg-emerald-400/20 rounded-full blur-[80px] group-hover:bg-emerald-400/30 transition-colors duration-700"></div>
-        
-        <div class="relative z-10">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-teal-700 text-xs font-bold mb-4">
-                <span class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
-                Sistem Aktif & Real-time
-            </div>
-            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Selamat datang di RAKSA</h1>
-            <p class="text-slate-500 max-w-xl text-sm leading-relaxed font-medium">Respons Akurat Kelola Seluruh Aset. Sistem manajemen logistik terintegrasi untuk Puskesmas Mantup. Pantau pergerakan aset secara real-time dari satu tempat.</p>
-        </div>
-    </div>
-
-    <!-- Quick Stats Bento Grid -->
-    <div x-show="show" x-transition.delay.100ms.duration.500ms.opacity.translate.y.20px class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        @foreach($kategoriList as $key => $kat)
-        <div onclick="updateChart('{{ $key }}')" class="cursor-pointer bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group category-card" id="card-{{ $key }}">
-            
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <h3 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ number_format($kat['jenis'], 0, ',', '.') }}</h3>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Jenis {{ $kat['label'] }}</p>
-                </div>
-                <div class="w-10 h-10 rounded-2xl bg-{{ $kat['icon'] }}-50 flex items-center justify-center text-{{ $kat['icon'] }}-500 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                </div>
-            </div>
-            <div class="w-full h-1.5 bg-slate-50 rounded-full overflow-hidden">
-                <div class="h-full bg-{{ $kat['icon'] }}-500 w-full transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out"></div>
-            </div>
-            <p class="text-xs text-slate-500 mt-3 font-medium">Total <span class="font-bold text-slate-800">{{ number_format($kat['total'], 0, ',', '.') }}</span> item</p>
-        </div>
-        @endforeach
-    </div>
-
-    <!-- Charts & Financials Bento -->
-    <div x-show="show" x-transition.delay.200ms.duration.500ms.opacity.translate.y.20px class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        
-        <!-- Main Chart -->
-        <div class="xl:col-span-2 bg-white rounded-[32px] border border-slate-100 shadow-sm p-6 relative overflow-hidden">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight" id="chartTitle">Tren Mutasi</h3>
-                    <p class="text-xs text-slate-500 font-medium mt-1">Pilih kategori di atas untuk melihat detail</p>
-                </div>
-                <div class="flex gap-2">
-                    <span class="inline-flex items-center gap-1.5 text-xs font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full"><span class="w-2 h-2 rounded-full bg-teal-500"></span> Masuk</span>
-                    <span class="inline-flex items-center gap-1.5 text-xs font-bold text-rose-600 bg-rose-50 px-3 py-1 rounded-full"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Keluar</span>
-                </div>
-            </div>
-            <div id="expenseChart" class="w-full h-80"></div>
-        </div>
-
-        <!-- Financial Summary Bento Column -->
-        <div class="space-y-4">
-            <div class="bg-gradient-to-br from-teal-500 to-emerald-600 rounded-[32px] p-6 text-white shadow-md relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
-                <div class="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full blur-2xl transform translate-x-1/2 -translate-y-1/2"></div>
-                <h3 class="text-[11px] font-bold text-teal-100 uppercase tracking-widest mb-4">Nilai Masuk Bulan Ini</h3>
-                <h2 class="text-3xl font-extrabold tracking-tight">Rp {{ number_format($masukBulanIni, 0, ',', '.') }}</h2>
-                <div class="mt-4 pt-4 border-t border-teal-400/30 flex justify-between items-center text-sm font-medium">
-                    <span class="text-teal-100">Bulan Lalu</span>
-                    <span>Rp {{ number_format($masukBulanLalu, 0, ',', '.') }}</span>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-[32px] p-6 text-white shadow-md relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
-                <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-2xl transform translate-x-1/2 -translate-y-1/2"></div>
-                <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4">Nilai Keluar Bulan Ini</h3>
-                <h2 class="text-3xl font-extrabold tracking-tight">Rp {{ number_format($keluarBulanIni, 0, ',', '.') }}</h2>
-                <div class="mt-4 pt-4 border-t border-slate-700/50 flex justify-between items-center text-sm font-medium">
-                    <span class="text-slate-400">Bulan Lalu</span>
-                    <span>Rp {{ number_format($keluarBulanLalu, 0, ',', '.') }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Asset Summary Bento Box -->
-    <div x-show="show" x-transition.delay.300ms.duration.500ms.opacity.translate.y.20px class="bg-white rounded-[32px] border border-slate-100 shadow-sm p-6 sm:p-8">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-            <div>
-                <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    </div>
-                    Manajemen Aset Tetap
-                </h3>
-            </div>
-            <a href="{{ route('laporan.aset.pdf') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-2xl hover:bg-slate-800 transition-colors shadow-md hover:shadow-xl hover:-translate-y-0.5 transform duration-200">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                Export Laporan PDF
-            </a>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-slate-50/50 border border-slate-100 p-5 rounded-3xl hover:bg-slate-50 transition-colors">
-                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Nilai Perolehan</p>
-                <h4 class="text-2xl font-extrabold text-slate-900">Rp {{ number_format($assetStats['total_purchase'], 0, ',', '.') }}</h4>
-            </div>
-            <div class="bg-rose-50/50 border border-rose-100/50 p-5 rounded-3xl hover:bg-rose-50 transition-colors">
-                <p class="text-[10px] text-rose-500 font-bold uppercase tracking-widest mb-1">Akumulasi Penyusutan</p>
-                <h4 class="text-2xl font-extrabold text-rose-900">Rp {{ number_format($assetStats['total_depreciation'], 0, ',', '.') }}</h4>
-            </div>
-            <div class="bg-teal-50/50 border border-teal-100/50 p-5 rounded-3xl hover:bg-teal-50 transition-colors">
-                <p class="text-[10px] text-teal-600 font-bold uppercase tracking-widest mb-1">Nilai Buku Saat Ini</p>
-                <h4 class="text-2xl font-extrabold text-teal-900">Rp {{ number_format($assetStats['total_book_value'], 0, ',', '.') }}</h4>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            <!-- Stat 1 -->
-            <div class="bg-blue-50/50 border border-blue-100/50 p-5 rounded-3xl">
-                <div class="flex justify-between items-center mb-2">
-                    <p class="text-xs font-bold text-blue-600 uppercase tracking-wider">Total Aset</p>
-                    <span class="w-8 h-8 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 font-bold">{{ number_format($assetStats['total'], 0, ',', '.') }}</span>
-                </div>
-                <div class="flex justify-between text-xs font-medium text-slate-500 mt-4">
-                    <span>Aktif: <strong class="text-slate-800">{{ number_format($assetStats['aktif'], 0, ',', '.') }}</strong></span>
-                    <span>Dihapus: <strong class="text-slate-800">{{ number_format($assetStats['disposed'], 0, ',', '.') }}</strong></span>
-                </div>
-            </div>
-            
-            <!-- Stat 2 -->
-            <div class="bg-emerald-50/50 border border-emerald-100/50 p-5 rounded-3xl">
-                <div class="flex justify-between items-center mb-2">
-                    <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Kondisi Baik</p>
-                </div>
-                <h3 class="text-3xl font-extrabold text-emerald-600 mt-2">{{ number_format($assetStats['baik'], 0, ',', '.') }}</h3>
-            </div>
-
-            <!-- Stat 3 -->
-            <div class="bg-rose-50/50 border border-rose-100/50 p-5 rounded-3xl">
-                <div class="flex justify-between items-center mb-2">
-                    <p class="text-xs font-bold text-rose-600 uppercase tracking-wider">Rusak</p>
-                </div>
-                <h3 class="text-3xl font-extrabold text-rose-600 mt-2">{{ number_format($assetStats['rusak'], 0, ',', '.') }}</h3>
-            </div>
-
-            <!-- Stat 4 -->
-            <div class="bg-amber-50/50 border border-amber-100/50 p-5 rounded-3xl">
-                <div class="flex justify-between items-center mb-2">
-                    <p class="text-xs font-bold text-amber-600 uppercase tracking-wider">Kalibrasi</p>
-                </div>
-                <h3 class="text-3xl font-extrabold text-amber-600 mt-2">{{ number_format($assetStats['perlu_kalibrasi'], 0, ',', '.') }}</h3>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bottom Widgets Grid (Bento) -->
-    <div x-show="show" x-transition.delay.400ms.duration.500ms.opacity.translate.y.20px class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        
-        <!-- Transaction Widget -->
-        <div class="bg-white rounded-[32px] border border-slate-100 shadow-sm p-6 flex flex-col">
-            <h3 class="text-base font-extrabold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
-                <span class="w-8 h-8 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    <!-- Hero Greeting Banner -->
+    <section class="relative overflow-hidden glass-card mesh-gradient rounded-lg p-lg flex flex-col md:flex-row items-center justify-between border-none">
+        <div class="z-10 text-center md:text-left">
+            <h2 class="font-display-lg text-display-lg text-on-surface mb-xs">Selamat Datang, {{ auth()->user()->name ?? 'Admin' }}</h2>
+            <div class="flex items-center justify-center md:justify-start gap-sm">
+                <span class="flex h-3 w-3 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
                 </span>
-                Transaksi Terakhir
-            </h3>
-            <div class="flex-1 overflow-y-auto pr-2 space-y-3 max-h-[300px]">
+                <p class="font-body-lg text-body-lg text-on-surface-variant">Semua sistem manajemen aset berjalan optimal.</p>
+            </div>
+        </div>
+        <div class="hidden lg:block z-10">
+            <div class="flex gap-md">
+                <div class="bg-white/80 p-sm rounded-lg shadow-sm text-center min-w-[120px]">
+                    <p class="text-[10px] uppercase tracking-widest text-on-surface-variant mb-1 font-bold">Total Kategori</p>
+                    <p class="text-headline-sm font-bold text-primary">{{ count($kategoriList) }}</p>
+                </div>
+                <div class="bg-white/80 p-sm rounded-lg shadow-sm text-center min-w-[120px]">
+                    <p class="text-[10px] uppercase tracking-widest text-on-surface-variant mb-1 font-bold">Total Nilai Masuk (Bln Ini)</p>
+                    <p class="text-headline-sm font-bold text-primary">Rp {{ number_format($masukBulanIni / 1000000, 1) }}M</p>
+                </div>
+            </div>
+        </div>
+        <!-- Abstract elements for background -->
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+        <div class="absolute -left-10 -top-10 w-64 h-64 bg-secondary-container/10 rounded-full blur-3xl"></div>
+    </section>
+
+    <!-- Top Metrics Grid (Bento Box) -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-md">
+        <!-- Metric 1 -->
+        <div class="bento-card glass-card p-lg rounded-lg group">
+            <div class="flex items-start justify-between mb-md">
+                <div class="p-sm bg-primary/10 rounded-lg group-hover:bg-primary transition-colors">
+                    <span class="material-symbols-outlined text-primary group-hover:text-white" style="font-variation-settings: 'FILL' 1;">payments</span>
+                </div>
+                <span class="text-primary font-bold text-sm bg-primary/5 px-2 py-1 rounded">Aset</span>
+            </div>
+            <p class="font-label-md text-label-md text-on-surface-variant mb-xs">Total Nilai Perolehan</p>
+            <h3 class="font-headline-lg text-headline-lg text-on-surface">Rp {{ number_format($assetStats['total_purchase'], 0, ',', '.') }}</h3>
+            <p class="text-[12px] text-on-surface-variant mt-sm">Total pengadaan aset kumulatif</p>
+        </div>
+        <!-- Metric 2 -->
+        <div class="bento-card glass-card p-lg rounded-lg group">
+            <div class="flex items-start justify-between mb-md">
+                <div class="p-sm bg-secondary-container/20 rounded-lg group-hover:bg-secondary transition-colors">
+                    <span class="material-symbols-outlined text-secondary group-hover:text-white" style="font-variation-settings: 'FILL' 1;">trending_down</span>
+                </div>
+                <span class="text-secondary font-bold text-sm bg-secondary-container/10 px-2 py-1 rounded">Beban</span>
+            </div>
+            <p class="font-label-md text-label-md text-on-surface-variant mb-xs">Akumulasi Penyusutan</p>
+            <h3 class="font-headline-lg text-headline-lg text-on-surface">Rp {{ number_format($assetStats['total_depreciation'], 0, ',', '.') }}</h3>
+            <p class="text-[12px] text-on-surface-variant mt-sm">Total depresiasi hingga hari ini</p>
+        </div>
+        <!-- Metric 3 -->
+        <div class="bento-card glass-card p-lg rounded-lg group">
+            <div class="flex items-start justify-between mb-md">
+                <div class="p-sm bg-primary-fixed/20 rounded-lg group-hover:bg-primary-container transition-colors">
+                    <span class="material-symbols-outlined text-primary group-hover:text-white" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+                </div>
+                <span class="text-primary font-bold text-sm bg-primary-fixed/10 px-2 py-1 rounded">Bersih</span>
+            </div>
+            <p class="font-label-md text-label-md text-on-surface-variant mb-xs">Nilai Buku Saat Ini</p>
+            <h3 class="font-headline-lg text-headline-lg text-on-surface">Rp {{ number_format($assetStats['total_book_value'], 0, ',', '.') }}</h3>
+            <p class="text-[12px] text-on-surface-variant mt-sm">Estimasi nilai aset saat ini</p>
+        </div>
+    </section>
+
+    <!-- Asset Health Cards -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-md">
+        <div class="bg-white p-md rounded-lg shadow-sm border border-outline-variant/30 flex items-center gap-md">
+            <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+                <span class="material-symbols-outlined text-on-surface-variant">list_alt</span>
+            </div>
+            <div>
+                <p class="text-label-sm font-label-sm text-on-surface-variant">Total Aset Aktif</p>
+                <p class="text-headline-sm font-headline-sm text-on-surface">{{ number_format($assetStats['aktif'], 0, ',', '.') }} <span class="text-xs font-normal text-on-surface-variant">unit</span></p>
+            </div>
+        </div>
+        <div class="bg-white p-md rounded-lg shadow-sm border border-outline-variant/30 flex items-center gap-md">
+            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            </div>
+            <div>
+                <p class="text-label-sm font-label-sm text-on-surface-variant">Kondisi Baik</p>
+                <p class="text-headline-sm font-headline-sm text-on-surface">{{ number_format($assetStats['baik'], 0, ',', '.') }}</p>
+            </div>
+        </div>
+        <div class="bg-white p-md rounded-lg shadow-sm border border-outline-variant/30 flex items-center gap-md">
+            <div class="w-12 h-12 rounded-full bg-error-container/30 flex items-center justify-center">
+                <span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">cancel</span>
+            </div>
+            <div>
+                <p class="text-label-sm font-label-sm text-on-surface-variant">Rusak</p>
+                <p class="text-headline-sm font-headline-sm text-on-surface">{{ number_format($assetStats['rusak'], 0, ',', '.') }} <span class="text-xs font-normal text-error">Unit</span></p>
+            </div>
+        </div>
+        <div class="bg-white p-md rounded-lg shadow-sm border border-outline-variant/30 flex items-center gap-md relative overflow-hidden group cursor-help">
+            <div class="w-12 h-12 rounded-full bg-secondary-container/30 flex items-center justify-center">
+                <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">build</span>
+            </div>
+            <div>
+                <p class="text-label-sm font-label-sm text-on-surface-variant">Perlu Kalibrasi</p>
+                <p class="text-headline-sm font-headline-sm text-on-surface">{{ number_format($assetStats['perlu_kalibrasi'], 0, ',', '.') }} <span class="text-xs font-normal text-secondary">Aset</span></p>
+            </div>
+            <div class="absolute top-0 right-0 w-1 h-full bg-secondary"></div>
+        </div>
+    </section>
+
+    <!-- ApexCharts Integration Area -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+        <!-- Main Chart: Mutasi Persediaan -->
+        <div class="lg:col-span-2 bg-white rounded-lg p-lg shadow-sm border border-outline-variant/30">
+            <div class="flex items-center justify-between mb-sm">
+                <div>
+                    <h4 class="font-headline-sm text-headline-sm text-on-surface" id="chartTitle">Tren Mutasi Logistik</h4>
+                    <p class="text-label-sm text-on-surface-variant mt-1">Pilih kategori untuk melihat pergerakan dana bulanan.</p>
+                </div>
+                <div class="flex gap-xs">
+                    <!-- Dropdown Kategori untuk Chart -->
+                    <select id="categorySelector" onchange="updateChart(this.value)" class="text-sm font-medium bg-surface rounded-lg border-outline-variant/50 focus:ring-primary focus:border-primary px-3 py-1.5">
+                        @foreach($kategoriList as $key => $kat)
+                        <option value="{{ $key }}">{{ $kat['label'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div id="expenseChart" class="w-full h-[300px]"></div>
+        </div>
+
+        <!-- Donut Chart: Kategori Aset -->
+        <div class="bg-white rounded-lg p-lg shadow-sm border border-outline-variant/30 flex flex-col justify-center items-center">
+            <h4 class="font-headline-sm text-headline-sm text-on-surface w-full text-left mb-sm">Distribusi Kategori Aset</h4>
+            <div id="assetCategoryChart" class="w-full h-[250px] flex justify-center mt-2 flex-1 items-center"></div>
+        </div>
+    </section>
+
+    <!-- Activity & Alerts Panel -->
+    <section class="grid grid-cols-1 xl:grid-cols-2 gap-md">
+        <!-- Recent Activities -->
+        <div class="bg-white rounded-lg p-lg shadow-sm border border-outline-variant/30">
+            <div class="flex items-center justify-between mb-lg">
+                <h4 class="font-headline-sm text-headline-sm text-on-surface">Transaksi Persediaan Terakhir</h4>
+                <button class="text-primary font-label-md text-label-md hover:underline">Lihat Semua</button>
+            </div>
+            <div class="space-y-sm max-h-[350px] overflow-y-auto pr-2">
+                
                 @forelse($recentTransactions as $trx)
-                <div class="flex justify-between items-center p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors">
-                    <div>
-                        <p class="text-sm font-bold text-slate-800">{{ $trx->item ? $trx->item->nama_barang : 'Barang Dihapus' }}</p>
-                        <p class="text-[10px] font-medium text-slate-500">{{ \Carbon\Carbon::parse($trx->tanggal_transaksi)->translatedFormat('d M Y') }}</p>
+                <div class="flex items-center justify-between p-md hover:bg-surface transition-colors rounded-lg group">
+                    <div class="flex items-center gap-md">
+                        @if($trx->jenis_transaksi == 'masuk')
+                        <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold">
+                            <span class="material-symbols-outlined">add</span>
+                        </div>
+                        @else
+                        <div class="w-10 h-10 rounded-lg bg-error/10 flex items-center justify-center text-error font-bold">
+                            <span class="material-symbols-outlined">remove</span>
+                        </div>
+                        @endif
+                        <div>
+                            <p class="font-label-md text-label-md text-on-surface">{{ $trx->item ? $trx->item->nama_barang : 'Barang Dihapus' }}</p>
+                            <p class="text-body-sm text-on-surface-variant">{{ \Carbon\Carbon::parse($trx->tanggal_transaksi)->translatedFormat('d M Y') }}</p>
+                        </div>
                     </div>
-                    @if($trx->jenis_transaksi == 'masuk')
-                        <span class="font-bold text-teal-600 text-sm bg-teal-50 px-3 py-1 rounded-xl">+{{ number_format($trx->jumlah, 0, ',', '.') }}</span>
-                    @else
-                        <span class="font-bold text-rose-600 text-sm bg-rose-50 px-3 py-1 rounded-xl">-{{ number_format($trx->jumlah, 0, ',', '.') }}</span>
-                    @endif
+                    <div class="text-right">
+                        @if($trx->jenis_transaksi == 'masuk')
+                        <p class="font-bold text-primary">+{{ number_format($trx->jumlah, 0, ',', '.') }}</p>
+                        @else
+                        <p class="font-bold text-error">-{{ number_format($trx->jumlah, 0, ',', '.') }}</p>
+                        @endif
+                        <p class="text-[12px] text-on-surface-variant">Unit/Box</p>
+                    </div>
                 </div>
                 @empty
-                <div class="py-10 text-center text-slate-400 font-medium text-sm">Belum ada transaksi.</div>
+                <div class="text-center py-6 text-on-surface-variant font-medium">Belum ada transaksi logistik.</div>
                 @endforelse
+
             </div>
         </div>
 
-        <!-- Reminders Widget -->
-        <div class="bg-white rounded-[32px] border border-slate-100 shadow-sm p-6 flex flex-col">
-            <h3 class="text-base font-extrabold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
-                <span class="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                </span>
-                Notifikasi Sistem
-            </h3>
-            <div class="flex-1 overflow-y-auto pr-2 space-y-3 max-h-[300px]">
+        <!-- System Alerts -->
+        <div class="bg-white rounded-lg p-lg shadow-sm border border-outline-variant/30">
+            <div class="flex items-center justify-between mb-lg">
+                <h4 class="font-headline-sm text-headline-sm text-on-surface">Peringatan Sistem</h4>
+                <div class="flex gap-xs">
+                    @if(count($lowStockItems) > 0)
+                    <span class="bg-error-container text-on-error-container text-[10px] font-bold px-2 py-1 rounded-full uppercase">{{ count($lowStockItems) }} Critical</span>
+                    @endif
+                    @if(count($calibrationReminders) > 0)
+                    <span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-1 rounded-full uppercase">{{ count($calibrationReminders) }} Warning</span>
+                    @endif
+                </div>
+            </div>
+            <div class="space-y-sm max-h-[350px] overflow-y-auto pr-2">
                 
-                @foreach($lowStockItems as $item)
-                <div class="p-3 rounded-2xl bg-rose-50/50 border border-rose-100 flex justify-between items-center">
-                    <div>
-                        <span class="text-[10px] font-bold text-rose-500 uppercase tracking-widest block mb-0.5">Stok Menipis</span>
-                        <p class="text-sm font-bold text-slate-800">{{ $item->nama_barang }}</p>
+                @forelse($lowStockItems as $item)
+                <!-- Alert Stok -->
+                <div class="p-md rounded-lg bg-error-container/20 border border-error-container flex gap-md">
+                    <span class="material-symbols-outlined text-error mt-1">warning</span>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <p class="font-label-md text-label-md text-on-error-container">Stok Menipis: {{ $item->nama_barang }}</p>
+                            <span class="text-[10px] text-on-error-container/70 font-bold">CRITICAL</span>
+                        </div>
+                        <p class="text-body-sm text-on-error-container/80 mt-1">Tersisa {{ number_format($item->stok_sekarang, 0, ',', '.') }} unit. Harap segera lakukan pengadaan.</p>
                     </div>
-                    <span class="text-lg font-extrabold text-rose-600">{{ number_format($item->stok_sekarang, 0, ',', '.') }}</span>
                 </div>
-                @endforeach
+                @empty
+                @endforelse
 
-                @foreach($calibrationReminders as $asset)
-                <div class="p-3 rounded-2xl bg-amber-50/50 border border-amber-100 flex justify-between items-center">
-                    <div>
-                        <span class="text-[10px] font-bold text-amber-600 uppercase tracking-widest block mb-0.5">Jadwal Kalibrasi</span>
-                        <p class="text-sm font-bold text-slate-800 truncate max-w-[120px]">{{ $asset->name }}</p>
+                @forelse($calibrationReminders as $asset)
+                <!-- Alert Kalibrasi -->
+                <div class="p-md rounded-lg bg-secondary-container/20 border border-secondary-container flex gap-md">
+                    <span class="material-symbols-outlined text-secondary mt-1">event_repeat</span>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <p class="font-label-md text-label-md text-on-secondary-container">Kalibrasi: {{ $asset->name }}</p>
+                            <span class="text-[10px] text-on-secondary-container/70 font-bold">{{ \Carbon\Carbon::parse($asset->next_calibration)->translatedFormat('d M') }}</span>
+                        </div>
+                        <p class="text-body-sm text-on-secondary-container/80 mt-1">Kode aset: {{ $asset->asset_code }}. Wajib kalibrasi berkala.</p>
                     </div>
-                    <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-lg">{{ \Carbon\Carbon::parse($asset->next_calibration)->translatedFormat('d M') }}</span>
                 </div>
-                @endforeach
+                @empty
+                @endforelse
 
-                @if(count($lowStockItems) === 0 && count($calibrationReminders) === 0)
-                <div class="py-10 text-center flex flex-col items-center justify-center">
-                    <div class="w-12 h-12 bg-teal-50 rounded-full flex items-center justify-center text-teal-500 mb-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                @if(count($lowStockItems) == 0 && count($calibrationReminders) == 0)
+                <div class="p-md rounded-lg bg-surface-container flex gap-md opacity-70">
+                    <span class="material-symbols-outlined text-outline mt-1">inventory</span>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <p class="font-label-md text-label-md text-on-surface">Sistem Stabil</p>
+                        </div>
+                        <p class="text-body-sm text-on-surface-variant mt-1">Tidak ada peringatan stok atau kalibrasi untuk hari ini.</p>
                     </div>
-                    <p class="text-sm font-bold text-slate-600">Semua Terkendali</p>
-                    <p class="text-xs text-slate-400 font-medium mt-1">Tidak ada peringatan stok atau kalibrasi.</p>
                 </div>
                 @endif
             </div>
         </div>
+    </section>
 
-        <!-- Charts Donut Widget -->
-        <div class="bg-white rounded-[32px] border border-slate-100 shadow-sm p-6 flex flex-col justify-center xl:col-span-1 lg:col-span-2">
-            <h3 class="text-base font-extrabold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
-                <span class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
-                </span>
-                Distribusi Kategori Aset
-            </h3>
-            <div id="assetCategoryChart" class="w-full flex justify-center mt-2 flex-1 items-center min-h-[200px]"></div>
-        </div>
-
-    </div>
 </div>
+
 @endsection
 
 @section('scripts')
@@ -254,31 +261,16 @@
     const yAxisFormatter = function(value) {
         let num = Number(value); 
         if (isNaN(num) || num === 0) return "0";
-        if(num >= 1000000000000) {
-            return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + " T";
-        } else if(num >= 1000000000) {
-            return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + " M";
-        } else if(num >= 1000000) {
-            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + " jt";
-        } else if(num >= 1000) {
-            return (num / 1000).toFixed(1).replace(/\.0$/, '') + " rb";
-        }
+        if(num >= 1000000000000) return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + " T";
+        else if(num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + " M";
+        else if(num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + " jt";
+        else if(num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + " rb";
         return num.toString();
     };
 
     let chart;
     
     function updateChart(category) {
-        document.getElementById('chartTitle').innerText = 'Tren Mutasi: ' + categoryNames[category];
-        
-        document.querySelectorAll('.category-card').forEach(el => {
-            el.classList.remove('ring-4', 'ring-teal-500/20', 'bg-teal-50/30', 'scale-[1.02]');
-            el.querySelector('.transform').classList.remove('scale-x-100');
-        });
-        const activeCard = document.getElementById('card-' + category);
-        activeCard.classList.add('ring-4', 'ring-teal-500/20', 'bg-teal-50/30', 'scale-[1.02]');
-        activeCard.querySelector('.transform').classList.add('scale-x-100');
-
         const masukData = allChartData[category].masuk;
         const keluarData = allChartData[category].keluar;
         const newMax = chartMaxData[category] || {{ $chartMax }};
@@ -287,7 +279,7 @@
             yaxis: {
                 max: newMax,
                 tickAmount: 5,
-                labels: { formatter: yAxisFormatter }
+                labels: { formatter: yAxisFormatter, style: { colors: '#595f66', fontWeight: 600 } }
             }
         });
 
@@ -298,57 +290,40 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        // Main Area Chart
         var options = {
             series: [
                 { name: 'Masuk (Rp)', data: [0,0,0,0,0,0] },
                 { name: 'Keluar (Rp)', data: [0,0,0,0,0,0] }
             ],
             chart: {
-                height: 320,
+                height: 300,
                 type: 'area',
                 fontFamily: 'Plus Jakarta Sans, sans-serif',
                 toolbar: { show: false },
                 zoom: { enabled: false }
             },
-            colors: ['#0d9488', '#e11d48'], // Teal 600, Rose 600
+            colors: ['#006c49', '#ba1a1a'], // Primary & Error colors from Stitch config
             dataLabels: { enabled: false },
             stroke: { curve: 'smooth', width: 3 },
             fill: {
                 type: 'gradient',
-                gradient: {
-                    shadeIntensity: 1,
-                    opacityFrom: 0.3,
-                    opacityTo: 0.05,
-                    stops: [0, 90, 100]
-                }
+                gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05, stops: [0, 90, 100] }
             },
             xaxis: {
                 categories: chartLabels,
                 axisBorder: { show: false },
                 axisTicks: { show: false },
-                labels: { style: { colors: '#94a3b8', fontWeight: 600 } }
+                labels: { style: { colors: '#595f66', fontWeight: 600 } }
             },
             yaxis: {
                 min: 0,
                 max: {{ $chartMax ?? 'undefined' }},
                 tickAmount: 5,
-                labels: {
-                    formatter: yAxisFormatter,
-                    style: { colors: '#94a3b8', fontWeight: 600 }
-                }
+                labels: { formatter: yAxisFormatter, style: { colors: '#595f66', fontWeight: 600 } }
             },
-            grid: {
-                borderColor: '#f1f5f9',
-                strokeDashArray: 4,
-                yaxis: { lines: { show: true } }
-            },
-            tooltip: {
-                y: {
-                    formatter: function (value) {
-                        return 'Rp ' + new Intl.NumberFormat('id-ID').format(Number(value));
-                    }
-                }
-            }
+            grid: { borderColor: '#e0e3e5', strokeDashArray: 4, yaxis: { lines: { show: true } } },
+            tooltip: { y: { formatter: function (value) { return 'Rp ' + new Intl.NumberFormat('id-ID').format(Number(value)); } } }
         };
 
         chart = new ApexCharts(document.querySelector("#expenseChart"), options);
@@ -365,13 +340,9 @@
         if(categoryData.length > 0) {
             var categoryChartOptions = {
                 series: categoryData,
-                chart: {
-                    type: 'donut',
-                    height: 250,
-                    fontFamily: 'Plus Jakarta Sans, sans-serif',
-                },
+                chart: { type: 'donut', height: 250, fontFamily: 'Plus Jakarta Sans, sans-serif' },
                 labels: categoryLabels,
-                colors: ['#0ea5e9', '#0d9488', '#f59e0b', '#e11d48', '#8b5cf6', '#64748b', '#ec4899'],
+                colors: ['#006c49', '#10b981', '#06b6d4', '#ba1a1a', '#f59e0b', '#8b5cf6', '#ec4899'],
                 dataLabels: { enabled: false },
                 plotOptions: {
                     pie: {
@@ -379,8 +350,8 @@
                             size: '70%',
                             labels: {
                                 show: true,
-                                name: { fontSize: '12px', fontWeight: 700, color: '#64748b' },
-                                value: { fontSize: '20px', fontWeight: 800, color: '#0f172a' }
+                                name: { fontSize: '12px', fontWeight: 700, color: '#595f66' },
+                                value: { fontSize: '20px', fontWeight: 800, color: '#191c1e' }
                             }
                         }
                     }
@@ -391,7 +362,7 @@
             var categoryChart = new ApexCharts(document.querySelector("#assetCategoryChart"), categoryChartOptions);
             categoryChart.render();
         } else {
-            document.querySelector("#assetCategoryChart").innerHTML = '<p class="text-xs text-slate-400 font-medium text-center w-full">Belum ada data aset</p>';
+            document.querySelector("#assetCategoryChart").innerHTML = '<p class="text-xs text-on-surface-variant font-medium text-center w-full">Belum ada data aset</p>';
         }
     });
 </script>
