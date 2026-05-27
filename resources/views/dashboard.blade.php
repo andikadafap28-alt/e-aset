@@ -114,11 +114,25 @@
     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
         <div class="flex items-center gap-2 mb-6">
             <span class="material-symbols-outlined text-blue-500 icon-fill">category</span>
-            <h3 class="text-base font-bold text-slate-800">Ringkasan Kategori Persediaan</h3>
+            <h3 class="text-base font-bold text-slate-800">Filter Kategori Persediaan</h3>
+            @if(isset($filterKat) && $filterKat != '')
+                <span class="ml-2 px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">Menampilkan: {{ $kategoriList[$filterKat]['label'] ?? $filterKat }}</span>
+            @endif
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <!-- Semua Kategori Button -->
+            <a href="{{ url('/dashboard') }}" class="flex flex-col p-4 rounded-2xl bg-slate-50 border {{ empty($filterKat) ? 'border-blue-500 ring-2 ring-blue-500/20 shadow-md' : 'border-slate-200' }} hover:bg-slate-100 transition-colors group">
+                <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 mb-3 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-sm">grid_view</span>
+                </div>
+                <h4 class="text-sm font-bold text-slate-800 line-clamp-1">Semua Kategori</h4>
+                <div class="mt-2 flex items-center justify-between text-xs">
+                    <span class="text-slate-500">Tampilkan Semua</span>
+                </div>
+            </a>
+            
             @foreach($kategoriList as $key => $cat)
-            <div class="flex flex-col p-4 rounded-2xl bg-{{ $cat['icon'] }}-50/50 border border-{{ $cat['icon'] }}-100 hover:bg-{{ $cat['icon'] }}-50 transition-colors group cursor-pointer">
+            <a href="{{ url('/dashboard?kategori=' . $key) }}" class="flex flex-col p-4 rounded-2xl bg-{{ $cat['icon'] }}-50/50 border {{ (isset($filterKat) && $filterKat == $key) ? 'border-'.$cat['icon'].'-500 ring-2 ring-'.$cat['icon'].'-500/20 shadow-md' : 'border-'.$cat['icon'].'-100' }} hover:bg-{{ $cat['icon'] }}-50 transition-colors group">
                 <div class="w-8 h-8 rounded-full bg-{{ $cat['icon'] }}-100 flex items-center justify-center text-{{ $cat['icon'] }}-600 mb-3 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-sm">inventory_2</span>
                 </div>
@@ -126,7 +140,7 @@
                 <div class="mt-2 flex items-center justify-between text-xs">
                     <span class="text-slate-500">Stok: <strong class="text-{{ $cat['icon'] }}-600">{{ number_format($cat['total'], 0, ',', '.') }}</strong></span>
                 </div>
-            </div>
+            </a>
             @endforeach
         </div>
     </div>
@@ -227,15 +241,22 @@
         // --- DATA PREPARATION ---
         const chartLabels = {!! json_encode($chartLabels) !!};
         const allChartData = {!! json_encode($allChartData) !!};
+        const filterKat = '{!! $filterKat ?? '' !!}';
         
-        // Summing up all categories for the aggregated chart
+        // Summing up for the aggregated chart
         let totalMasuk = [0, 0, 0, 0, 0, 0];
         let totalKeluar = [0, 0, 0, 0, 0, 0];
 
-        Object.values(allChartData).forEach(data => {
+        if (filterKat && allChartData[filterKat]) {
+            let data = allChartData[filterKat];
             data.masuk.forEach((val, i) => totalMasuk[i] += val);
             data.keluar.forEach((val, i) => totalKeluar[i] += val);
-        });
+        } else {
+            Object.values(allChartData).forEach(data => {
+                data.masuk.forEach((val, i) => totalMasuk[i] += val);
+                data.keluar.forEach((val, i) => totalKeluar[i] += val);
+            });
+        }
 
         // 1. Main Area Chart (Aktivitas Transaksi)
         var optionsMain = {

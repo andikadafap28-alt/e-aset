@@ -43,8 +43,10 @@ class DashboardController extends Controller
         return 'Rp ' . number_format($value, 0, ',', '.');
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $filterKat = $request->query('kategori');
+
         // 1. Ringkasan Total Item per Kategori Besar
         $summaryStok = Item::select('kategori_besar', DB::raw('SUM(stok_sekarang) as total_stok'), DB::raw('COUNT(id) as jenis_barang'))
             ->groupBy('kategori_besar')
@@ -81,9 +83,16 @@ class DashboardController extends Controller
         $bulanIni = $bulanIniDate->month;
         $tahunIni = $bulanIniDate->year;
 
-        $transaksiBulanIni = InventoryTransaction::whereMonth('tanggal_transaksi', $bulanIni)
-            ->whereYear('tanggal_transaksi', $tahunIni)
-            ->select('jenis_transaksi', DB::raw('SUM(jumlah * harga_satuan) as nilai_rupiah'))
+        $transaksiBulanIniQuery = InventoryTransaction::whereMonth('tanggal_transaksi', $bulanIni)
+            ->whereYear('tanggal_transaksi', $tahunIni);
+
+        if ($filterKat) {
+            $transaksiBulanIniQuery->whereHas('item', function($q) use ($filterKat) {
+                $q->where('kategori_besar', $filterKat);
+            });
+        }
+
+        $transaksiBulanIni = $transaksiBulanIniQuery->select('jenis_transaksi', DB::raw('SUM(jumlah * harga_satuan) as nilai_rupiah'))
             ->groupBy('jenis_transaksi')
             ->get();
 
@@ -100,9 +109,16 @@ class DashboardController extends Controller
         $bulanLalu = $bulanLaluDate->month;
         $tahunLalu = $bulanLaluDate->year;
 
-        $transaksiBulanLalu = InventoryTransaction::whereMonth('tanggal_transaksi', $bulanLalu)
-            ->whereYear('tanggal_transaksi', $tahunLalu)
-            ->select('jenis_transaksi', DB::raw('SUM(jumlah * harga_satuan) as nilai_rupiah'))
+        $transaksiBulanLaluQuery = InventoryTransaction::whereMonth('tanggal_transaksi', $bulanLalu)
+            ->whereYear('tanggal_transaksi', $tahunLalu);
+
+        if ($filterKat) {
+            $transaksiBulanLaluQuery->whereHas('item', function($q) use ($filterKat) {
+                $q->where('kategori_besar', $filterKat);
+            });
+        }
+
+        $transaksiBulanLalu = $transaksiBulanLaluQuery->select('jenis_transaksi', DB::raw('SUM(jumlah * harga_satuan) as nilai_rupiah'))
             ->groupBy('jenis_transaksi')
             ->get();
             
@@ -197,10 +213,16 @@ class DashboardController extends Controller
             ->get();
 
         // 6. Low Stock Items
-        $lowStockItems = Item::where('stok_sekarang', '<', 10)
-            ->where('stok_sekarang', '>', 0)
-            ->whereIn('kategori_besar', ['atk', 'kertas_cover', 'persediaan', 'bahan_komputer', 'bahan_cetak', 'benda_pos', 'obat', 'bahan_lainnya', 'natura_pakan_lainnya', 'vaksin', 'obat_apbd', 'obat_apbn'])
-            ->orderBy('stok_sekarang', 'asc')
+        $lowStockQuery = Item::where('stok_sekarang', '<', 10)
+            ->where('stok_sekarang', '>', 0);
+            
+        if ($filterKat) {
+            $lowStockQuery->where('kategori_besar', $filterKat);
+        } else {
+            $lowStockQuery->whereIn('kategori_besar', ['atk', 'kertas_cover', 'persediaan', 'bahan_komputer', 'bahan_cetak', 'benda_pos', 'obat', 'bahan_lainnya', 'natura_pakan_lainnya', 'vaksin', 'obat_apbd', 'obat_apbn']);
+        }
+        
+        $lowStockItems = $lowStockQuery->orderBy('stok_sekarang', 'asc')
             ->take(10) // taking 10 for UI fit
             ->get();
 
@@ -283,6 +305,7 @@ class DashboardController extends Controller
 
         return view('dashboard', compact(
             'kategoriList', 
+            'filterKat',
             'masukBulanIni', 
             'keluarBulanIni', 
             'formattedMasukBulanIni',
