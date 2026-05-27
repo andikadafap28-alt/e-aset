@@ -43,8 +43,8 @@
                 
                 <!-- Section 1: Dashboard -->
                 <div>
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
-                        <span class="material-symbols-outlined {{ request()->routeIs('dashboard') ? 'icon-fill' : '' }}">dashboard</span>
+                    <a href="{{ url('/dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->is('dashboard') ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <span class="material-symbols-outlined {{ request()->is('dashboard') ? 'icon-fill' : '' }}">dashboard</span>
                         <span>Dashboard</span>
                     </a>
                 </div>
