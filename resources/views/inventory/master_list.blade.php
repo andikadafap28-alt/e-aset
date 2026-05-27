@@ -43,7 +43,7 @@
                         </td>
                         <td class="py-4 px-6 text-right">
                             <div class="flex items-center justify-end gap-3">
-                                <a href="/{{ $kategori_besar }}/{{ $item->id }}/edit-master" class="text-indigo-600 hover:text-indigo-800 font-medium px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors text-xs border border-indigo-200">
+                                <a href="/{{ $kategori_besar }}/{{ $item->id }}/edit-master" class="text-teal-600 hover:text-indigo-800 font-medium px-3 py-1.5 bg-teal-50 hover:bg-teal-50 rounded-lg transition-colors text-xs border border-indigo-200">
                                     Edit
                                 </a>
                                 <form action="/{{ $kategori_besar }}/{{ $item->id }}" method="POST" onsubmit="return confirm('PERINGATAN: Menghapus barang ini juga akan menghapus SELURUH riwayat transaksinya! Lanjutkan?');">
@@ -66,3 +66,4 @@
     </div>
 </div>
 @endsection
+

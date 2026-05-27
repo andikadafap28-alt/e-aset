@@ -41,19 +41,19 @@
 <div x-data="{ activeTab: 'tab1' }" class="bg-white/70 backdrop-blur-md rounded-xl border border-slate-200 shadow-sm overflow-hidden">
     <!-- Tab Navigation -->
     <div class="border-b border-slate-200 flex overflow-x-auto">
-        <button @click="activeTab = 'tab1'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab1', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab1' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
+        <button @click="activeTab = 'tab1'" :class="{ 'border-teal-500 text-teal-600': activeTab === 'tab1', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab1' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             Informasi & Lokasi
         </button>
-        <button @click="activeTab = 'tab2'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab2', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab2' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
+        <button @click="activeTab = 'tab2'" :class="{ 'border-teal-500 text-teal-600': activeTab === 'tab2', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab2' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             Riwayat Pemeliharaan
         </button>
-        <button @click="activeTab = 'tab3'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab3', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab3' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
+        <button @click="activeTab = 'tab3'" :class="{ 'border-teal-500 text-teal-600': activeTab === 'tab3', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab3' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             Mutasi
         </button>
-        <button @click="activeTab = 'tab_penyusutan'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab_penyusutan', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab_penyusutan' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
+        <button @click="activeTab = 'tab_penyusutan'" :class="{ 'border-teal-500 text-teal-600': activeTab === 'tab_penyusutan', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab_penyusutan' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             Penyusutan Nilai
         </button>
-        <button @click="activeTab = 'tab4'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab4', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab4' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
+        <button @click="activeTab = 'tab4'" :class="{ 'border-teal-500 text-teal-600': activeTab === 'tab4', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab4' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             QR Code Label
         </button>
 
@@ -114,7 +114,7 @@
                     @if($asset->document_link)
                     <div>
                         <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Dokumen Pengadaan</p>
-                        <a href="{{ $asset->document_link }}" target="_blank" class="text-indigo-600 hover:underline text-sm font-medium mt-1 inline-block">Lihat Dokumen &rarr;</a>
+                        <a href="{{ $asset->document_link }}" target="_blank" class="text-teal-600 hover:underline text-sm font-medium mt-1 inline-block">Lihat Dokumen &rarr;</a>
                     </div>
                     @endif
                 </div>
@@ -163,7 +163,7 @@
                                 <div class="text-xs text-slate-500">{{ $mutasi->penanggung_jawab_lama ?: 'Tidak ada PJ' }}</div>
                             </td>
                             <td class="py-3 px-5">
-                                <div class="text-indigo-700 font-medium flex items-center gap-1">
+                                <div class="text-teal-700 font-medium flex items-center gap-1">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                     {{ $mutasi->lokasi_baru }}
                                 </div>
@@ -190,8 +190,8 @@
         <div x-show="activeTab === 'tab_penyusutan'" style="display: none;" class="space-y-6">
             @if($asset->harga_perolehan)
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
-                        <p class="text-xs text-indigo-600 font-semibold uppercase tracking-wider mb-1">Harga Perolehan</p>
+                    <div class="bg-teal-50/50 p-4 rounded-xl border border-teal-100">
+                        <p class="text-xs text-teal-600 font-semibold uppercase tracking-wider mb-1">Harga Perolehan</p>
                         <p class="text-xl font-bold text-slate-800">Rp {{ number_format($asset->harga_perolehan, 0, ',', '.') }}</p>
                     </div>
                     <div class="bg-sky-50/50 p-4 rounded-xl border border-sky-100">
@@ -233,7 +233,7 @@
                 <div class="py-12 text-center text-slate-500 bg-slate-50 rounded-xl border border-slate-200 border-dashed">
                     <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <p>Harga Perolehan belum diatur untuk aset ini.</p>
-                    <a href="{{ route('aset.edit', $asset->id) }}" class="inline-block mt-3 text-indigo-600 font-medium hover:underline">Edit Aset</a>
+                    <a href="{{ route('aset.edit', $asset->id) }}" class="inline-block mt-3 text-teal-600 font-medium hover:underline">Edit Aset</a>
                 </div>
             @endif
         </div>
@@ -312,12 +312,12 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal Penghapusan <span class="text-rose-500">*</span></label>
-                    <input type="date" name="tanggal_penghapusan" required value="{{ date('Y-m-d') }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                    <input type="date" name="tanggal_penghapusan" required value="{{ date('Y-m-d') }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Alasan Penghapusan <span class="text-rose-500">*</span></label>
-                    <select name="alasan" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                    <select name="alasan" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm">
                         <option value="">-- Pilih Alasan --</option>
                         <option value="Rusak Berat">Rusak Berat / Tidak Bisa Diperbaiki</option>
                         <option value="Dihibahkan">Dihibahkan ke Instansi Lain</option>
@@ -329,7 +329,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Catatan / Detail Kronologi</label>
-                    <textarea name="catatan" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Jelaskan secara singkat kronologi kerusakan atau alasan penghapusan..."></textarea>
+                    <textarea name="catatan" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-sm" placeholder="Jelaskan secara singkat kronologi kerusakan atau alasan penghapusan..."></textarea>
                 </div>
             </div>
             
@@ -412,3 +412,4 @@
 }
 </style>
 @endsection
+

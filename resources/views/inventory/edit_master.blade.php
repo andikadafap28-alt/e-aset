@@ -30,13 +30,13 @@
 
             <div>
                 <label class="block font-semibold text-slate-700 mb-1.5">Nama Barang <span class="text-rose-500">*</span></label>
-                <input type="text" name="nama_barang" required value="{{ $item->nama_barang }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
+                <input type="text" name="nama_barang" required value="{{ $item->nama_barang }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all">
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1.5">Kategori</label>
-                    <select name="kategori" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
+                    <select name="kategori" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all">
                         <option value="Non Medis (ATK)" {{ $item->kategori == 'Non Medis (ATK)' ? 'selected' : '' }}>Non Medis (ATK)</option>
                         <option value="Obat" {{ $item->kategori == 'Obat' ? 'selected' : '' }}>Obat</option>
                         <option value="Alat Kesehatan" {{ $item->kategori == 'Alat Kesehatan' ? 'selected' : '' }}>Alat Kesehatan</option>
@@ -46,7 +46,7 @@
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1.5">Satuan</label>
-                    <select name="satuan" id="satuan_select" onchange="toggleSatuanLainnya()" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
+                    <select name="satuan" id="satuan_select" onchange="toggleSatuanLainnya()" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all">
                         <option value="Rim" {{ $item->satuan == 'Rim' ? 'selected' : '' }}>Rim</option>
                         <option value="Pcs" {{ $item->satuan == 'Pcs' ? 'selected' : '' }}>Pcs</option>
                         <option value="Box" {{ $item->satuan == 'Box' ? 'selected' : '' }}>Box</option>
@@ -60,23 +60,23 @@
                         @endphp
                         <option value="Lainnya" {{ $is_lainnya ? 'selected' : '' }}>Lainnya</option>
                     </select>
-                    <input type="text" name="satuan_lainnya" id="satuan_lainnya" value="{{ $is_lainnya ? $item->satuan : '' }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 mt-2 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all {{ $is_lainnya ? '' : 'hidden' }}" placeholder="Ketik satuan lainnya...">
+                    <input type="text" name="satuan_lainnya" id="satuan_lainnya" value="{{ $is_lainnya ? $item->satuan : '' }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 mt-2 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all {{ $is_lainnya ? '' : 'hidden' }}" placeholder="Ketik satuan lainnya...">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1.5">Harga Satuan (Rp) <span class="text-rose-500">*</span></label>
-                    <input type="text" name="harga_satuan" required value="{{ $item->harga_satuan }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
+                    <input type="text" name="harga_satuan" required value="{{ $item->harga_satuan }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1.5">Tahun Pengadaan</label>
-                    <input type="number" name="tahun_pengadaan" value="{{ $item->tahun_pengadaan }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
+                    <input type="number" name="tahun_pengadaan" value="{{ $item->tahun_pengadaan }}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition-all">
                 </div>
             </div>
 
             <div class="pt-4 flex justify-end gap-3 border-t border-slate-100">
-                <button type="submit" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium shadow-sm shadow-indigo-600/20 transition-all">
+                <button type="submit" class="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium shadow-sm shadow-indigo-600/20 transition-all">
                     Simpan Perubahan
                 </button>
             </div>
@@ -100,3 +100,4 @@
     }
 </script>
 @endsection
+

@@ -11,11 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Inter', sans-serif; }</style>
 </head>
-<body class="bg-[#F8FAFC] text-slate-800 antialiased selection:bg-indigo-100 min-h-screen">
+<body class="bg-[#F8FAFC] text-slate-800 antialiased selection:bg-teal-50 min-h-screen">
     
     <div class="max-w-md mx-auto bg-white min-h-screen shadow-xl relative pb-24">
         <!-- Header Image / Top Bar -->
-        <div class="bg-indigo-600 h-32 flex flex-col items-center justify-center text-white px-6">
+        <div class="bg-teal-600 h-32 flex flex-col items-center justify-center text-white px-6">
             <h1 class="text-xl font-bold tracking-tight text-center">Informasi Aset</h1>
             <p class="text-sm text-indigo-100 opacity-90 mt-1">Puskesmas Mantup</p>
         </div>
@@ -49,7 +49,7 @@
                         <p class="text-sm text-slate-700">{{ $asset->location }}</p>
                         
                         @if($asset->latitude && $asset->longitude)
-                        <button @click="expanded = !expanded" class="text-xs font-medium text-indigo-600 mt-2 flex items-center gap-1">
+                        <button @click="expanded = !expanded" class="text-xs font-medium text-teal-600 mt-2 flex items-center gap-1">
                             <span x-show="!expanded">Lihat Peta</span>
                             <span x-show="expanded">Sembunyikan Peta</span>
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -67,30 +67,30 @@
             @if($isAuthenticated)
             <div class="mt-6">
                 <div class="flex items-center gap-2 mb-3 px-1">
-                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                     <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Rincian Internal</h3>
                 </div>
                 
-                <div class="bg-indigo-50/50 rounded-2xl shadow-sm border border-indigo-100 p-5 space-y-4">
+                <div class="bg-teal-50/50 rounded-2xl shadow-sm border border-teal-100 p-5 space-y-4">
                     <div>
-                        <p class="text-xs font-medium text-indigo-400 uppercase tracking-wider mb-1">Tahun Pengadaan</p>
+                        <p class="text-xs font-medium text-teal-400 uppercase tracking-wider mb-1">Tahun Pengadaan</p>
                         <p class="text-sm font-semibold text-slate-800">{{ $asset->year_purchased }}</p>
                     </div>
                     <div>
-                        <p class="text-xs font-medium text-indigo-400 uppercase tracking-wider mb-1">Harga Perolehan</p>
+                        <p class="text-xs font-medium text-teal-400 uppercase tracking-wider mb-1">Harga Perolehan</p>
                         <p class="text-sm font-semibold text-slate-800">Rp {{ number_format($asset->harga_perolehan, 0, ',', '.') }}</p>
                     </div>
                     <div>
-                        <p class="text-xs font-medium text-indigo-400 uppercase tracking-wider mb-1">Penanggung Jawab</p>
+                        <p class="text-xs font-medium text-teal-400 uppercase tracking-wider mb-1">Penanggung Jawab</p>
                         <p class="text-sm text-slate-700">{{ $asset->penanggung_jawab ?: '-' }}</p>
                     </div>
                     <div>
-                        <p class="text-xs font-medium text-indigo-400 uppercase tracking-wider mb-1">Tanggal Kalibrasi</p>
+                        <p class="text-xs font-medium text-teal-400 uppercase tracking-wider mb-1">Tanggal Kalibrasi</p>
                         <p class="text-sm text-slate-700">{{ $asset->last_calibration ? \Carbon\Carbon::parse($asset->last_calibration)->format('d M Y') : '-' }}</p>
                     </div>
                     @if($asset->document_link)
                     <div>
-                        <a href="{{ $asset->document_link }}" target="_blank" class="text-sm font-medium text-indigo-600 flex items-center gap-2 hover:underline">
+                        <a href="{{ $asset->document_link }}" target="_blank" class="text-sm font-medium text-teal-600 flex items-center gap-2 hover:underline">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                             Dokumen Pengadaan
                         </a>
@@ -123,12 +123,12 @@
                         @csrf
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-slate-700 mb-2">Masukkan Kata Sandi</label>
-                            <input type="password" name="password" class="w-full border-slate-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-3 px-4" placeholder="••••••••" required>
+                            <input type="password" name="password" class="w-full border-slate-300 rounded-xl shadow-sm focus:border-teal-500 focus:ring-teal-500 py-3 px-4" placeholder="••••••••" required>
                             @error('password')
                                 <p class="text-rose-500 text-xs mt-2 font-medium">{{ $message }}</p>
                             @enderror
                         </div>
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl shadow-md transition-colors">
+                        <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-xl shadow-md transition-colors">
                             Buka Gembok
                         </button>
                     </form>
@@ -190,3 +190,4 @@
     </script>
 </body>
 </html>
+

@@ -61,7 +61,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     Cetak PDF
                 </a>
-                <button type="button" onclick="document.getElementById('aiScanInput').click()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
+                <button type="button" onclick="document.getElementById('aiScanInput').click()" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     Scan AI
                 </button>
@@ -92,7 +92,7 @@
                     </td>
                     <td class="py-3 px-5 text-center font-bold text-emerald-600">{{ $tx->jenis_transaksi == 'masuk' ? $tx->jumlah : '-' }}</td>
                     <td class="py-3 px-5 text-center font-bold text-rose-600">{{ $tx->jenis_transaksi == 'keluar' ? $tx->jumlah : '-' }}</td>
-                    <td class="py-3 px-5 text-center font-bold text-indigo-600">{{ $tx->running_balance }}</td>
+                    <td class="py-3 px-5 text-center font-bold text-teal-600">{{ $tx->running_balance }}</td>
                     <td class="py-3 px-5">
                         @if($tx->status_hutang)
                             <span class="text-rose-600 font-medium text-xs">Hutang</span>
@@ -102,7 +102,7 @@
                     </td>
                     <td class="py-3 px-5 text-right">
                         <form action="/{{ $kategori_besar }}/transaksi/{{ $tx->id }}" method="POST" onsubmit="return confirm('Hapus transaksi ini? Stok akan dikembalikan otomatis.');" class="flex items-center justify-end gap-3">
-                            <a href="/{{ $kategori_besar }}/transaksi/{{ $tx->id }}/edit" class="text-indigo-500 hover:text-indigo-700 font-medium text-xs">Edit</a>
+                            <a href="/{{ $kategori_besar }}/transaksi/{{ $tx->id }}/edit" class="text-teal-500 hover:text-teal-700 font-medium text-xs">Edit</a>
                             @csrf @method('DELETE')
                             <button type="submit" class="text-rose-500 hover:text-rose-700 font-medium text-xs">Hapus</button>
                         </form>
@@ -117,7 +117,7 @@
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-6">
         <div class="p-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center">
             <h3 class="font-semibold text-slate-800">Dokumen Pengadaan</h3>
-            <button type="button" onclick="openProcurementModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <button type="button" onclick="openProcurementModal()" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 Upload Dokumen
             </button>
@@ -146,7 +146,7 @@
                     <td class="py-3 px-5 text-right">
                         <div class="flex items-center justify-end gap-3">
                             @if($doc->path_gdrive)
-                            <a href="/procurement-file/{{ $doc->id }}" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-medium text-xs flex items-center gap-1">
+                            <a href="/procurement-file/{{ $doc->id }}" target="_blank" class="text-teal-600 hover:text-indigo-800 font-medium text-xs flex items-center gap-1">
                                 Lihat
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                             </a>
@@ -187,7 +187,7 @@
                 <div class="p-6 space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Dokumen</label>
-                        <select name="jenis_dokumen" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" onchange="toggleJenisKustom(this.value)">
+                        <select name="jenis_dokumen" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 text-sm" onchange="toggleJenisKustom(this.value)">
                             <option value="DPP">DPP</option>
                             <option value="SP">SP</option>
                             <option value="BAST">BAST</option>
@@ -198,32 +198,32 @@
                     </div>
                     <div id="jenisKustomContainer" class="hidden">
                         <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Dokumen Kustom</label>
-                        <input type="text" name="jenis_dokumen_kustom" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" placeholder="Contoh: Surat Penawaran">
+                        <input type="text" name="jenis_dokumen_kustom" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 text-sm" placeholder="Contoh: Surat Penawaran">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">File Dokumen (PDF)</label>
-                        <input type="file" id="file_dokumen_input" name="file_dokumen" accept=".pdf" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" required>
+                        <input type="file" id="file_dokumen_input" name="file_dokumen" accept=".pdf" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-50" required>
                     </div>
                 </div>
                 <div class="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
                     <button type="button" onclick="closeProcurementModal()" class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50">Batal</button>
-                    <button type="button" onclick="scanProcurement()" class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-sm shadow-indigo-200">Scan & Lanjutkan</button>
+                    <button type="button" onclick="scanProcurement()" class="px-5 py-2.5 text-sm font-medium text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-sm shadow-indigo-200">Scan & Lanjutkan</button>
                 </div>
             </div>
 
             <!-- Step 2: Konfirmasi Hasil Scan -->
             <div id="procurementStep2" class="hidden">
                 <div class="p-6 space-y-4">
-                    <div class="bg-indigo-50 border-l-4 border-indigo-500 p-3 rounded text-sm text-indigo-700 mb-2">
+                    <div class="bg-teal-50 border-l-4 border-teal-500 p-3 rounded text-sm text-teal-700 mb-2">
                         Silakan periksa hasil bacaan otomatis (AI) berikut. Anda dapat mengubahnya jika ada kesalahan.
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Nama Penyedia <span class="text-rose-500">*</span></label>
-                        <input type="text" id="input_nama_penyedia" name="nama_penyedia" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" placeholder="Contoh: PT Intisumber Hasil Sempurna" required>
+                        <input type="text" id="input_nama_penyedia" name="nama_penyedia" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 text-sm" placeholder="Contoh: PT Intisumber Hasil Sempurna" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal Dokumen</label>
-                        <input type="date" id="input_tanggal_dokumen" name="tanggal_dokumen" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        <input type="date" id="input_tanggal_dokumen" name="tanggal_dokumen" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 text-sm">
                     </div>
                 </div>
                 <div class="p-6 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
@@ -309,7 +309,7 @@
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
             <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Konfirmasi Hasil Scan AI
             </h3>
             <button type="button" onclick="closeAiModal()" class="text-slate-400 hover:text-slate-600">
@@ -342,7 +342,7 @@
             
             <div class="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
                 <button type="button" onclick="closeAiModal()" class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50">Batal</button>
-                <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-sm shadow-indigo-200">Simpan Rincian ke Database</button>
+                <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-sm shadow-indigo-200">Simpan Rincian ke Database</button>
             </div>
         </form>
     </div>
@@ -414,19 +414,19 @@
 
         tr.innerHTML = `
             <td class="py-2 px-3">
-                <input type="date" name="transactions[${aiRowIndex}][tanggal]" value="${tanggal}" class="w-full text-sm border-slate-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                <input type="date" name="transactions[${aiRowIndex}][tanggal]" value="${tanggal}" class="w-full text-sm border-slate-300 rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
             </td>
             <td class="py-2 px-3">
-                <select name="transactions[${aiRowIndex}][jenis_transaksi]" class="w-full text-sm border-slate-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <select name="transactions[${aiRowIndex}][jenis_transaksi]" class="w-full text-sm border-slate-300 rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500">
                     <option value="masuk" ${safeJenis === 'masuk' ? 'selected' : ''}>Masuk</option>
                     <option value="keluar" ${safeJenis === 'keluar' ? 'selected' : ''}>Keluar</option>
                 </select>
             </td>
             <td class="py-2 px-3">
-                <input type="number" name="transactions[${aiRowIndex}][jumlah]" value="${jumlah}" min="1" class="w-full text-sm border-slate-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                <input type="number" name="transactions[${aiRowIndex}][jumlah]" value="${jumlah}" min="1" class="w-full text-sm border-slate-300 rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
             </td>
             <td class="py-2 px-3">
-                <input type="text" name="transactions[${aiRowIndex}][keterangan]" value="${keterangan}" class="w-full text-sm border-slate-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <input type="text" name="transactions[${aiRowIndex}][keterangan]" value="${keterangan}" class="w-full text-sm border-slate-300 rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500">
             </td>
             <td class="py-2 px-3 text-center">
                 <button type="button" onclick="document.getElementById('ai-row-${aiRowIndex}').remove()" class="text-rose-500 hover:text-rose-700">

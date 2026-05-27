@@ -21,11 +21,11 @@
                 </button>
                 
                 <div x-show="open" x-transition class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden z-50" style="display: none;">
-                    <a href="/{{ $kategori_besar }}/master" class="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
+                    <a href="/{{ $kategori_besar }}/master" class="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-teal-600 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                         Edit Data Master Barang
                     </a>
-                    <a href="/{{ $kategori_besar }}/hutang" class="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
+                    <a href="/{{ $kategori_besar }}/hutang" class="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-teal-600 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Manajemen Hutang (SPJ)
                     </a>
@@ -86,7 +86,7 @@
                             <div class="flex items-center gap-2">
                                 <span>{{ $item->kode_barang ?? '-' }}</span>
                                 @if($item->kode_barang)
-                                <a href="/{{ $kategori_besar }}/{{ $item->id }}/label" target="_blank" onclick="event.stopPropagation()" class="text-slate-400 hover:text-indigo-600 transition-colors" title="Cetak Label">
+                                <a href="/{{ $kategori_besar }}/{{ $item->id }}/label" target="_blank" onclick="event.stopPropagation()" class="text-slate-400 hover:text-teal-600 transition-colors" title="Cetak Label">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                                 </a>
                                 @endif

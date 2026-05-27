@@ -9,8 +9,8 @@
     <!-- Header Chat -->
     <div class="px-6 py-4 bg-slate-800/60 border-b border-slate-700/50 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-4">
-            <div class="w-10 h-10 bg-indigo-500/20 rounded-full flex items-center justify-center border border-indigo-500/30">
-                <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            <div class="w-10 h-10 bg-teal-500/20 rounded-full flex items-center justify-center border border-teal-500/30">
+                <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
             </div>
             <div>
                 <h2 class="text-base font-bold text-white">RAKSA AI Assistant</h2>
@@ -40,7 +40,7 @@
     @if($platform === 'Telegram')
     <div class="px-6 py-3 bg-slate-800/80 border-b border-slate-700/50 flex items-center justify-between">
         <p class="text-xs text-slate-400">Pastikan Token Bot API sudah ditambahkan di .env. Lalu klik tombol di samping untuk mengaktifkan webhook.</p>
-        <button onclick="fetch('/webhook/telegram/setup').then(r=>r.json()).then(d=>alert(JSON.stringify(d)))" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
+        <button onclick="fetch('/webhook/telegram/setup').then(r=>r.json()).then(d=>alert(JSON.stringify(d)))" class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
             Setup Webhook Telegram
         </button>
     </div>
@@ -74,8 +74,8 @@
                 <!-- Bubble Bot (Kiri) -->
                 <div class="flex flex-col items-start w-full">
                     <div class="flex items-end gap-2 max-w-[85%]">
-                        <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0 mb-1 border border-indigo-500/30">
-                            <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        <div class="w-8 h-8 rounded-full bg-teal-500/20 flex items-center justify-center shrink-0 mb-1 border border-teal-500/30">
+                            <svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                         </div>
                         <div class="bg-gray-800/80 backdrop-blur-sm text-slate-200 px-4 py-3 rounded-2xl rounded-bl-sm border border-slate-700/50 shadow-md">
                             <p class="text-sm leading-relaxed whitespace-pre-wrap">{{ $chat->message }}</p>
@@ -118,3 +118,4 @@
     });
 </script>
 @endsection
+

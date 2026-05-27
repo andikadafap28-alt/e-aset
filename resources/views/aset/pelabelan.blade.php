@@ -31,10 +31,10 @@
         @csrf
         <div class="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <input type="checkbox" id="check-all" class="rounded border-slate-300 text-indigo-600 shadow-sm focus:ring-indigo-500 w-5 h-5 cursor-pointer">
+                <input type="checkbox" id="check-all" class="rounded border-slate-300 text-teal-600 shadow-sm focus:ring-teal-500 w-5 h-5 cursor-pointer">
                 <label for="check-all" class="text-sm font-medium text-slate-700 cursor-pointer">Pilih Semua</label>
             </div>
-            <button type="submit" id="btn-cetak" disabled class="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+            <button type="submit" id="btn-cetak" disabled class="bg-teal-600 hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                 Cetak Terpilih (<span id="count-selected">0</span>)
             </button>
@@ -55,7 +55,7 @@
                     @forelse($assets as $asset)
                         <tr class="hover:bg-slate-50/50 transition-colors">
                             <td class="p-4 text-center">
-                                <input type="checkbox" name="asset_ids[]" value="{{ $asset->id }}" class="asset-checkbox rounded border-slate-300 text-indigo-600 shadow-sm focus:ring-indigo-500 w-4 h-4 cursor-pointer">
+                                <input type="checkbox" name="asset_ids[]" value="{{ $asset->id }}" class="asset-checkbox rounded border-slate-300 text-teal-600 shadow-sm focus:ring-teal-500 w-4 h-4 cursor-pointer">
                             </td>
                             <td class="p-4 font-medium text-slate-800">{{ $asset->asset_code }}</td>
                             <td class="p-4 text-slate-600">{{ $asset->name }}</td>
@@ -117,3 +117,4 @@
     });
 </script>
 @endsection
+
