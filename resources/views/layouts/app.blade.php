@@ -1,229 +1,170 @@
 <!DOCTYPE html>
-<html class="light" lang="id">
+<html lang="id">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('header_title', 'RAKSA - Healthcare Asset Management')</title>
-    
-    <!-- Tailwind CSS (Stitch Configuration) -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <!-- Alpine JS -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAKSA - Puskesmas Mantup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f7f9fb;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .mesh-gradient {
-            background-color: #ffffff;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, rgba(56, 189, 248, 0.05) 0px, transparent 50%);
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(224, 227, 229, 0.5);
-            box-shadow: 0px 10px 30px rgba(15, 23, 42, 0.04);
-        }
-        .bento-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .bento-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0px 20px 40px rgba(15, 23, 42, 0.08);
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
-    
-    <script id="tailwind-config">
-    tailwind.config = {
-        darkMode: "class", 
-        theme: {
-            extend: {
-                colors: {
-                    "surface-variant": "#e0e3e5", "error-container": "#ffdad6", "tertiary-fixed": "#dde3eb", "on-tertiary-fixed-variant": "#41474e", "secondary-fixed-dim": "#bec6e0", "on-surface": "#191c1e", "surface-container-low": "#f2f4f6", "on-error-container": "#93000a", "surface-container": "#eceef0", "primary-fixed": "#6ffbbe", "primary-container": "#10b981", "on-tertiary-container": "#333a40", "surface-dim": "#d8dadc", "on-tertiary": "#ffffff", "tertiary-container": "#9da3ab", error: "#ba1a1a", "on-secondary": "#ffffff", "on-primary": "#ffffff", "on-primary-fixed-variant": "#005236", "on-error": "#ffffff", "primary-fixed-dim": "#4edea3", "surface-container-lowest": "#ffffff", "inverse-primary": "#4edea3", "on-secondary-container": "#5c647a", primary: "#006c49", outline: "#6c7a71", "surface-tint": "#006c49", "on-primary-fixed": "#002113", "outline-variant": "#bbcabf", "on-tertiary-fixed": "#161c22", surface: "#f7f9fb", tertiary: "#595f66", "on-secondary-fixed-variant": "#3f465c", "on-surface-variant": "#3c4a42", "inverse-on-surface": "#eff1f3", "secondary-fixed": "#dae2fd", "surface-container-high": "#e6e8ea", "inverse-surface": "#2d3133", "on-primary-container": "#00422b", "surface-container-highest": "#e0e3e5", "surface-bright": "#f7f9fb", "on-background": "#191c1e", "secondary-container": "#dae2fd", background: "#f7f9fb", "tertiary-fixed-dim": "#c1c7cf", secondary: "#565e74", "on-secondary-fixed": "#131b2e"
-                }, 
-                borderRadius: {DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px"}, 
-                spacing: {unit: "4px", sm: "1rem", gutter: "1.5rem", lg: "2.5rem", "margin-desktop": "2.5rem", md: "1.5rem", xs: "0.5rem", "margin-mobile": "1rem", xl: "4rem"}, 
-                fontFamily: {
-                    "label-sm": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], headline: ["Plus Jakarta Sans"], display: ["Plus Jakarta Sans"], body: ["Plus Jakarta Sans"], label: ["Plus Jakarta Sans"]
-                }, 
-                fontSize: {
-                    "label-sm": ["12px", {lineHeight: "1", fontWeight: "600"}], "headline-lg-mobile": ["24px", {lineHeight: "1.3", fontWeight: "700"}], "headline-md": ["24px", {lineHeight: "1.4", fontWeight: "600"}], "headline-lg": ["32px", {lineHeight: "1.25", letterSpacing: "-0.01em", fontWeight: "700"}], "display-lg": ["48px", {lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "700"}], "body-sm": ["14px", {lineHeight: "1.5", fontWeight: "400"}], "label-md": ["14px", {lineHeight: "1", letterSpacing: "0.02em", fontWeight: "600"}], "body-lg": ["18px", {lineHeight: "1.6", fontWeight: "400"}], "headline-sm": ["20px", {lineHeight: "1.4", fontWeight: "600"}], "body-md": ["16px", {lineHeight: "1.6", fontWeight: "400"}]
-                }
-            }
-        }
-    };
-    </script>
-    
     @yield('head')
 </head>
+<body class="bg-slate-50 text-slate-800 antialiased overflow-x-hidden">
 
-<body class="bg-background text-on-surface">
-
-<!-- Sidebar Integration -->
-<aside class="fixed left-0 top-0 h-screen w-[280px] bg-inverse-surface dark:bg-surface-container-lowest flex flex-col py-lg shadow-xl border-r border-outline-variant/20 z-50 overflow-y-auto overflow-x-hidden">
-    <div class="px-gutter mb-xl flex items-center gap-sm">
-        <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-            <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">medical_services</span>
-        </div>
-        <div>
-            <h1 class="font-headline-sm text-headline-sm font-black text-primary-fixed tracking-tight">RAKSA</h1>
-            <p class="font-label-sm text-label-sm text-surface-variant/70">Puskesmas Mantup</p>
-        </div>
-    </div>
-
-    <nav class="flex-1 px-sm">
-        <ul class="space-y-xs">
-            <!-- Dashboard Active -->
-            <li>
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-md px-md py-sm {{ request()->routeIs('dashboard') ? 'bg-primary-container text-on-primary-container' : 'text-surface-variant hover:text-surface hover:bg-on-surface-variant/10' }} rounded-lg transition-all active:scale-95 group">
-                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('dashboard') ? '1' : '0' }};">dashboard</span>
-                    <span class="font-label-md text-label-md group-hover:translate-x-1 duration-200">Dashboard</span>
-                </a>
-            </li>
-
-            <!-- Manajemen Persediaan (Logistik) -->
-            <li x-data="{ persediaanOpen: {{ in_array(request()->segment(1), ['atk', 'kertas_cover', 'bahan_cetak', 'benda_pos', 'bahan_komputer', 'obat', 'bahan_lainnya', 'natura_pakan_lainnya', 'vaksin', 'obat_apbd', 'obat_apbn']) ? 'true' : 'false' }} }">
-                <button @click="persediaanOpen = !persediaanOpen" class="w-full flex items-center justify-between gap-md px-md py-sm text-surface-variant hover:text-surface hover:bg-on-surface-variant/10 rounded-lg transition-all group">
-                    <div class="flex items-center gap-md">
-                        <span class="material-symbols-outlined">inventory_2</span>
-                        <span class="font-label-md text-label-md group-hover:translate-x-1 duration-200">Manajemen Persediaan</span>
+    <div class="flex h-screen overflow-hidden">
+        <!-- SIDEBAR -->
+        <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 transition-all duration-300 z-20">
+            <!-- Logo -->
+            <div class="h-20 flex items-center px-6 border-b border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
+                        <span class="material-symbols-outlined text-white">health_and_safety</span>
                     </div>
-                    <span class="material-symbols-outlined text-[18px] transition-transform duration-200" :class="{'rotate-180': persediaanOpen}">expand_more</span>
-                </button>
-                <ul x-show="persediaanOpen" class="space-y-1 mt-1 ml-4 pl-4 border-l border-outline-variant/20">
-                    @php
-                    $persediaanMenus = [
-                        'atk' => 'ATK',
-                        'kertas_cover' => 'Kertas & Cover',
-                        'bahan_cetak' => 'Bahan Cetak',
-                        'benda_pos' => 'Benda Pos',
-                        'bahan_komputer' => 'Bahan Komputer',
-                        'obat' => 'Obat',
-                        'bahan_lainnya' => 'Bahan Lainnya',
-                        'natura_pakan_lainnya' => 'Natura & Pakan',
-                        'vaksin' => 'Vaksin',
-                        'obat_apbd' => 'Obat APBD',
-                        'obat_apbn' => 'Obat APBN',
-                    ];
-                    @endphp
-                    @foreach($persediaanMenus as $slug => $label)
-                    <li>
-                        <a href="/{{ $slug }}/items" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->segment(1) == $slug ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ request()->segment(1) == $slug ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
-                            {{ $label }}
-                        </a>
-                    </li>
-                    @endforeach
-                </ul>
-            </li>
-
-            <!-- Manajemen Aset -->
-            <li x-data="{ asetOpen: {{ request()->routeIs('aset.*') || request()->routeIs('asset-maintenance.*') || request()->routeIs('asset-disposals.*') || request()->routeIs('print-labels.index') || request()->routeIs('public.asset.show') ? 'true' : 'false' }} }">
-                <button @click="asetOpen = !asetOpen" class="w-full flex items-center justify-between gap-md px-md py-sm text-surface-variant hover:text-surface hover:bg-on-surface-variant/10 rounded-lg transition-all group">
-                    <div class="flex items-center gap-md">
-                        <span class="material-symbols-outlined">precision_manufacturing</span>
-                        <span class="font-label-md text-label-md group-hover:translate-x-1 duration-200">Manajemen Aset</span>
+                    <div>
+                        <h1 class="text-xl font-bold text-white tracking-wide">RAKSA</h1>
+                        <p class="text-[10px] font-medium text-teal-400 uppercase tracking-widest">Puskesmas Mantup</p>
                     </div>
-                    <span class="material-symbols-outlined text-[18px] transition-transform duration-200" :class="{'rotate-180': asetOpen}">expand_more</span>
-                </button>
-                <ul x-show="asetOpen" class="space-y-1 mt-1 ml-4 pl-4 border-l border-outline-variant/20">
-                    <li>
-                        <a href="{{ route('aset.data.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('aset.data.items') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('aset.data.items') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
-                            Data Aset
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('aset.pengadaan.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('aset.pengadaan.items') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('aset.pengadaan.items') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
-                            Pengadaan Aset
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('aset.pemeliharaan.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('aset.pemeliharaan.*') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('aset.pemeliharaan.*') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
-                            Pemeliharaan
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('aset.pelabelan.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('aset.pelabelan.*') ? 'bg-primary-container/20 text-primary-fixed font-bold' : 'text-surface-variant/80 hover:text-surface hover:bg-on-surface-variant/10 font-label-md' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('aset.pelabelan.*') ? 'bg-primary-fixed' : 'bg-surface-variant/50' }}"></span>
-                            Label QR Code
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <!-- Pusat Laporan -->
-            <li>
-                <a href="{{ route('laporan.index') }}" class="flex items-center gap-md px-md py-sm {{ request()->routeIs('laporan.*') ? 'bg-primary-container text-on-primary-container' : 'text-surface-variant hover:text-surface hover:bg-on-surface-variant/10' }} rounded-lg transition-all group">
-                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('laporan.*') ? '1' : '0' }};">analytics</span>
-                    <span class="font-label-md text-label-md group-hover:translate-x-1 duration-200">Pusat Laporan</span>
-                </a>
-            </li>
-
-            <!-- Pengaturan -->
-            <li>
-                <a href="{{ route('settings.index') }}" class="flex items-center gap-md px-md py-sm {{ request()->routeIs('settings.*') ? 'bg-primary-container text-on-primary-container' : 'text-surface-variant hover:text-surface hover:bg-on-surface-variant/10' }} rounded-lg transition-all group">
-                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {{ request()->routeIs('settings.*') ? '1' : '0' }};">settings</span>
-                    <span class="font-label-md text-label-md group-hover:translate-x-1 duration-200">Pengaturan</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</aside>
-
-<!-- Main Content Area -->
-<main class="ml-[280px] min-h-screen pb-10">
-    <!-- TopAppBar Integration -->
-    <header class="sticky top-0 z-40 flex justify-between items-center px-gutter h-16 bg-surface/70 backdrop-blur-md border-b border-outline-variant/50 shadow-sm">
-        <div class="flex items-center gap-md w-1/3">
-            <h2 class="font-headline-sm text-on-surface whitespace-nowrap hidden md:block">@yield('header_title')</h2>
-        </div>
-
-        <div class="flex items-center gap-lg">
-            <div class="flex items-center gap-sm">
-                <button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors relative active:scale-95">
-                    <span class="material-symbols-outlined">notifications</span>
-                    <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
-                </button>
-                <form method="POST" action="{{ url('/logout') }}" class="inline">
-                    @csrf
-                    <button type="submit" class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-full transition-colors active:scale-95" title="Logout">
-                        <span class="material-symbols-outlined">logout</span>
-                    </button>
-                </form>
-            </div>
-            
-            <div class="flex items-center gap-md pl-md border-l border-outline-variant/30">
-                <div class="text-right hidden sm:block">
-                    <p class="font-label-md text-label-md text-on-surface">{{ auth()->user()?->name ?? 'Admin Utama' }}</p>
-                    <p class="text-[10px] text-on-surface-variant font-medium uppercase tracking-wider">Super Administrator</p>
                 </div>
-                <img alt="Admin Profile Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-primary-container" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()?->name ?? 'Admin') }}&background=006c49&color=fff"/>
             </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-8" x-data="{ persediaanOpen: false, asetOpen: true }">
+                
+                <!-- Section 1: Dashboard -->
+                <div>
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <span class="material-symbols-outlined {{ request()->routeIs('dashboard') ? 'icon-fill' : '' }}">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+
+                <!-- Section 2: Manajemen Persediaan -->
+                <div>
+                    <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Manajemen Persediaan</p>
+                    <button @click="persediaanOpen = !persediaanOpen" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined">inventory_2</span>
+                            <span>Logistik</span>
+                        </div>
+                        <span class="material-symbols-outlined text-sm transition-transform duration-200" :class="persediaanOpen ? 'rotate-180' : ''">expand_more</span>
+                    </button>
+                    <div x-show="persediaanOpen" x-collapse class="pl-11 pr-4 mt-1 space-y-1">
+                        <a href="{{ url('/inventaris') }}" class="block py-2 text-sm text-slate-400 hover:text-white transition-colors">Semua Kategori</a>
+                        <a href="{{ url('/inventaris?kategori=atk') }}" class="block py-2 text-sm text-slate-400 hover:text-white transition-colors">ATK & Kertas</a>
+                        <a href="{{ url('/inventaris?kategori=obat') }}" class="block py-2 text-sm text-slate-400 hover:text-white transition-colors">Obat & Vaksin</a>
+                    </div>
+                </div>
+
+                <!-- Section 3: Manajemen Aset -->
+                <div>
+                    <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Manajemen Aset</p>
+                    <div class="space-y-1">
+                        <a href="{{ route('aset.data.items') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('aset.data.items') ? 'bg-slate-800 text-white font-medium' : 'hover:bg-slate-800 hover:text-white' }}">
+                            <span class="material-symbols-outlined text-[20px]">dataset</span>
+                            <span class="text-sm">Data Aset</span>
+                        </a>
+                        <a href="{{ route('aset.pengadaan.items') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('aset.pengadaan.*') ? 'bg-slate-800 text-white font-medium' : 'hover:bg-slate-800 hover:text-white' }}">
+                            <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                            <span class="text-sm">Pengadaan</span>
+                        </a>
+                        <a href="{{ route('aset.pemeliharaan.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('aset.pemeliharaan.*') ? 'bg-slate-800 text-white font-medium' : 'hover:bg-slate-800 hover:text-white' }}">
+                            <span class="material-symbols-outlined text-[20px]">build</span>
+                            <span class="text-sm">Pemeliharaan</span>
+                        </a>
+                        <!-- If monitoring doesn't exist, we safely omit it or use correct route -->
+                        <a href="{{ route('aset.pelabelan.items') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('aset.pelabelan.*') ? 'bg-slate-800 text-white font-medium' : 'hover:bg-slate-800 hover:text-white' }}">
+                            <span class="material-symbols-outlined text-[20px]">qr_code_2</span>
+                            <span class="text-sm">Label QR Code</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 4: Laporan -->
+                <div>
+                    <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pelaporan</p>
+                    <a href="{{ route('laporan.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('laporan.*') ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <span class="material-symbols-outlined {{ request()->routeIs('laporan.*') ? 'icon-fill' : '' }}">analytics</span>
+                        <span>Pusat Laporan</span>
+                    </a>
+                </div>
+
+                <!-- Section 5: Asisten AI -->
+                <div>
+                    <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Integrasi</p>
+                    <a href="{{ route('asisten.wa') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('asisten.*') ? 'bg-slate-800 text-white font-medium' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <span class="material-symbols-outlined text-[20px]">smart_toy</span>
+                        <span class="text-sm">Asisten AI</span>
+                    </a>
+                    <a href="{{ route('settings.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('settings.*') ? 'bg-slate-800 text-white font-medium' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <span class="material-symbols-outlined text-[20px]">settings</span>
+                        <span class="text-sm">Pengaturan</span>
+                    </a>
+                </div>
+            </nav>
+
+            <!-- User Area -->
+            <div class="p-4 border-t border-slate-800">
+                <div class="flex items-center gap-3 px-2">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()?->name ?? 'Admin') }}&background=14b8a6&color=fff" class="w-10 h-10 rounded-full border-2 border-slate-700">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-white truncate">{{ auth()->user()?->name ?? 'Administrator' }}</p>
+                        <p class="text-xs text-slate-400 truncate">{{ auth()->user()?->role ?? 'Admin Utama' }}</p>
+                    </div>
+                    <form method="POST" action="{{ url('/logout') }}" class="inline">
+                        @csrf
+                        <button class="text-slate-400 hover:text-red-400 transition-colors p-1" title="Logout">
+                            <span class="material-symbols-outlined">logout</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50">
+            
+            <!-- Top Header -->
+            <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 z-10 sticky top-0">
+                <div class="flex items-center gap-4">
+                    <div class="px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-full flex items-center gap-2 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wide">Sistem Aktif & Real-time</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-6">
+                    <button class="relative text-slate-400 hover:text-slate-600 transition-colors">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-6 border-l border-slate-200">
+                        <div class="text-right hidden md:block">
+                            <p class="text-sm font-bold text-slate-700">{{ auth()->user()?->name ?? 'Administrator' }}</p>
+                            <p class="text-xs text-slate-500 font-medium">Healthcare Admin</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Scrollable Content -->
+            <main class="flex-1 overflow-y-auto p-6 md:p-8">
+                @yield('content')
+            </main>
         </div>
-    </header>
-
-    <!-- Slot Content -->
-    <div class="pt-6 px-gutter max-w-[1440px] mx-auto">
-        @yield('content')
     </div>
-</main>
 
-@yield('scripts')
-
+    @yield('scripts')
 </body>
 </html>
