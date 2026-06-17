@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
@@ -39,7 +39,7 @@
             </div>
 
             <!-- Navigation -->
-            <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-8" x-data="{ persediaanOpen: {{ in_array(request()->segment(1), ['atk', 'kertas_cover', 'bahan_cetak', 'benda_pos', 'bahan_komputer', 'obat', 'bahan_lainnya', 'natura_pakan_lainnya', 'vaksin', 'obat_apbd', 'obat_apbn']) ? 'true' : 'false' }}, asetOpen: {{ request()->is('aset/*') || request()->is('aset') ? 'true' : 'false' }} }">
+            <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-8" x-data="{ persediaanOpen: {{ in_array(request()->segment(1), ['atk', 'kertas_cover', 'bahan_cetak', 'benda_pos', 'bahan_komputer', 'obat', 'bahan_lainnya', 'natura_pakan_lainnya', 'vaksin', 'obat_apbd', 'obat_apbn', 'persediaan_lainnya']) ? 'true' : 'false' }}, asetOpen: {{ request()->is('aset/*') || request()->is('aset') ? 'true' : 'false' }} }">
                 
                 <!-- Section 1: Dashboard -->
                 <div>
@@ -71,6 +71,7 @@
                         <a href="/vaksin/items" class="{{ request()->segment(1) == 'vaksin' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Vaksin</a>
                         <a href="/obat_apbd/items" class="{{ request()->segment(1) == 'obat_apbd' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Obat APBD</a>
                         <a href="/obat_apbn/items" class="{{ request()->segment(1) == 'obat_apbn' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Obat APBN</a>
+                        <a href="/persediaan_lainnya/items" class="{{ request()->segment(1) == 'persediaan_lainnya' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Persediaan Lainnya</a>
                     </div>
                 </div>
 

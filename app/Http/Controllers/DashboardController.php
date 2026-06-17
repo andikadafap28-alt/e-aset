@@ -64,6 +64,7 @@ class DashboardController extends Controller
             'vaksin' => ['label' => 'Vaksin', 'icon' => 'teal', 'total' => 0, 'jenis' => 0],
             'obat_apbd' => ['label' => 'Obat APBD', 'icon' => 'cyan', 'total' => 0, 'jenis' => 0],
             'obat_apbn' => ['label' => 'Obat APBN', 'icon' => 'indigo', 'total' => 0, 'jenis' => 0],
+            'persediaan_lainnya' => ['label' => 'Persediaan Lainnya', 'icon' => 'slate', 'total' => 0, 'jenis' => 0],
         ];
 
         foreach ($summaryStok as $row) {
@@ -219,7 +220,7 @@ class DashboardController extends Controller
         if ($filterKat) {
             $lowStockQuery->where('kategori_besar', $filterKat);
         } else {
-            $lowStockQuery->whereIn('kategori_besar', ['atk', 'kertas_cover', 'persediaan', 'bahan_komputer', 'bahan_cetak', 'benda_pos', 'obat', 'bahan_lainnya', 'natura_pakan_lainnya', 'vaksin', 'obat_apbd', 'obat_apbn']);
+            $lowStockQuery->whereIn('kategori_besar', ['atk', 'kertas_cover', 'persediaan', 'bahan_komputer', 'bahan_cetak', 'benda_pos', 'obat', 'bahan_lainnya', 'natura_pakan_lainnya', 'vaksin', 'obat_apbd', 'obat_apbn', 'persediaan_lainnya']);
         }
         
         $lowStockItems = $lowStockQuery->orderBy('stok_sekarang', 'asc')

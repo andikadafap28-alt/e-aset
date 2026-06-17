@@ -30,7 +30,8 @@ class InventoryController extends Controller
             'bantuan_sarpras' => 'Bantuan Sarpras',
             'vaksin' => 'Vaksin',
             'obat_apbd' => 'Obat APBD',
-            'obat_apbn' => 'Obat APBN'
+            'obat_apbn' => 'Obat APBN',
+            'persediaan_lainnya' => 'Persediaan Lainnya'
         ];
         return $map[$kategori_besar] ?? 'Persediaan';
     }

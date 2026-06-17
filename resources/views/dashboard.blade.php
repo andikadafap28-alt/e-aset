@@ -93,8 +93,8 @@
                 <h3 class="text-base font-bold text-slate-800">Dinamika Transaksi Logistik</h3>
                 <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full">6 Bulan Terakhir</span>
             </div>
-            <div class="flex-1 min-h-[300px]">
-                <div id="mainActivityChart" class="w-full h-full"></div>
+            <div class="flex-1 min-h-[300px] relative w-full h-full">
+                <canvas id="mainActivityChart"></canvas>
             </div>
         </div>
 
@@ -104,8 +104,8 @@
                 <h3 class="text-base font-bold text-slate-800">Kondisi Aset</h3>
             </div>
             <p class="text-xs text-slate-500 mb-4">Persentase kondisi seluruh aset terdaftar.</p>
-            <div class="flex-1 flex items-center justify-center">
-                <div id="conditionPieChart" class="w-full"></div>
+            <div class="flex-1 relative flex items-center justify-center w-full min-h-[300px]">
+                <canvas id="conditionPieChart"></canvas>
             </div>
         </div>
     </div>
@@ -259,139 +259,224 @@
         }
 
         // 1. Main Area Chart (Aktivitas Transaksi)
-        var optionsMain = {
-            series: [{
-                name: 'Barang Masuk (Rp)',
-                data: totalMasuk
-            }, {
-                name: 'Barang Keluar (Rp)',
-                data: totalKeluar
-            }],
-            chart: {
-                type: 'area',
-                height: 320,
-                fontFamily: 'Plus Jakarta Sans, sans-serif',
-                toolbar: { show: false },
-                zoom: { enabled: false },
-                background: 'transparent'
-            },
-            colors: ['#2563eb', '#e11d48'], // Teal-600 and Rose-600
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    shadeIntensity: 1,
-                    opacityFrom: 0.4,
-                    opacityTo: 0.05,
-                    stops: [0, 100]
-                }
-            },
-            dataLabels: { enabled: false },
-            stroke: {
-                curve: 'smooth',
-                width: 3
-            },
-            xaxis: {
-                categories: chartLabels,
-                axisBorder: { show: false },
-                axisTicks: { show: false },
-                labels: {
-                    style: { colors: '#64748b', fontSize: '12px', fontWeight: 600 }
-                }
-            },
-            yaxis: {
-                labels: {
-                    formatter: function (value) {
-                        if(value >= 1000000) return (value / 1000000).toFixed(1) + 'Jt';
-                        if(value >= 1000) return (value / 1000).toFixed(0) + 'Rb';
-                        return value;
+        const ctxMain = document.getElementById('mainActivityChart').getContext('2d');
+        
+        // Create vibrant gradients for Area Chart
+        let gradientMasuk = ctxMain.createLinearGradient(0, 0, 0, 400);
+        gradientMasuk.addColorStop(0, 'rgba(37, 99, 235, 0.4)'); // Blue-600
+        gradientMasuk.addColorStop(1, 'rgba(37, 99, 235, 0.05)');
+        
+        let gradientKeluar = ctxMain.createLinearGradient(0, 0, 0, 400);
+        gradientKeluar.addColorStop(0, 'rgba(225, 29, 72, 0.4)'); // Rose-600
+        gradientKeluar.addColorStop(1, 'rgba(225, 29, 72, 0.05)');
+
+        new Chart(ctxMain, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [
+                    {
+                        label: 'Barang Masuk (Rp)',
+                        data: totalMasuk,
+                        borderColor: '#2563eb', // blue-600
+                        backgroundColor: gradientMasuk,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#2563eb',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4
                     },
-                    style: { colors: '#64748b', fontSize: '12px', fontWeight: 600 }
-                }
+                    {
+                        label: 'Barang Keluar (Rp)',
+                        data: totalKeluar,
+                        borderColor: '#e11d48', // rose-600
+                        backgroundColor: gradientKeluar,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#e11d48',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
             },
-            grid: {
-                borderColor: '#f1f5f9',
-                strokeDashArray: 4,
-                yaxis: { lines: { show: true } },
-                xaxis: { lines: { show: false } },
-                padding: { top: 0, right: 0, bottom: 0, left: 10 }
-            },
-            legend: {
-                position: 'top',
-                horizontalAlign: 'right',
-                markers: { radius: 12 },
-                itemMargin: { horizontal: 10, vertical: 0 }
-            },
-            tooltip: {
-                theme: 'light',
-                y: {
-                    formatter: function (val) {
-                        return "Rp " + new Intl.NumberFormat('id-ID').format(val)
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 10,
+                            font: {
+                                family: "'Plus Jakarta Sans', sans-serif",
+                                size: 12,
+                                weight: '600'
+                            },
+                            color: '#475569'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        titleColor: '#1e293b',
+                        bodyColor: '#475569',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12,
+                        boxPadding: 6,
+                        usePointStyle: true,
+                        titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 13, weight: 'bold' },
+                        bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 12, weight: '600' },
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: {
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 12, weight: '600' },
+                            color: '#64748b'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: '#f1f5f9',
+                            borderDash: [4, 4],
+                            drawBorder: false
+                        },
+                        beginAtZero: true,
+                        ticks: {
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 12, weight: '600' },
+                            color: '#64748b',
+                            callback: function(value) {
+                                if(value >= 1000000) return (value / 1000000).toFixed(1) + 'Jt';
+                                if(value >= 1000) return (value / 1000).toFixed(0) + 'Rb';
+                                return value;
+                            }
+                        }
                     }
                 }
             }
-        };
-
-        var chartMain = new ApexCharts(document.querySelector("#mainActivityChart"), optionsMain);
-        chartMain.render();
+        });
 
         // 2. Pie Chart (Kondisi Aset)
         const conditionData = {!! json_encode($chartKondisi) !!};
         const pieLabels = Object.keys(conditionData);
         const pieSeries = Object.values(conditionData).map(val => parseInt(val));
 
-        // Define colors based on label (Baik = emerald, Rusak Ringan = amber, Rusak Berat = rose, etc)
         const pieColors = pieLabels.map(label => {
             if(label === 'Baik') return '#10b981'; // emerald-500
             if(label === 'Rusak Ringan') return '#f59e0b'; // amber-500
             if(label === 'Rusak Berat') return '#f43f5e'; // rose-500
             return '#6366f1'; // indigo-500 fallback
         });
+        
+        const pieHoverColors = pieLabels.map(label => {
+            if(label === 'Baik') return '#059669'; // emerald-600
+            if(label === 'Rusak Ringan') return '#d97706'; // amber-600
+            if(label === 'Rusak Berat') return '#e11d48'; // rose-600
+            return '#4f46e5'; // indigo-600 fallback
+        });
 
-        var optionsPie = {
-            series: pieSeries,
-            chart: {
-                type: 'donut',
-                height: 320,
-                fontFamily: 'Plus Jakarta Sans, sans-serif',
-                background: 'transparent'
+        const ctxPie = document.getElementById('conditionPieChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: pieLabels,
+                datasets: [{
+                    data: pieSeries,
+                    backgroundColor: pieColors,
+                    hoverBackgroundColor: pieHoverColors,
+                    borderWidth: 3,
+                    borderColor: '#ffffff',
+                    hoverOffset: 4
+                }]
             },
-            labels: pieLabels,
-            colors: pieColors,
-            plotOptions: {
-                pie: {
-                    donut: {
-                        size: '70%',
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
                         labels: {
-                            show: true,
-                            name: { fontSize: '14px', fontWeight: 600, color: '#64748b' },
-                            value: { fontSize: '24px', fontWeight: 800, color: '#1e293b' },
-                            total: {
-                                show: true,
-                                label: 'Total',
-                                color: '#64748b',
-                                fontSize: '14px',
-                                fontWeight: 600
-                            }
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                family: "'Plus Jakarta Sans', sans-serif",
+                                size: 13,
+                                weight: '600'
+                            },
+                            color: '#475569'
                         }
                     },
-                    expandOnClick: false
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        titleColor: '#1e293b',
+                        bodyColor: '#475569',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12,
+                        boxPadding: 6,
+                        usePointStyle: true,
+                        bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 14, weight: 'bold' },
+                        callbacks: {
+                            label: function(context) {
+                                return ` ${context.label}: ${context.parsed} Aset`;
+                            }
+                        }
+                    }
                 }
             },
-            dataLabels: { enabled: false },
-            stroke: { width: 4, colors: ['#ffffff'] },
-            legend: {
-                position: 'bottom',
-                markers: { radius: 12 },
-                itemMargin: { horizontal: 10, vertical: 5 }
-            },
-            tooltip: {
-                theme: 'light',
-                y: { formatter: function (val) { return val + " Aset" } }
-            }
-        };
+            plugins: [{
+                id: 'centerText',
+                beforeDraw: function(chart) {
+                    var width = chart.width,
+                        height = chart.height,
+                        ctx = chart.ctx;
 
-        var chartPie = new ApexCharts(document.querySelector("#conditionPieChart"), optionsPie);
-        chartPie.render();
+                    ctx.restore();
+                    var fontSize = (height / 160).toFixed(2);
+                    ctx.font = "bold " + fontSize + "em 'Plus Jakarta Sans', sans-serif";
+                    ctx.textBaseline = "middle";
+                    ctx.fillStyle = "#1e293b";
+
+                    var total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                    var text = total,
+                        textX = Math.round((width - ctx.measureText(text).width) / 2),
+                        textY = height / 2.3;
+
+                    ctx.fillText(text, textX, textY);
+                    
+                    ctx.font = "600 " + (fontSize * 0.4).toFixed(2) + "em 'Plus Jakarta Sans', sans-serif";
+                    ctx.fillStyle = "#64748b";
+                    var text2 = "Total",
+                        text2X = Math.round((width - ctx.measureText(text2).width) / 2),
+                        text2Y = height / 2.3 + (height * 0.1);
+                    ctx.fillText(text2, text2X, text2Y);
+                    
+                    ctx.save();
+                }
+            }]
+        });
     });
 </script>
 @endsection
