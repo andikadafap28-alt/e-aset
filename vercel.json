@@ -33,5 +33,11 @@
         "CACHE_STORE": "database",
         "CACHE_DRIVER": "database",
         "VIEW_COMPILED_PATH": "/tmp"
-    }
+    },
+    "crons": [
+        {
+            "path": "/api/keep-alive",
+            "schedule": "0 0 * * *"
+        }
+    ]
 }
