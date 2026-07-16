@@ -42,6 +42,9 @@
                         <option value="Alat Kesehatan" {{ $item->kategori == 'Alat Kesehatan' ? 'selected' : '' }}>Alat Kesehatan</option>
                         <option value="BHP Medis" {{ $item->kategori == 'BHP Medis' ? 'selected' : '' }}>BHP Medis</option>
                         <option value="Umum" {{ $item->kategori == 'Umum' ? 'selected' : '' }}>Umum</option>
+                        <option value="NIBAR (Nomor Induk Barang)" {{ $item->kategori == 'NIBAR (Nomor Induk Barang)' ? 'selected' : '' }}>NIBAR (Nomor Induk Barang)</option>
+                        <option value="KIBAR (Kartu Identitas Barang)" {{ $item->kategori == 'KIBAR (Kartu Identitas Barang)' ? 'selected' : '' }}>KIBAR (Kartu Identitas Barang)</option>
+                        <option value="NUSP (Nomor Urut Spesifikasi Persediaan)" {{ $item->kategori == 'NUSP (Nomor Urut Spesifikasi Persediaan)' ? 'selected' : '' }}>NUSP (Nomor Urut Spesifikasi Persediaan)</option>
                     </select>
                 </div>
                 <div>

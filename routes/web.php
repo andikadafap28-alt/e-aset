@@ -78,7 +78,10 @@ Route::prefix('aset')->name('aset.')->group(function () {
     Route::post('/pemeliharaan/{id}/cancel', [\App\Http\Controllers\AssetMaintenanceController::class, 'cancel'])->name('pemeliharaan.cancel');
     Route::get('/monitoring/items', [AssetController::class, 'monitoring'])->name('monitoring.items');
     Route::get('/pelabelan/items', [AssetController::class, 'pelabelan'])->name('pelabelan.items');
-    Route::post('/pelabelan/print', [AssetController::class, 'printLabels'])->name('pelabelan.print');
+    Route::post('/aset/pelabelan/print', [AssetController::class, 'printLabels'])->name('aset.pelabelan.print');
+
+    // Koreksi Aset
+    Route::post('/aset/{id}/koreksi', [AssetController::class, 'storeCorrection'])->name('aset.koreksi.store');
 
     // Keranjang Cetak Label (Print Queue)
     Route::get('/print-queue/data', [AssetController::class, 'getPrintQueueData'])->name('print-queue.data');
@@ -107,6 +110,8 @@ Route::get('/item/{asset_code}', [AssetController::class, 'publicShow'])->name('
 Route::post('/item/{asset_code}/verify', [AssetController::class, 'verifyPublicPassword'])->name('public.verify');
 
 // Resource route diletakkan di bawah
+Route::post('/aset/import-kode-108', [\App\Http\Controllers\AssetController::class, 'importKode108'])->name('aset.import-kode-108');
+Route::post('/aset/bulk-action', [\App\Http\Controllers\AssetController::class, 'bulkAction'])->name('aset.bulk-action');
 Route::resource('aset', AssetController::class);
 
 // Pelaporan & Analytics
@@ -114,11 +119,16 @@ Route::prefix('laporan')->name('laporan.')->group(function () {
     Route::get('/', [\App\Http\Controllers\ReportController::class, 'index'])->name('index');
     Route::post('/generate', [\App\Http\Controllers\ReportController::class, 'generate'])->name('generate');
     Route::get('/aset/pdf', [\App\Http\Controllers\ReportController::class, 'downloadAssetReport'])->name('aset.pdf');
+    Route::get('/penyusutan', [\App\Http\Controllers\ReportController::class, 'depreciation'])->name('penyusutan');
+    Route::get('/audit-log', [\App\Http\Controllers\ReportController::class, 'auditLog'])->name('audit-log');
     
     Route::get('/rekap', [\App\Http\Controllers\ReportController::class, 'rekap'])->name('rekap');
     Route::get('/rekap/export', [\App\Http\Controllers\ReportController::class, 'exportRekap'])->name('rekap.export');
     Route::post('/persediaan-global/export', [\App\Http\Controllers\ReportController::class, 'exportPersediaanGlobal'])->name('persediaan-global.export');
     Route::post('/aktivitas-aset/export', [\App\Http\Controllers\ReportController::class, 'exportAktivitasAset'])->name('aktivitas-aset.export');
+
+    Route::get('/rekonsiliasi', [\App\Http\Controllers\ReportController::class, 'rekonsiliasi'])->name('rekonsiliasi');
+    Route::post('/rekonsiliasi/export', [\App\Http\Controllers\ReportController::class, 'exportRekonsiliasi'])->name('rekonsiliasi.export');
 });
 
 // Melihat/Mengunduh Dokumen Pengadaan langsung dari Google Drive
@@ -130,6 +140,17 @@ Route::delete('/procurement-file/{id}', [InventoryController::class, 'destroyPro
 Route::prefix('asisten')->name('asisten.')->group(function () {
     Route::get('/wa', [\App\Http\Controllers\AssistantController::class, 'waChats'])->name('wa');
     Route::get('/tele', [\App\Http\Controllers\AssistantController::class, 'teleChats'])->name('tele');
+});
+
+// Stock Opname
+Route::prefix('stock-opname')->name('stock-opname.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\StockOpnameController::class, 'index'])->name('index');
+    Route::get('/create', [\App\Http\Controllers\StockOpnameController::class, 'create'])->name('create');
+    Route::post('/', [\App\Http\Controllers\StockOpnameController::class, 'store'])->name('store');
+    Route::get('/{id}/scan', [\App\Http\Controllers\StockOpnameController::class, 'scan'])->name('scan');
+    Route::post('/{id}/record', [\App\Http\Controllers\StockOpnameController::class, 'recordScan'])->name('record');
+    Route::post('/{id}/finish', [\App\Http\Controllers\StockOpnameController::class, 'finish'])->name('finish');
+    Route::get('/{id}', [\App\Http\Controllers\StockOpnameController::class, 'show'])->name('show');
 });
 
 /*
@@ -196,6 +217,9 @@ Route::prefix('{kategori_besar}')->group(function () {
     // Fitur Edit Transaksi
     Route::get('/transaksi/{id}/edit', [InventoryController::class, 'editTransaction']);
     Route::put('/transaksi/{id}', [InventoryController::class, 'updateTransaction']);
+    
+    // Fitur Approval Transaksi
+    Route::post('/transaksi/{id}/approve', [InventoryController::class, 'approveTransaction'])->name('inventory.transaksi.approve');
 
     // Menampilkan halaman pop-up/filter export (Pilih bulan & jenis laporan)
     Route::get('/export', [InventoryController::class, 'exportPage']);

@@ -19,6 +19,31 @@ class ReportController extends Controller
         return view('reports.index', compact('categories'));
     }
 
+    public function depreciation(Request $request)
+    {
+        $categories = AssetCategory::orderBy('nama_kategori', 'asc')->get();
+        $categoryId = $request->query('category_id');
+
+        $query = Asset::with('category')->where('status_aktif', true);
+        if ($categoryId && $categoryId !== 'all') {
+            $query->where('category_id', $categoryId);
+        }
+
+        $assets = $query->get();
+        
+        $totalPurchaseValue = $assets->sum('harga_perolehan');
+        $totalDepreciation = $assets->sum(function($asset) { return $asset->accumulated_depreciation; });
+        $totalBookValue = $assets->sum(function($asset) { return $asset->book_value; });
+
+        return view('reports.depreciation', compact('categories', 'assets', 'totalPurchaseValue', 'totalDepreciation', 'totalBookValue', 'categoryId'));
+    }
+
+    public function auditLog(Request $request)
+    {
+        $logs = \App\Models\ActivityLog::with('user')->latest()->paginate(50);
+        return view('reports.audit_log', compact('logs'));
+    }
+
     public function generate(Request $request)
     {
         $request->validate([
@@ -320,5 +345,46 @@ class ReportController extends Controller
 
         $pdf = Pdf::loadView('reports.aktivitas_aset_pdf', $pdfData)->setPaper('A4', 'landscape');
         return $pdf->download('Riwayat_Aset_' . $bulanAwal . '_sd_' . $bulanAkhir . '.pdf');
+    public function rekonsiliasi(Request $request)
+    {
+        $categories = AssetCategory::orderBy('nama_kategori', 'asc')->get();
+        $categoryId = $request->query('category_id');
+
+        $query = Asset::with('category')->where('status_aktif', true);
+        if ($categoryId && $categoryId !== 'all') {
+            $query->where('category_id', $categoryId);
+        }
+
+        $assets = $query->get();
+
+        // Separate Intra (>= 500,000) and Ekstra (< 500,000)
+        $intraAssets = $assets->where('harga_perolehan', '>=', 500000);
+        $ekstraAssets = $assets->where('harga_perolehan', '<', 500000);
+
+        return view('reports.rekonsiliasi', compact('categories', 'intraAssets', 'ekstraAssets', 'categoryId'));
+    }
+
+    public function exportRekonsiliasi(Request $request)
+    {
+        $categoryId = $request->input('category_id');
+
+        $query = Asset::with('category')->where('status_aktif', true);
+        if ($categoryId && $categoryId !== 'all') {
+            $query->where('category_id', $categoryId);
+        }
+
+        $assets = $query->get();
+        $intraAssets = $assets->where('harga_perolehan', '>=', 500000);
+        $ekstraAssets = $assets->where('harga_perolehan', '<', 500000);
+
+        $pdfData = [
+            'date' => Carbon::now()->translatedFormat('d F Y'),
+            'intraAssets' => $intraAssets,
+            'ekstraAssets' => $ekstraAssets,
+            'title' => 'Berita Acara Rekonsiliasi Aset'
+        ];
+
+        $pdf = Pdf::loadView('reports.rekonsiliasi_pdf', $pdfData)->setPaper('A4', 'landscape');
+        return $pdf->download('Berita_Acara_Rekonsiliasi_' . date('Ymd_His') . '.pdf');
     }
 }

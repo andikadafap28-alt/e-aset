@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('asset_corrections', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('asset_id')->constrained('assets')->onDelete('cascade');
+            $table->string('jenis_koreksi'); // 'Nilai', 'Kondisi', 'Reklasifikasi', dsb
+            $table->decimal('nilai_lama', 15, 2)->nullable();
+            $table->decimal('nilai_baru', 15, 2)->nullable();
+            $table->string('kondisi_lama')->nullable();
+            $table->string('kondisi_baru')->nullable();
+            $table->text('keterangan')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('asset_corrections');
+    }
+};

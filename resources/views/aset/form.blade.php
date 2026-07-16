@@ -96,10 +96,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <!-- Asset Code -->
             <div>
-                <label for="asset_code" class="block text-sm font-medium text-slate-700 mb-1">Kode Aset</label>
-                <input type="text" name="asset_code" id="asset_code" value="{{ old('asset_code', $asset->asset_code ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: ALKES-001" {{ isset($asset) ? 'required' : '' }}>
+                <label for="asset_code" class="block text-sm font-medium text-slate-700 mb-1">Kode Aset (NIBAR)</label>
+                <input type="text" name="asset_code" id="asset_code" value="{{ old('asset_code', $asset->asset_code ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {{ isset($asset) ? 'bg-slate-100 text-slate-500' : '' }}" placeholder="Contoh: ALKES-001" {{ isset($asset) ? 'readonly' : 'required' }}>
                 @if(!isset($asset))
                 <p class="text-xs text-slate-500 mt-1">Isi manual jika tidak menggunakan Kode 108. Jika Kode 108 dipilih, kolom ini akan diabaikan.</p>
+                @else
+                <p class="text-xs text-slate-500 mt-1">NIBAR (Nomor Induk Barang) bersifat permanen dan tidak dapat diubah.</p>
                 @endif
             </div>
 
@@ -135,9 +137,12 @@
             <!-- Harga Perolehan -->
             <div>
                 <label for="harga_perolehan" class="block text-sm font-medium text-slate-700 mb-1">Harga Perolehan Aset (Rp)</label>
-                <input type="number" name="harga_perolehan" id="harga_perolehan" value="{{ old('harga_perolehan', $asset->harga_perolehan ?? ($pengadaanData['harga_satuan'] ?? '')) }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: 15000000" {{ !isset($asset) && !empty($pengadaanData['pengadaan_id']) ? '' : 'required' }}>
+                <input type="number" name="harga_perolehan" id="harga_perolehan" value="{{ old('harga_perolehan', $asset->harga_perolehan ?? ($pengadaanData['harga_satuan'] ?? '')) }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {{ isset($asset) ? 'bg-slate-100 text-slate-500' : '' }}" placeholder="Contoh: 15000000" {{ !isset($asset) && !empty($pengadaanData['pengadaan_id']) ? '' : (isset($asset) ? 'readonly' : 'required') }}>
                 @if(!isset($asset) && !empty($pengadaanData['pengadaan_id']))
                 <p class="text-xs text-slate-500 mt-1">Bisa dikosongkan. Sistem akan otomatis mengambil harga dari data pengadaan jika kosong.</p>
+                @endif
+                @if(isset($asset))
+                <p class="text-xs text-slate-500 mt-1">Gunakan menu "Koreksi Nilai" di detail aset untuk mengubah harga perolehan.</p>
                 @endif
             </div>
 
@@ -180,11 +185,17 @@
             <!-- Condition -->
             <div>
                 <label for="condition" class="block text-sm font-medium text-slate-700 mb-1">Kondisi</label>
+                @if(isset($asset))
+                <input type="hidden" name="condition" value="{{ $asset->condition }}">
+                <input type="text" value="{{ $asset->condition }}" class="w-full rounded-lg border-slate-300 shadow-sm bg-slate-100 text-slate-500 sm:text-sm" readonly>
+                <p class="text-xs text-slate-500 mt-1">Gunakan menu "Koreksi Nilai/Kondisi" di detail aset untuk mengubah kondisi aset.</p>
+                @else
                 <select name="condition" id="condition" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
                     <option value="Baik" {{ old('condition', $asset->condition ?? '') == 'Baik' ? 'selected' : '' }}>Baik</option>
                     <option value="Rusak Ringan" {{ old('condition', $asset->condition ?? '') == 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
                     <option value="Rusak Berat" {{ old('condition', $asset->condition ?? '') == 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
                 </select>
+                @endif
             </div>
 
             <!-- Document Link -->

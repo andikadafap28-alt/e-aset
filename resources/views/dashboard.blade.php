@@ -110,6 +110,31 @@
         </div>
     </div>
 
+    <!-- New Analytics Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Bar Chart: Valuasi Aset -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-base font-bold text-slate-800">Perbandingan Valuasi Aset</h3>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">Nilai Perolehan vs Penyusutan vs Nilai Buku Bersih.</p>
+            <div class="flex-1 min-h-[300px] relative w-full h-full">
+                <canvas id="valuationBarChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Doughnut Chart: Kategori Aset -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-base font-bold text-slate-800">Distribusi Kategori Aset</h3>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">Komposisi Master Aset berdasarkan Kategori Utama.</p>
+            <div class="flex-1 relative flex items-center justify-center w-full min-h-[300px]">
+                <canvas id="categoryDoughnutChart"></canvas>
+            </div>
+        </div>
+    </div>
+
     <!-- Kategori Persediaan Section -->
     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
         <div class="flex items-center gap-2 mb-6">
@@ -156,7 +181,7 @@
             </div>
             
             <div class="space-y-4">
-                @if($lowStockItems->isEmpty() && $calibrationReminders->isEmpty() && $serviceReminders->isEmpty() && $expiryReminders->isEmpty())
+                @if($lowStockItems->isEmpty() && $calibrationReminders->isEmpty() && $serviceReminders->isEmpty() && $expiryReminders->isEmpty() && $opnameAssetReminders->isEmpty() && $opnameInventoryReminders->isEmpty())
                     <div class="text-center py-8">
                         <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3">
                             <span class="material-symbols-outlined text-slate-400 text-3xl">check_circle</span>
@@ -164,6 +189,32 @@
                         <p class="text-slate-500 font-medium">Sistem dalam keadaan optimal. Tidak ada peringatan.</p>
                     </div>
                 @endif
+
+                <!-- Sensus Fisik Aset Tetap (> 5 Tahun) -->
+                @foreach($opnameAssetReminders as $asset)
+                <div class="flex items-start gap-4 p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100 hover:bg-indigo-50 transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                        <span class="material-symbols-outlined">fact_check</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-800">{{ $asset->name }}</p>
+                        <p class="text-xs text-slate-500 mt-1">Belum Sensus Fisik > 5 Tahun (Terakhir: {{ \Carbon\Carbon::parse($asset->created_at)->format('Y') }}). <a href="{{ route('aset.show', $asset->id) }}" class="text-indigo-600 hover:underline">Lihat Aset</a></p>
+                    </div>
+                </div>
+                @endforeach
+
+                <!-- Sensus Fisik Persediaan (> 1 Tahun) -->
+                @foreach($opnameInventoryReminders as $item)
+                <div class="flex items-start gap-4 p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100 hover:bg-indigo-50 transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                        <span class="material-symbols-outlined">fact_check</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-800">{{ $item->nama_barang }}</p>
+                        <p class="text-xs text-slate-500 mt-1">Belum Sensus/Opname > 1 Tahun (Terakhir: {{ \Carbon\Carbon::parse($item->updated_at)->format('M Y') }}). <a href="/{{ $item->kategori_besar }}/{{ $item->id }}/detail" class="text-indigo-600 hover:underline">Periksa Stok</a></p>
+                    </div>
+                </div>
+                @endforeach
 
                 @foreach($lowStockItems as $item)
                 <div class="flex items-start gap-4 p-4 rounded-2xl bg-amber-50/50 border border-amber-100 hover:bg-amber-50 transition-colors">
@@ -471,11 +522,133 @@
                     var text2 = "Total",
                         text2X = Math.round((width - ctx.measureText(text2).width) / 2),
                         text2Y = height / 2.3 + (height * 0.1);
-                    ctx.fillText(text2, text2X, text2Y);
-                    
                     ctx.save();
                 }
             }]
+        });
+
+        // 3. Doughnut Chart (Kategori Aset)
+        const categoryData = {!! json_encode($chartKategori) !!};
+        const catLabels = Object.keys(categoryData);
+        const catSeries = Object.values(categoryData).map(val => parseInt(val));
+
+        // Generate nice colors for categories
+        const baseColors = ['#3b82f6', '#10b981', '#f59e0b', '#6366f1', '#ec4899', '#8b5cf6', '#14b8a6', '#f43f5e'];
+        const catColors = catLabels.map((_, i) => baseColors[i % baseColors.length]);
+
+        const ctxCat = document.getElementById('categoryDoughnutChart').getContext('2d');
+        new Chart(ctxCat, {
+            type: 'doughnut',
+            data: {
+                labels: catLabels,
+                datasets: [{
+                    data: catSeries,
+                    backgroundColor: catColors,
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            usePointStyle: true,
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 12 },
+                            color: '#475569'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        titleColor: '#1e293b',
+                        bodyColor: '#475569',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: function(context) {
+                                return ` ${context.label}: ${context.parsed} Aset`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 4. Bar Chart (Valuasi Aset)
+        const ctxValuation = document.getElementById('valuationBarChart').getContext('2d');
+        const assetStatsRaw = {!! json_encode([
+            'Harga Perolehan' => $assetStats['total_purchase'] ?? 0,
+            'Total Depresiasi' => $assetStats['total_depreciation'] ?? 0,
+            'Nilai Buku Bersih' => $assetStats['total_book_value'] ?? 0,
+        ]) !!};
+        
+        new Chart(ctxValuation, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(assetStatsRaw),
+                datasets: [{
+                    label: 'Nilai Rupiah',
+                    data: Object.values(assetStatsRaw),
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.8)', // blue
+                        'rgba(245, 158, 11, 0.8)', // amber
+                        'rgba(16, 185, 129, 0.8)'  // emerald
+                    ],
+                    borderColor: [
+                        '#2563eb',
+                        '#d97706',
+                        '#059669'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    barPercentage: 0.6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        titleColor: '#1e293b',
+                        bodyColor: '#475569',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(context.parsed.y);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: "'Plus Jakarta Sans', sans-serif", weight: '600' } }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f5f9', borderDash: [4, 4] },
+                        ticks: {
+                            font: { family: "'Plus Jakarta Sans', sans-serif" },
+                            callback: function(value) {
+                                if(value >= 1000000000) return (value / 1000000000).toFixed(1) + ' M';
+                                if(value >= 1000000) return (value / 1000000).toFixed(1) + ' Jt';
+                                if(value >= 1000) return (value / 1000).toFixed(0) + ' Rb';
+                                return value;
+                            }
+                        }
+                    }
+                }
+            }
         });
     });
 </script>

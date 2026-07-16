@@ -26,11 +26,28 @@
 </div>
 @endif
 
+<form action="{{ route('aset.bulk-action') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menjalankan aksi massal pada item yang dipilih?');">
+    @csrf
+    <div class="mb-4 flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200 shadow-sm">
+        <span class="text-sm font-semibold text-slate-700">Aksi Massal:</span>
+        <select name="bulk_action" required class="text-sm rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 py-1.5 pl-3 pr-8">
+            <option value="">-- Pilih Aksi --</option>
+            <option value="delete">Hapus Aset Terpilih</option>
+            <option value="set_baik">Ubah Kondisi: Baik</option>
+            <option value="set_rusak_ringan">Ubah Kondisi: Rusak Ringan</option>
+            <option value="set_rusak_berat">Ubah Kondisi: Rusak Berat</option>
+        </select>
+        <button type="submit" class="bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">Terapkan</button>
+    </div>
+
 <div class="bg-white/70 backdrop-blur-md rounded-xl border border-slate-200 shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-slate-50/50 border-b border-slate-200">
+                    <th class="py-3 px-5 text-xs font-semibold text-slate-500 uppercase tracking-wider w-10">
+                        <input type="checkbox" id="selectAll" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
+                    </th>
                     <th class="py-3 px-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nomor</th>
                     <th class="py-3 px-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kode Aset</th>
                     <th class="py-3 px-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama Barang</th>
@@ -43,6 +60,9 @@
             <tbody class="divide-y divide-slate-100">
                 @forelse($assets as $index => $asset)
                 <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-3 px-5">
+                        <input type="checkbox" name="asset_ids[]" value="{{ $asset->id }}" class="asset-checkbox rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
+                    </td>
                     <td class="py-3 px-5 text-sm text-slate-600">{{ $index + 1 }}</td>
                     <td class="py-3 px-5 text-sm font-medium text-slate-700">{{ $asset->asset_code }}</td>
                     <td class="py-3 px-5 text-sm font-semibold text-slate-800">
@@ -82,7 +102,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="py-8 text-center text-slate-500 text-sm">
+                    <td colspan="8" class="py-8 text-center text-slate-500 text-sm">
                         Belum ada data aset. <a href="{{ route('aset.create') }}" class="text-indigo-600 hover:underline">Tambahkan sekarang</a>.
                     </td>
                 </tr>
@@ -91,6 +111,7 @@
         </table>
     </div>
 </div>
+</form>
 
     <!-- Modal Import Kode 108 -->
     <div x-data="{ showKode108Modal: false }" @open-modal-kode108.window="showKode108Modal = true" x-show="showKode108Modal" class="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/50 backdrop-blur-sm" style="display: none;">
@@ -124,4 +145,11 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.getElementById('selectAll').addEventListener('change', function() {
+            let checkboxes = document.querySelectorAll('.asset-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+    </script>
 @endsection

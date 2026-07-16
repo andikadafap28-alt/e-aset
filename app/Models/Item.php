@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\LogsActivity;
 
 class Item extends Model
 {
+    use LogsActivity;
+
     // Mengizinkan kolom ini untuk diisi data
     protected $fillable = [
     'kode_barang', 

@@ -223,18 +223,15 @@ class AssetController extends Controller
         $asset = Asset::findOrFail($id);
 
         $validated = $request->validate([
-            'asset_code' => 'required|unique:assets,asset_code,' . $asset->id,
             'name' => 'required|string|max:255',
             'category' => 'nullable|string|max:255', // Legacy
             'category_id' => 'required|exists:asset_categories,id',
-            'harga_perolehan' => 'required|numeric',
             'location' => 'required|string|max:255',
             'penanggung_jawab' => 'nullable|string|max:255',
             'year_purchased' => 'required|digits:4',
             'last_calibration' => 'nullable|date',
             'next_calibration' => 'nullable|date',
             'next_service' => 'nullable|date',
-            'condition' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'document_link' => 'nullable|url',
@@ -260,6 +257,47 @@ class AssetController extends Controller
         $asset->delete();
 
         return redirect()->route('aset.index')->with('success', 'Aset berhasil dihapus.');
+    }
+
+    public function storeCorrection(Request $request, string $id)
+    {
+        $asset = Asset::findOrFail($id);
+        
+        $request->validate([
+            'jenis_koreksi' => 'required|string',
+            'nilai_baru' => 'nullable|numeric',
+            'kondisi_baru' => 'nullable|string|in:Baik,Rusak Ringan,Rusak Berat',
+            'keterangan' => 'required|string'
+        ]);
+
+        $koreksiData = [
+            'asset_id' => $asset->id,
+            'jenis_koreksi' => $request->jenis_koreksi,
+            'keterangan' => $request->keterangan
+        ];
+
+        $updateData = [];
+
+        if ($request->jenis_koreksi == 'Nilai' || $request->jenis_koreksi == 'Nilai & Kondisi') {
+            $koreksiData['nilai_lama'] = $asset->harga_perolehan;
+            $koreksiData['nilai_baru'] = $request->nilai_baru;
+            $updateData['harga_perolehan'] = $request->nilai_baru;
+        }
+
+        if ($request->jenis_koreksi == 'Kondisi' || $request->jenis_koreksi == 'Nilai & Kondisi') {
+            $koreksiData['kondisi_lama'] = $asset->condition;
+            $koreksiData['kondisi_baru'] = $request->kondisi_baru;
+            $updateData['condition'] = $request->kondisi_baru;
+        }
+
+        \Illuminate\Support\Facades\DB::transaction(function() use ($asset, $koreksiData, $updateData) {
+            \App\Models\AssetCorrection::create($koreksiData);
+            if (!empty($updateData)) {
+                $asset->update($updateData);
+            }
+        });
+
+        return redirect()->back()->with('success', 'Koreksi aset berhasil dicatat.');
     }
 
     public function pemeliharaan() { return view('aset.pemeliharaan'); }
@@ -317,6 +355,38 @@ class AssetController extends Controller
     { 
         $mutations = AssetMutation::with('asset')->latest('tanggal_mutasi')->latest('id')->get();
         return view('aset.mutasi', compact('mutations')); 
+    }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'asset_ids' => 'required|array',
+            'asset_ids.*' => 'exists:assets,id',
+            'bulk_action' => 'required|string|in:delete,set_baik,set_rusak_ringan,set_rusak_berat',
+        ]);
+
+        $assets = Asset::whereIn('id', $request->asset_ids)->get();
+
+        foreach ($assets as $asset) {
+            if ($request->bulk_action === 'delete') {
+                $asset->delete();
+            } elseif ($request->bulk_action === 'set_baik') {
+                $asset->update(['condition' => 'Baik']);
+            } elseif ($request->bulk_action === 'set_rusak_ringan') {
+                $asset->update(['condition' => 'Rusak Ringan']);
+            } elseif ($request->bulk_action === 'set_rusak_berat') {
+                $asset->update(['condition' => 'Rusak Berat']);
+            }
+        }
+
+        $actionText = match($request->bulk_action) {
+            'delete' => 'dihapus',
+            'set_baik' => 'diubah kondisinya menjadi Baik',
+            'set_rusak_ringan' => 'diubah kondisinya menjadi Rusak Ringan',
+            'set_rusak_berat' => 'diubah kondisinya menjadi Rusak Berat',
+        };
+
+        return redirect()->route('aset.index')->with('success', count($request->asset_ids) . " aset berhasil $actionText.");
     }
 
     public function createMutasi()

@@ -15,17 +15,50 @@
     </div>
     @endif
 
-    <div class="grid grid-cols-1 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <a href="{{ route('laporan.rekap') }}" class="group block bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl p-6 text-white shadow-md hover:shadow-lg transition-all border border-indigo-400/30">
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-xl font-bold flex items-center gap-2">
                         <svg class="w-6 h-6 text-indigo-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                        Laporan Rekapitulasi Aset Baru
+                        Rekapitulasi Aset
                     </h3>
                     <p class="text-indigo-100 text-sm mt-1">Lihat ringkasan jumlah, kondisi, dan total nilai aset berdasarkan Kategori atau Ruangan.</p>
                 </div>
                 <div class="bg-white/20 p-2 rounded-full group-hover:bg-white/30 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ route('laporan.penyusutan') }}" class="group block bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white shadow-md hover:shadow-lg transition-all border border-emerald-400/30">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-bold flex items-center gap-2">
+                        <svg class="w-6 h-6 text-emerald-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        Penyusutan Aset
+                    </h3>
+                    <p class="text-emerald-100 text-sm mt-1">Daftar depresiasi, harga perolehan, dan nilai buku seluruh aset tetap aktif saat ini.</p>
+                </div>
+                <div class="bg-white/20 p-2 rounded-full group-hover:bg-white/30 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Audit Trail Link -->
+    <div class="grid grid-cols-1 mb-6">
+        <a href="{{ route('laporan.audit-log') }}" class="group block bg-slate-800 rounded-2xl p-6 text-white shadow-md hover:shadow-lg transition-all border border-slate-700">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-bold flex items-center gap-2">
+                        <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Audit Trail & Log Aktivitas
+                    </h3>
+                    <p class="text-slate-300 text-sm mt-1">Lacak setiap perubahan, penambahan, dan penghapusan data krusial beserta informasi penggunanya.</p>
+                </div>
+                <div class="bg-white/10 p-2 rounded-full group-hover:bg-white/20 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </div>
             </div>

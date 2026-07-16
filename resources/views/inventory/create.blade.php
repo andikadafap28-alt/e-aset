@@ -31,6 +31,9 @@
                         <option value="Alat Kesehatan">Alat Kesehatan</option>
                         <option value="BHP Medis">BHP Medis</option>
                         <option value="Umum">Umum</option>
+                        <option value="NIBAR (Nomor Induk Barang)">NIBAR (Nomor Induk Barang)</option>
+                        <option value="KIBAR (Kartu Identitas Barang)">KIBAR (Kartu Identitas Barang)</option>
+                        <option value="NUSP (Nomor Urut Spesifikasi Persediaan)">NUSP (Nomor Urut Spesifikasi Persediaan)</option>
                     </select>
                 </div>
                 <div>

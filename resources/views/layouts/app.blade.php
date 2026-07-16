@@ -128,6 +128,10 @@
                         <span class="material-symbols-outlined {{ request()->routeIs('laporan.*') ? 'icon-fill' : '' }}">analytics</span>
                         <span>Pusat Laporan</span>
                     </a>
+                    <a href="{{ route('stock-opname.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('stock-opname.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <span class="material-symbols-outlined {{ request()->routeIs('stock-opname.*') ? 'icon-fill' : '' }}">fact_check</span>
+                        <span>Stock Opname</span>
+                    </a>
                 </div>
 
                 <!-- Section 5: Asisten AI -->

@@ -301,6 +301,18 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
+        // Peringatan Sensus Fisik (Opname) - Poin 5 Permendagri
+        // Aset Tetap (5 Tahun)
+        $opnameAssetReminders = \App\Models\Asset::where('status_aktif', true)
+            ->where('created_at', '<=', now()->subYears(5))
+            ->take(5)
+            ->get();
+
+        // Persediaan (1 Tahun)
+        $opnameInventoryReminders = \App\Models\Item::where('updated_at', '<=', now()->subYear())
+            ->take(5)
+            ->get();
+
         $formattedMasukBulanIni = $this->formatRupiahRingkas($masukBulanIni);
         $formattedKeluarBulanIni = $this->formatRupiahRingkas($keluarBulanIni);
 
@@ -326,7 +338,9 @@ class DashboardController extends Controller
             'chartKategori',
             'calibrationReminders',
             'serviceReminders',
-            'expiryReminders'
+            'expiryReminders',
+            'opnameAssetReminders',
+            'opnameInventoryReminders'
         ));
     }
 }

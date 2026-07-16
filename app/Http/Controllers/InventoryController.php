@@ -163,6 +163,8 @@ class InventoryController extends Controller
 
         DB::transaction(function () use ($request, $item, $hargaInput) {
             $isHutang = $request->has('status_hutang');
+            $statusApproval = $request->jenis_transaksi == 'keluar' ? 'requested' : 'handed_over';
+
             InventoryTransaction::create([
                 'item_id' => $item->id,
                 'jenis_transaksi' => $request->jenis_transaksi,
@@ -171,6 +173,7 @@ class InventoryController extends Controller
                 'tanggal_transaksi' => $request->tanggal_transaksi,
                 'tanggal_spj' => $isHutang ? null : $request->tanggal_transaksi,
                 'status_hutang' => $isHutang,
+                'status_approval' => $statusApproval,
                 'keterangan' => $request->keterangan,
                 'expired_date' => $request->jenis_transaksi == 'masuk' ? $request->expired_date : null
             ]);
@@ -178,7 +181,8 @@ class InventoryController extends Controller
             if ($request->jenis_transaksi == 'masuk') {
                 $item->increment('stok_sekarang', $request->jumlah);
             } else {
-                $item->decrement('stok_sekarang', $request->jumlah);
+                // Poin 3 Permendagri: Stok tidak langsung dipotong saat diminta (requested). 
+                // Stok akan dipotong saat status menjadi handed_over (disetujui & diserahkan).
             }
         });
 

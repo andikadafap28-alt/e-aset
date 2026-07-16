@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\LogsActivity;
 
 class Asset extends Model
 {
+    use LogsActivity;
+
     protected $guarded = ['id'];
 
     public function maintenances()
@@ -26,6 +29,11 @@ class Asset extends Model
     public function disposals()
     {
         return $this->hasMany(AssetDisposal::class, 'asset_id');
+    }
+
+    public function corrections()
+    {
+        return $this->hasMany(AssetCorrection::class, 'asset_id');
     }
 
     /**

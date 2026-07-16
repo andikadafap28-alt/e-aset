@@ -26,6 +26,10 @@
     </div>
     <div class="flex flex-wrap items-center gap-2 self-start md:self-auto">
         @if($asset->status_aktif)
+            <button @click="$dispatch('open-modal-koreksi')" class="text-amber-600 hover:text-white border border-amber-200 hover:bg-amber-600 hover:border-amber-600 bg-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                Koreksi Nilai/Kondisi
+            </button>
             <button @click="$dispatch('open-modal-disposal')" class="text-rose-600 hover:text-white border border-rose-200 hover:bg-rose-600 hover:border-rose-600 bg-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                 Penghapusan Aset
@@ -50,12 +54,16 @@
         <button @click="activeTab = 'tab3'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab3', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab3' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             Mutasi
         </button>
+        <button @click="activeTab = 'tab_kibar'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab_kibar', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab_kibar' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
+            Riwayat KIBAR
+        </button>
         <button @click="activeTab = 'tab_penyusutan'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab_penyusutan', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab_penyusutan' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             Penyusutan Nilai
         </button>
         <button @click="activeTab = 'tab4'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab4', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab4' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             QR Code Label
         </button>
+    </div>
 
     <!-- Tab Contents -->
     <div class="p-6">
@@ -183,6 +191,80 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Tab Riwayat KIBAR -->
+        <div x-show="activeTab === 'tab_kibar'" style="display: none;" class="p-2">
+            @php
+                $timeline = collect();
+                
+                // Perolehan (Creation)
+                $timeline->push((object)[
+                    'date' => $asset->created_at,
+                    'type' => 'Perolehan Aset',
+                    'desc' => 'Aset didaftarkan ke sistem dengan NIBAR: ' . $asset->asset_code . '. Harga Perolehan: Rp ' . number_format($asset->harga_perolehan, 0, ',', '.'),
+                    'color' => 'blue'
+                ]);
+
+                // Mutasi
+                foreach($asset->mutations as $m) {
+                    $timeline->push((object)[
+                        'date' => $m->created_at,
+                        'type' => 'Mutasi Lokasi/PJ',
+                        'desc' => "Dipindahkan ke {$m->lokasi_baru} (PJ: {$m->penanggung_jawab_baru}). Ket: " . ($m->keterangan ?: '-'),
+                        'color' => 'indigo'
+                    ]);
+                }
+
+                // Pemeliharaan
+                foreach($asset->maintenances as $m) {
+                    $timeline->push((object)[
+                        'date' => $m->created_at,
+                        'type' => 'Pemeliharaan',
+                        'desc' => "Jenis: {$m->jenis_pemeliharaan}. Biaya: Rp " . number_format($m->biaya, 0, ',', '.') . ". Teknisi: {$m->teknisi}",
+                        'color' => 'emerald'
+                    ]);
+                }
+
+                // Disposal
+                foreach($asset->disposals as $d) {
+                    $timeline->push((object)[
+                        'date' => $d->created_at,
+                        'type' => 'Penghapusan',
+                        'desc' => "Alasan: {$d->alasan}. Catatan: {$d->catatan}",
+                        'color' => 'rose'
+                    ]);
+                }
+                
+                // Koreksi
+                if (method_exists($asset, 'corrections') && $asset->corrections) {
+                    foreach($asset->corrections as $c) {
+                        $timeline->push((object)[
+                            'date' => $c->created_at,
+                            'type' => 'Koreksi/Reklasifikasi',
+                            'desc' => "Jenis: {$c->jenis_koreksi}. Ket: {$c->keterangan}",
+                            'color' => 'amber'
+                        ]);
+                    }
+                }
+
+                $timeline = $timeline->sortByDesc('date');
+            @endphp
+            
+            <div class="relative pl-4 border-l-2 border-slate-200 space-y-6">
+                @foreach($timeline as $item)
+                <div class="relative">
+                    <div class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-{{ $item->color }}-500 border-4 border-white shadow"></div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm ml-2">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="font-bold text-slate-800">{{ $item->type }}</h4>
+                            <span class="text-xs text-slate-500 font-medium">{{ \Carbon\Carbon::parse($item->date)->translatedFormat('d M Y, H:i') }}</span>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-1">{{ $item->desc }}</p>
+                    </div>
+                </div>
+                @endforeach
             </div>
         </div>
 
@@ -344,6 +426,69 @@
     </div>
 </div>
 @endif
+
+<!-- Modal Koreksi Nilai -->
+@if($asset->status_aktif)
+<div x-data="{ showModal: false, jenisKoreksi: '' }" @open-modal-koreksi.window="showModal = true" x-show="showModal" class="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/50 backdrop-blur-sm" style="display: none;">
+    <div @click.away="showModal = false" class="relative w-full max-w-lg p-6 bg-white rounded-2xl shadow-xl transform transition-all mt-10 mb-10">
+        <div class="flex items-center justify-between mb-5 border-b border-slate-100 pb-3">
+            <div>
+                <h3 class="text-lg font-bold text-slate-900">Koreksi Nilai / Kondisi</h3>
+                <p class="text-xs text-slate-500 mt-1">Gunakan fitur ini untuk memperbaiki kesalahan pencatatan nilai atau kondisi.</p>
+            </div>
+            <button @click="showModal = false" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <form action="{{ route('aset.koreksi.store', $asset->id) }}" method="POST">
+            @csrf
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Koreksi <span class="text-rose-500">*</span></label>
+                    <select name="jenis_koreksi" x-model="jenisKoreksi" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                        <option value="">-- Pilih Jenis --</option>
+                        <option value="Nilai">Koreksi Nilai Harga</option>
+                        <option value="Kondisi">Koreksi Kondisi Aset</option>
+                        <option value="Nilai & Kondisi">Koreksi Nilai & Kondisi</option>
+                    </select>
+                </div>
+                
+                <div x-show="jenisKoreksi === 'Nilai' || jenisKoreksi === 'Nilai & Kondisi'" style="display: none;">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Harga Perolehan Baru (Rp) <span class="text-rose-500">*</span></label>
+                    <input type="number" name="nilai_baru" value="{{ (int)$asset->harga_perolehan }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                    <p class="text-[10px] text-slate-500 mt-1">Harga Lama: Rp {{ number_format($asset->harga_perolehan, 0, ',', '.') }}</p>
+                </div>
+
+                <div x-show="jenisKoreksi === 'Kondisi' || jenisKoreksi === 'Nilai & Kondisi'" style="display: none;">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Kondisi Baru <span class="text-rose-500">*</span></label>
+                    <select name="kondisi_baru" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                        <option value="Baik" {{ $asset->condition == 'Baik' ? 'selected' : '' }}>Baik</option>
+                        <option value="Rusak Ringan" {{ $asset->condition == 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
+                        <option value="Rusak Berat" {{ $asset->condition == 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
+                    </select>
+                    <p class="text-[10px] text-slate-500 mt-1">Kondisi Lama: {{ $asset->condition }}</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Keterangan / Alasan Koreksi <span class="text-rose-500">*</span></label>
+                    <textarea name="keterangan" rows="3" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Jelaskan alasan melakukan koreksi..."></textarea>
+                </div>
+            </div>
+            
+            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+                <button type="button" @click="showModal = false" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">Batal</button>
+                <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium py-2 px-5 rounded-lg shadow-sm transition-all flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Simpan Koreksi
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
+
 @endsection
 
 @section('scripts')

@@ -15,6 +15,7 @@ class InventoryTransaction extends Model
         'tanggal_transaksi', 
         'tanggal_spj',
         'status_hutang',
+        'status_approval',
         'expired_date'
     ];
 

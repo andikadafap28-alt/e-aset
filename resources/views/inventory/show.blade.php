@@ -94,18 +94,44 @@
                     <td class="py-3 px-5 text-center font-bold text-rose-600">{{ $tx->jenis_transaksi == 'keluar' ? $tx->jumlah : '-' }}</td>
                     <td class="py-3 px-5 text-center font-bold text-indigo-600">{{ $tx->running_balance }}</td>
                     <td class="py-3 px-5">
-                        @if($tx->status_hutang)
-                            <span class="text-rose-600 font-medium text-xs">Hutang</span>
-                        @else
-                            <span class="text-slate-500 text-xs">Lunas/SPJ</span>
-                        @endif
+                        <div class="flex flex-col gap-1">
+                            @if($tx->status_hutang)
+                                <span class="text-rose-600 font-medium text-[10px] uppercase border border-rose-200 bg-rose-50 px-1 rounded w-fit">Hutang</span>
+                            @endif
+                            @if($tx->jenis_transaksi == 'keluar')
+                                @if($tx->status_approval == 'requested')
+                                    <span class="text-amber-600 font-medium text-xs flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Diminta</span>
+                                @elseif($tx->status_approval == 'approved')
+                                    <span class="text-blue-600 font-medium text-xs flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>Disetujui</span>
+                                @elseif($tx->status_approval == 'handed_over')
+                                    <span class="text-emerald-600 font-medium text-xs flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Diserahkan</span>
+                                @endif
+                            @endif
+                        </div>
                     </td>
                     <td class="py-3 px-5 text-right">
-                        <form action="/{{ $kategori_besar }}/transaksi/{{ $tx->id }}" method="POST" onsubmit="return confirm('Hapus transaksi ini? Stok akan dikembalikan otomatis.');" class="flex items-center justify-end gap-3">
-                            <a href="/{{ $kategori_besar }}/transaksi/{{ $tx->id }}/edit" class="text-indigo-500 hover:text-indigo-700 font-medium text-xs">Edit</a>
-                            @csrf @method('DELETE')
-                            <button type="submit" class="text-rose-500 hover:text-rose-700 font-medium text-xs">Hapus</button>
-                        </form>
+                        <div class="flex items-center justify-end gap-2 flex-wrap">
+                            @if($tx->jenis_transaksi == 'keluar' && in_array(auth()->user()->role, ['admin', 'kepala']))
+                                @if($tx->status_approval == 'requested')
+                                <form action="{{ route('inventory.transaksi.approve', $tx->id) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    <input type="hidden" name="status_approval" value="approved">
+                                    <button type="submit" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-2 py-1 rounded text-xs font-medium">Setujui</button>
+                                </form>
+                                @elseif($tx->status_approval == 'approved')
+                                <form action="{{ route('inventory.transaksi.approve', $tx->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Stok akan dipotong sekarang. Lanjutkan?');">
+                                    @csrf
+                                    <input type="hidden" name="status_approval" value="handed_over">
+                                    <button type="submit" class="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-2 py-1 rounded text-xs font-medium">Serahkan</button>
+                                </form>
+                                @endif
+                            @endif
+                            <form action="/{{ $kategori_besar }}/transaksi/{{ $tx->id }}" method="POST" onsubmit="return confirm('Hapus transaksi ini? Stok akan dikembalikan otomatis.');" class="inline-block flex items-center gap-2">
+                                <a href="/{{ $kategori_besar }}/transaksi/{{ $tx->id }}/edit" class="text-indigo-500 hover:text-indigo-700 font-medium text-xs">Edit</a>
+                                @csrf @method('DELETE')
+                                <button type="submit" class="text-rose-500 hover:text-rose-700 font-medium text-xs">Hapus</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @empty
