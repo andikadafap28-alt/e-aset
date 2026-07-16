@@ -121,6 +121,28 @@
                     </div>
                 </div>
 
+                <!-- Section: Sumber Data Aset -->
+                <div x-data="{ sumberDataOpen: {{ request()->routeIs('aset.bmd.*') || request()->routeIs('aset.aspak.*') ? 'true' : 'false' }} }">
+                    <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Sumber Data Aset</p>
+                    <button @click="sumberDataOpen = !sumberDataOpen" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined">source</span>
+                            <span>BMD & ASPAK</span>
+                        </div>
+                        <span class="material-symbols-outlined text-sm transition-transform duration-200" :class="sumberDataOpen ? 'rotate-180' : ''">expand_more</span>
+                    </button>
+                    <div x-show="sumberDataOpen" x-collapse class="space-y-1 mt-1">
+                        <a href="{{ route('aset.bmd.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('aset.bmd.*') ? 'bg-slate-800 text-white font-medium' : 'hover:bg-slate-800 hover:text-white' }}">
+                            <span class="material-symbols-outlined text-[20px]">account_balance</span>
+                            <span class="text-sm">KIB (BMD)</span>
+                        </a>
+                        <a href="{{ route('aset.aspak.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('aset.aspak.*') ? 'bg-slate-800 text-white font-medium' : 'hover:bg-slate-800 hover:text-white' }}">
+                            <span class="material-symbols-outlined text-[20px]">health_and_safety</span>
+                            <span class="text-sm">ASPAK</span>
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Section 4: Laporan -->
                 <div>
                     <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pelaporan</p>

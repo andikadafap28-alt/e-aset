@@ -43,6 +43,11 @@ Route::get('/api/keep-alive', function () {
 Route::prefix('aset')->name('aset.')->group(function () {
     // 1. Master Data Aset (Buku Induk Pusat)
     Route::get('/data/items', [AssetController::class, 'index'])->name('data.items');
+    
+    // BMD & ASPAK
+    Route::get('/bmd', [AssetController::class, 'bmdIndex'])->name('bmd.index');
+    Route::post('/bmd/import', [AssetController::class, 'bmdImport'])->name('bmd.import');
+    Route::get('/aspak', [AssetController::class, 'aspakIndex'])->name('aspak.index');
 
     // Master Kategori Aset
     Route::get('/categories', [\App\Http\Controllers\AssetCategoryController::class, 'index'])->name('categories.index');

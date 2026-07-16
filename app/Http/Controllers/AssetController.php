@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Asset;
 use App\Models\AssetMutation;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\KibImport;
 
 class AssetController extends Controller
 {
@@ -15,6 +17,39 @@ class AssetController extends Controller
     {
         $assets = Asset::with('category')->latest()->get();
         return view('aset.data', compact('assets'));
+    }
+
+    public function bmdIndex(Request $request)
+    {
+        $query = Asset::with('category')->where(function($q) {
+            $q->where('source', 'BMD')->orWhereNull('source');
+        });
+        
+        // Filter by KIB Type (e.g. 1.3.1 = Tanah, 1.3.2 = Peralatan)
+        if ($request->has('kib')) {
+            $kib = $request->kib;
+            $query->where('kode_108', 'like', $kib . '%');
+        }
+
+        $assets = $query->latest()->get();
+        return view('aset.bmd', compact('assets'));
+    }
+
+    public function aspakIndex()
+    {
+        $assets = Asset::with('category')->where('source', 'ASPAK')->latest()->get();
+        return view('aset.aspak', compact('assets'));
+    }
+
+    public function bmdImport(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        Excel::import(new KibImport($request->input('source', 'BMD')), $request->file('file_excel'));
+
+        return back()->with('success', 'Data KIB berhasil diimport.');
     }
 
     public function publicShow($asset_code)
