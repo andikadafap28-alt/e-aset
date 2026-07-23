@@ -50,6 +50,7 @@
                 </div>
 
                 <!-- Section 2: Manajemen Persediaan -->
+                @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'kepala')
                 <div>
                     <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Manajemen Persediaan</p>
                     <button @click="persediaanOpen = !persediaanOpen" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
@@ -74,8 +75,10 @@
                         <a href="/persediaan_lainnya/items" class="{{ request()->segment(1) == 'persediaan_lainnya' ? 'bg-slate-800 text-blue-400 font-medium' : 'text-slate-400 hover:text-white transition-colors' }} block py-2 text-sm">Persediaan Lainnya</a>
                     </div>
                 </div>
+                @endif
 
                 <!-- Section 3: Manajemen Aset -->
+                @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'kepala')
                 <div>
                     <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Manajemen Aset</p>
                     <button @click="asetOpen = !asetOpen" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
@@ -120,8 +123,10 @@
                         </a>
                     </div>
                 </div>
+                @endif
 
                 <!-- Section: Sumber Data Aset -->
+                @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'kepala')
                 <div x-data="{ sumberDataOpen: {{ request()->routeIs('aset.bmd.*') || request()->routeIs('aset.aspak.*') ? 'true' : 'false' }} }">
                     <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Sumber Data Aset</p>
                     <button @click="sumberDataOpen = !sumberDataOpen" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
@@ -142,8 +147,10 @@
                         </a>
                     </div>
                 </div>
+                @endif
 
                 <!-- Section 4: Laporan -->
+                @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'kepala')
                 <div>
                     <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pelaporan</p>
                     <a href="{{ route('laporan.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('laporan.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
@@ -155,8 +162,10 @@
                         <span>Stock Opname</span>
                     </a>
                 </div>
+                @endif
 
-                <!-- Section 5: Asisten AI -->
+                <!-- Section 5: Asisten AI & Pengaturan -->
+                @if(auth()->user()?->role === 'admin')
                 <div x-data="{ aiOpen: {{ request()->routeIs('asisten.*') ? 'true' : 'false' }} }">
                     <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Integrasi</p>
                     <button @click="aiOpen = !aiOpen" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
@@ -181,6 +190,7 @@
                         <span class="text-sm">Pengaturan</span>
                     </a>
                 </div>
+                @endif
             </nav>
 
             <!-- User Area -->

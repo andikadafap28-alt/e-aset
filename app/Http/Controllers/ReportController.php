@@ -345,6 +345,8 @@ class ReportController extends Controller
 
         $pdf = Pdf::loadView('reports.aktivitas_aset_pdf', $pdfData)->setPaper('A4', 'landscape');
         return $pdf->download('Riwayat_Aset_' . $bulanAwal . '_sd_' . $bulanAkhir . '.pdf');
+    }
+
     public function rekonsiliasi(Request $request)
     {
         $categories = AssetCategory::orderBy('nama_kategori', 'asc')->get();
