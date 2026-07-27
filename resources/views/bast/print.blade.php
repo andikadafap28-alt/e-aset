@@ -145,7 +145,7 @@
             </tr>
             <tr>
                 <td>Jabatan</td>
-                <td>: {{ $bast->employee->jabatan ?? '-' }}</td>
+                <td>: {{ $bast->employee->golongan ?? '-' }}</td>
             </tr>
             <tr>
                 <td>Untuk Keperluan</td>
