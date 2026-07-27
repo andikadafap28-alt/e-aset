@@ -2,69 +2,99 @@
 @section('title', 'Data Pegawai')
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Data Pegawai</h1>
+<div class="p-6">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-slate-800">Data Pegawai</h1>
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="mb-4 p-4 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-200 flex items-center gap-2">
+            <span class="material-symbols-outlined">check_circle</span>
+            {{ session('success') }}
+        </div>
     @endif
     @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
+        <div class="mb-4 p-4 bg-red-50 text-red-600 rounded-xl border border-red-200 flex items-center gap-2">
+            <span class="material-symbols-outlined">error</span>
+            {{ session('error') }}
+        </div>
     @endif
     
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Import Data Pegawai</h6>
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-6 overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-500">upload_file</span>
+            <h2 class="text-lg font-semibold text-slate-800">Import Data Pegawai</h2>
         </div>
-        <div class="card-body">
-            <form action="{{ route('employees.import') }}" method="POST" enctype="multipart/form-data" class="form-inline">
+        <div class="p-6">
+            <form action="{{ route('employees.import') }}" method="POST" enctype="multipart/form-data" class="flex flex-col sm:flex-row items-end gap-4">
                 @csrf
-                <div class="form-group mr-2 mb-2">
-                    <input type="file" name="file" class="form-control-file" required accept=".csv,.txt">
+                <div class="w-full sm:w-auto">
+                    <label class="block text-sm font-medium text-slate-600 mb-1">Pilih file CSV</label>
+                    <input type="file" name="file" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-colors cursor-pointer border border-slate-200 rounded-xl" required accept=".csv,.txt">
                 </div>
-                <button type="submit" class="btn btn-primary mb-2">Import CSV</button>
+                <button type="submit" class="px-5 py-2.5 bg-blue-600 text-white font-medium text-sm rounded-xl hover:bg-blue-700 transition-colors shadow-sm shadow-blue-600/20 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]">upload</span>
+                    Import CSV
+                </button>
             </form>
-            <small class="text-muted d-block">Format CSV: NO, NAMA, NIP/NRPTT, PANGKAT, GOLONGAN, JABATAN. Jangan gunakan spasi pada header CSV.</small>
+            <p class="text-xs text-slate-500 mt-3 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">info</span>
+                Format CSV: NO, NAMA, NIP, PANGKAT, GOLONGAN, JABATAN. Jangan gunakan spasi pada header CSV.
+            </p>
         </div>
     </div>
 
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered datatable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>NO</th>
-                            <th>NAMA</th>
-                            <th>NIP/NRPTT</th>
-                            <th>PANGKAT</th>
-                            <th>GOLONGAN</th>
-                            <th>JABATAN</th>
-                            <th>AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($employees as $index => $employee)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $employee->name }}</td>
-                            <td>{{ $employee->nip }}</td>
-                            <td>{{ $employee->pangkat }}</td>
-                            <td>{{ $employee->golongan }}</td>
-                            <td>{{ $employee->jabatan }}</td>
-                            <td>
-                                <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pegawai ini?')">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-600">
+                <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                    <tr>
+                        <th class="px-6 py-4">NO</th>
+                        <th class="px-6 py-4">NAMA</th>
+                        <th class="px-6 py-4">NIP</th>
+                        <th class="px-6 py-4">PANGKAT</th>
+                        <th class="px-6 py-4">GOLONGAN</th>
+                        <th class="px-6 py-4">JABATAN</th>
+                        <th class="px-6 py-4 text-center">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($employees as $index => $employee)
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4">{{ $index + 1 }}</td>
+                        <td class="px-6 py-4 font-medium text-slate-800">{{ $employee->name }}</td>
+                        <td class="px-6 py-4">{{ $employee->nip ?: '-' }}</td>
+                        <td class="px-6 py-4">
+                            @if($employee->pangkat)
+                                <span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs">{{ $employee->pangkat }}</span>
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="px-6 py-4">
+                            @if($employee->golongan)
+                                <span class="px-2.5 py-1 bg-blue-50 text-blue-600 rounded-lg text-xs font-semibold">{{ $employee->golongan }}</span>
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="px-6 py-4">{{ $employee->jabatan ?: '-' }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pegawai ini?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center mx-auto" title="Hapus">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-slate-400">Belum ada data pegawai</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

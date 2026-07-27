@@ -108,7 +108,7 @@
     @php
         function formatName($name) {
             if (!$name) return '-';
-            $name = ucwords(strtolower($name));
+            $name = ucwords(strtolower($name), " .-");
             $name = str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], $name);
             return $name;
         }

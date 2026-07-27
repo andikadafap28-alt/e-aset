@@ -25,7 +25,7 @@ class EmployeeController extends Controller
         ]);
         
         $data = $request->all();
-        $name = ucwords(strtolower($data['name']));
+        $name = ucwords(strtolower($data['name']), " .-");
         $data['name'] = str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], $name);
 
         Employee::create($data);
@@ -56,7 +56,7 @@ class EmployeeController extends Controller
                 }
                 if (count($data) >= 2) {
                     $nameRaw = trim($data[1] ?? '');
-                    $nameFormatted = ucwords(strtolower($nameRaw));
+                    $nameFormatted = ucwords(strtolower($nameRaw), " .-");
                     $nameFormatted = str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], $nameFormatted);
 
                     // Struktur CSV: NO, NAMA, NIP, PANGKAT, GOLONGAN, JABATAN

@@ -2,17 +2,18 @@
 @section('title', 'Buat BAST Baru')
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Buat Bukti Serah Terima (BAST) Baru</h1>
-        <a href="{{ route('bast.index') }}" class="btn btn-sm btn-secondary shadow-sm">
-            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Kembali
+<div class="p-6 max-w-4xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-slate-800">Buat BAST Baru</h1>
+        <a href="{{ route('bast.index') }}" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 font-medium text-sm rounded-xl hover:bg-slate-50 transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Kembali
         </a>
     </div>
 
     @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
+        <div class="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-200">
+            <ul class="list-disc pl-5 space-y-1 text-sm">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -20,40 +21,36 @@
         </div>
     @endif
 
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <form action="{{ route('bast.store') }}" method="POST">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-500">assignment</span>
+            <h2 class="text-lg font-semibold text-slate-800">Form Serah Terima Barang</h2>
+        </div>
+        <div class="p-6">
+            <form action="{{ route('bast.store') }}" method="POST" class="space-y-6">
                 @csrf
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Tanggal Penyerahan</label>
-                    <div class="col-sm-4">
-                        <input type="date" name="handover_date" class="form-control" required value="{{ date('Y-m-d') }}">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-1">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal Penyerahan <span class="text-red-500">*</span></label>
+                        <input type="date" name="handover_date" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" required value="{{ date('Y-m-d') }}">
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Pilih Pegawai (Penerima)</label>
-                    <div class="col-sm-9">
-                        <select name="employee_id" class="form-control select2" required>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih Pegawai (Penerima) <span class="text-red-500">*</span></label>
+                        <select name="employee_id" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" required>
                             <option value="">-- Pilih Pegawai --</option>
                             @foreach($employees as $employee)
-                                <option value="{{ $employee->id }}">{{ $employee->name }} - {{ $employee->jabatan }}</option>
+                                <option value="{{ $employee->id }}">{{ str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], ucwords(strtolower($employee->name), " .-")) }} - {{ $employee->jabatan ?: 'Tanpa Jabatan' }}</option>
                             @endforeach
                         </select>
                     </div>
-                </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Keperluan</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="keperluan" class="form-control" placeholder="Contoh: Pelayanan Ponkesdes/Pustu Desa Rumpuk" required>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Pilih Barang (Aset)</label>
-                    <div class="col-sm-9">
-                        <select name="asset_id" class="form-control select2" required>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih Barang (Aset) <span class="text-red-500">*</span></label>
+                        <select name="asset_id" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" required>
                             <option value="">-- Pilih Barang --</option>
                             @foreach($assets as $asset)
                                 <option value="{{ $asset->id }}">{{ $asset->asset_code }} | {{ $asset->name }} | {{ $asset->category }}</option>
@@ -62,25 +59,28 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Keterangan (Lokasi)</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="keterangan" class="form-control" placeholder="Contoh: Ponkesdes Rumpuk">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Keperluan <span class="text-red-500">*</span></label>
+                        <input type="text" name="keperluan" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="Contoh: Pelayanan Ponkesdes/Pustu Desa Rumpuk" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Keterangan (Lokasi)</label>
+                        <input type="text" name="keterangan" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="Contoh: Ponkesdes Rumpuk">
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Sumber Dana</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="sumber_dana" class="form-control" placeholder="Contoh: JKN, BOK, dll">
-                    </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Sumber Dana</label>
+                    <input type="text" name="sumber_dana" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="Contoh: JKN, BOK, dll">
                 </div>
 
-                <div class="form-group row">
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-9">
-                        <button type="submit" class="btn btn-primary">Simpan & Lihat BAST</button>
-                    </div>
+                <div class="pt-4 border-t border-slate-100 flex justify-end">
+                    <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-sm shadow-blue-600/20 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">save</span>
+                        Simpan & Lihat BAST
+                    </button>
                 </div>
             </form>
         </div>
