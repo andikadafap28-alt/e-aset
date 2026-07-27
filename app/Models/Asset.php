@@ -21,6 +21,11 @@ class Asset extends Model
         return $this->hasMany(AssetMutation::class, 'asset_id');
     }
 
+    public function calibrations()
+    {
+        return $this->hasMany(AssetCalibration::class, 'asset_id');
+    }
+
     public function category()
     {
         return $this->belongsTo(AssetCategory::class, 'category_id');

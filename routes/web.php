@@ -120,6 +120,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/aset/pelabelan/print', [AssetController::class, 'printLabels'])->name('aset.pelabelan.print');
 
         Route::post('/aset/{id}/koreksi', [AssetController::class, 'storeCorrection'])->name('aset.koreksi.store');
+        
+        Route::post('/aset/{id}/kalibrasi', [\App\Http\Controllers\AssetCalibrationController::class, 'store'])->name('aset.kalibrasi.store');
+        Route::delete('/aset/kalibrasi/{id}', [\App\Http\Controllers\AssetCalibrationController::class, 'destroy'])->name('aset.kalibrasi.destroy');
 
         Route::get('/print-queue/data', [AssetController::class, 'getPrintQueueData'])->name('print-queue.data');
         Route::post('/print-queue/remove/{id}', [AssetController::class, 'removeFromPrintQueue'])->name('print-queue.remove');
@@ -160,6 +163,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/procurement-file/{id}', [InventoryController::class, 'viewProcurementFile']);
     Route::delete('/procurement-file/{id}', [InventoryController::class, 'destroyProcurementFile'])->name('procurement.destroy-file');
+
+    // Pegawai
+    Route::resource('employees', \App\Http\Controllers\EmployeeController::class)->except(['create', 'show', 'edit', 'update']);
+    Route::post('employees/import', [\App\Http\Controllers\EmployeeController::class, 'import'])->name('employees.import');
+
+    // BAST (Bukti Serah Terima)
+    Route::resource('bast', \App\Http\Controllers\AssetHandoverController::class)->except(['edit', 'update']);
 
     Route::prefix('stock-opname')->name('stock-opname.')->group(function () {
         Route::get('/', [\App\Http\Controllers\StockOpnameController::class, 'index'])->name('index');

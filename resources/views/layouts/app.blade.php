@@ -149,6 +149,21 @@
                 </div>
                 @endif
 
+                <!-- Section: Administrasi & BAST -->
+                @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'kepala')
+                <div>
+                    <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 mt-4">Administrasi</p>
+                    <a href="{{ route('employees.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('employees.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <span class="material-symbols-outlined {{ request()->routeIs('employees.*') ? 'icon-fill' : '' }}">badge</span>
+                        <span>Data Pegawai</span>
+                    </a>
+                    <a href="{{ route('bast.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('bast.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <span class="material-symbols-outlined {{ request()->routeIs('bast.*') ? 'icon-fill' : '' }}">assignment</span>
+                        <span>Cetak BAST</span>
+                    </a>
+                </div>
+                @endif
+
                 <!-- Section 4: Laporan -->
                 @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'kepala')
                 <div>

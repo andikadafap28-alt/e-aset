@@ -54,6 +54,9 @@
         <button @click="activeTab = 'tab3'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab3', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab3' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             Mutasi
         </button>
+        <button @click="activeTab = 'tab_kalibrasi'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab_kalibrasi', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab_kalibrasi' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
+            Riwayat Kalibrasi
+        </button>
         <button @click="activeTab = 'tab_kibar'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab_kibar', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab_kibar' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             Riwayat KIBAR
         </button>
@@ -186,6 +189,78 @@
                             <td colspan="4" class="py-8 text-center text-slate-500">
                                 <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                                 <p>Data mutasi belum tersedia.</p>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Riwayat Kalibrasi -->
+        <div x-show="activeTab === 'tab_kalibrasi'" style="display: none;" class="p-2">
+            <div class="mb-4 flex justify-end">
+                <button @click="$dispatch('open-modal-kalibrasi')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Tambah Riwayat Kalibrasi
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-slate-500 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
+                            <th class="py-3 px-5">Tgl Kalibrasi</th>
+                            <th class="py-3 px-5">Sertifikat</th>
+                            <th class="py-3 px-5">Masa Berlaku</th>
+                            <th class="py-3 px-5">Dokumen</th>
+                            <th class="py-3 px-5">Keterangan</th>
+                            <th class="py-3 px-5 w-16 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-slate-100">
+                        @forelse($asset->calibrations()->latest('tanggal_kalibrasi')->get() as $kalibrasi)
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="py-3 px-5 whitespace-nowrap">{{ \Carbon\Carbon::parse($kalibrasi->tanggal_kalibrasi)->translatedFormat('d M Y') }}</td>
+                            <td class="py-3 px-5 font-medium text-slate-800">{{ $kalibrasi->sertifikat }}</td>
+                            <td class="py-3 px-5 whitespace-nowrap">
+                                @if($kalibrasi->masa_berlaku)
+                                    @if(\Carbon\Carbon::parse($kalibrasi->masa_berlaku)->isPast())
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">{{ \Carbon\Carbon::parse($kalibrasi->masa_berlaku)->translatedFormat('d M Y') }} (Expired)</span>
+                                    @else
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">{{ \Carbon\Carbon::parse($kalibrasi->masa_berlaku)->translatedFormat('d M Y') }}</span>
+                                    @endif
+                                @else
+                                    <span class="text-slate-400">-</span>
+                                @endif
+                            </td>
+                            <td class="py-3 px-5">
+                                @if($kalibrasi->file_dokumen)
+                                    <a href="{{ asset($kalibrasi->file_dokumen) }}" target="_blank" class="text-indigo-600 hover:underline flex items-center gap-1 text-xs">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                        Lihat File
+                                    </a>
+                                @else
+                                    <span class="text-slate-400 text-xs">-</span>
+                                @endif
+                            </td>
+                            <td class="py-3 px-5 text-slate-600 max-w-xs truncate" title="{{ $kalibrasi->keterangan }}">
+                                {{ $kalibrasi->keterangan ?: '-' }}
+                            </td>
+                            <td class="py-3 px-5 text-center">
+                                <form action="{{ route('aset.kalibrasi.destroy', $kalibrasi->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus riwayat kalibrasi ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-1.5 rounded transition-colors" title="Hapus">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="py-8 text-center text-slate-500">
+                                <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                                <p>Data riwayat kalibrasi belum tersedia.</p>
                             </td>
                         </tr>
                         @endforelse
@@ -482,6 +557,63 @@
                 <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium py-2 px-5 rounded-lg shadow-sm transition-all flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     Simpan Koreksi
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
+
+<!-- Modal Riwayat Kalibrasi -->
+@if($asset->status_aktif)
+<div x-data="{ showModal: false }" @open-modal-kalibrasi.window="showModal = true" x-show="showModal" class="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/50 backdrop-blur-sm" style="display: none;">
+    <div @click.away="showModal = false" class="relative w-full max-w-lg p-6 bg-white rounded-2xl shadow-xl transform transition-all mt-10 mb-10">
+        <div class="flex items-center justify-between mb-5 border-b border-slate-100 pb-3">
+            <div>
+                <h3 class="text-lg font-bold text-slate-900">Tambah Riwayat Kalibrasi</h3>
+                <p class="text-xs text-slate-500 mt-1">Rekam data kalibrasi baru beserta dokumennya.</p>
+            </div>
+            <button @click="showModal = false" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <form action="{{ route('aset.kalibrasi.store', $asset->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal Kalibrasi <span class="text-rose-500">*</span></label>
+                    <input type="date" name="tanggal_kalibrasi" required value="{{ date('Y-m-d') }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Nomor Sertifikat <span class="text-rose-500">*</span></label>
+                    <input type="text" name="sertifikat" required placeholder="Contoh: KAL/2026/001" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Masa Berlaku (S/D)</label>
+                    <input type="date" name="masa_berlaku" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Dokumen / Sertifikat Kalibrasi</label>
+                    <input type="file" name="file_dokumen" accept=".pdf,.jpg,.jpeg,.png" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-slate-50">
+                    <p class="text-[10px] text-slate-500 mt-1">Format didukung: PDF, JPG, PNG. Maksimal: 2MB</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Keterangan / Hasil</label>
+                    <textarea name="keterangan" rows="2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Catatan opsional..."></textarea>
+                </div>
+            </div>
+            
+            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+                <button type="button" @click="showModal = false" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">Batal</button>
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-5 rounded-lg shadow-sm transition-all flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Simpan Riwayat
                 </button>
             </div>
         </form>

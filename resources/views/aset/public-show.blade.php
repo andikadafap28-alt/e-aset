@@ -63,6 +63,46 @@
                 </div>
             </div>
 
+            <!-- Calibration History Card -->
+            @if($asset->calibrations->count() > 0)
+            <div class="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 mt-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Riwayat Kalibrasi</h3>
+                </div>
+                <div class="space-y-4">
+                    @foreach($asset->calibrations()->latest('tanggal_kalibrasi')->get() as $kalibrasi)
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <p class="text-sm font-bold text-slate-800">{{ $kalibrasi->sertifikat }}</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Tgl Kalibrasi: {{ \Carbon\Carbon::parse($kalibrasi->tanggal_kalibrasi)->translatedFormat('d M Y') }}</p>
+                            </div>
+                            @if($kalibrasi->masa_berlaku)
+                                @if(\Carbon\Carbon::parse($kalibrasi->masa_berlaku)->isPast())
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">Expired</span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Aktif</span>
+                                @endif
+                            @endif
+                        </div>
+                        @if($kalibrasi->keterangan)
+                            <p class="text-xs text-slate-600 mt-2">{{ $kalibrasi->keterangan }}</p>
+                        @endif
+                        @if($kalibrasi->file_dokumen)
+                        <div class="mt-3 pt-3 border-t border-slate-200">
+                            <a href="{{ asset($kalibrasi->file_dokumen) }}" target="_blank" class="text-xs font-medium text-indigo-600 flex items-center gap-1.5 hover:underline">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                Lihat Sertifikat
+                            </a>
+                        </div>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
             <!-- Secret / Authenticated Details -->
             @if($isAuthenticated)
             <div class="mt-6">
