@@ -54,7 +54,7 @@
                         <th class="px-6 py-4 whitespace-nowrap">NIP</th>
                         <th class="px-6 py-4 min-w-[150px]">PANGKAT</th>
                         <th class="px-6 py-4 min-w-[200px]">GOLONGAN</th>
-                        <th class="px-6 py-4 text-center whitespace-nowrap">AKSI</th>
+                        <th class="px-6 py-4 text-center whitespace-nowrap min-w-[120px]">AKSI</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">

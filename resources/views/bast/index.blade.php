@@ -27,7 +27,7 @@
                         <th class="px-6 py-4">NAMA BARANG</th>
                         <th class="px-6 py-4">PENERIMA</th>
                         <th class="px-6 py-4">KEPERLUAN</th>
-                        <th class="px-6 py-4 text-center">AKSI</th>
+                        <th class="px-6 py-4 text-center whitespace-nowrap min-w-[150px]">AKSI</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
