@@ -49,35 +49,35 @@
             <table class="w-full text-left text-sm text-slate-600">
                 <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                     <tr>
-                        <th class="px-6 py-4 whitespace-nowrap">NO</th>
-                        <th class="px-6 py-4 min-w-[200px]">NAMA</th>
-                        <th class="px-6 py-4 whitespace-nowrap">NIP</th>
-                        <th class="px-6 py-4 min-w-[150px]">PANGKAT</th>
-                        <th class="px-6 py-4 min-w-[200px]">GOLONGAN</th>
-                        <th class="px-6 py-4 text-center whitespace-nowrap min-w-[120px]">AKSI</th>
+                        <th class="px-4 py-3 whitespace-nowrap w-16">NO</th>
+                        <th class="px-4 py-3">NAMA</th>
+                        <th class="px-4 py-3 whitespace-nowrap">NIP</th>
+                        <th class="px-4 py-3">PANGKAT</th>
+                        <th class="px-4 py-3">GOLONGAN</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap w-24">AKSI</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($employees as $index => $employee)
                     <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 align-middle">{{ $index + 1 }}</td>
-                        <td class="px-6 py-4 align-middle font-medium text-slate-800">{{ $employee->name }}</td>
-                        <td class="px-6 py-4 align-middle whitespace-nowrap">{{ $employee->nip ?: '-' }}</td>
-                        <td class="px-6 py-4 align-middle">
+                        <td class="px-4 py-3 align-middle">{{ $index + 1 }}</td>
+                        <td class="px-4 py-3 align-middle font-medium text-slate-800">{{ $employee->name }}</td>
+                        <td class="px-4 py-3 align-middle whitespace-nowrap">{{ $employee->nip ?: '-' }}</td>
+                        <td class="px-4 py-3 align-middle">
                             @if($employee->pangkat)
                                 <span class="inline-block px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs whitespace-nowrap">{{ $employee->pangkat }}</span>
                             @else
                                 -
                             @endif
                         </td>
-                        <td class="px-6 py-4 align-middle">
+                        <td class="px-4 py-3 align-middle">
                             @if($employee->golongan)
                                 <span class="inline-block px-2.5 py-1 bg-blue-50 text-blue-600 rounded-lg text-xs font-semibold">{{ $employee->golongan }}</span>
                             @else
                                 -
                             @endif
                         </td>
-                        <td class="px-6 py-4 align-middle text-center">
+                        <td class="px-4 py-3 align-middle text-center">
                             <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pegawai ini?')">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center mx-auto" title="Hapus">
@@ -88,7 +88,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-8 text-center text-slate-400">Belum ada data pegawai</td>
+                        <td colspan="6" class="px-4 py-8 text-center text-slate-400">Belum ada data pegawai</td>
                     </tr>
                     @endforelse
                 </tbody>

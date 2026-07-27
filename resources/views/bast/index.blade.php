@@ -23,24 +23,24 @@
             <table class="w-full text-left text-sm text-slate-600">
                 <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                     <tr>
-                        <th class="px-6 py-4">TANGGAL</th>
-                        <th class="px-6 py-4">NAMA BARANG</th>
-                        <th class="px-6 py-4">PENERIMA</th>
-                        <th class="px-6 py-4">KEPERLUAN</th>
-                        <th class="px-6 py-4 text-center whitespace-nowrap min-w-[150px]">AKSI</th>
+                        <th class="px-4 py-3 whitespace-nowrap w-24">TANGGAL</th>
+                        <th class="px-4 py-3">NAMA BARANG</th>
+                        <th class="px-4 py-3">PENERIMA</th>
+                        <th class="px-4 py-3">KEPERLUAN</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap w-32">AKSI</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($handovers as $bast)
                     <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 font-medium text-slate-800">{{ \Carbon\Carbon::parse($bast->handover_date)->format('d-m-Y') }}</td>
-                        <td class="px-6 py-4">
+                        <td class="px-4 py-3 font-medium text-slate-800 align-middle">{{ \Carbon\Carbon::parse($bast->handover_date)->format('d-m-Y') }}</td>
+                        <td class="px-4 py-3 align-middle">
                             <span class="block font-medium text-slate-800">{{ $bast->asset->name ?? '-' }}</span>
                             <span class="text-xs text-slate-500">{{ $bast->asset->asset_code ?? '-' }}</span>
                         </td>
-                        <td class="px-6 py-4">{{ $bast->employee ? str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], ucwords(strtolower($bast->employee->name), " .-")) : '-' }}</td>
-                        <td class="px-6 py-4">{{ $bast->keperluan }}</td>
-                        <td class="px-6 py-4">
+                        <td class="px-4 py-3 align-middle">{{ $bast->employee ? str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], ucwords(strtolower($bast->employee->name), " .-")) : '-' }}</td>
+                        <td class="px-4 py-3 align-middle">{{ $bast->keperluan }}</td>
+                        <td class="px-4 py-3 align-middle">
                             <div class="flex items-center justify-center gap-2">
                                 <a href="{{ route('bast.show', $bast->id) }}" target="_blank" class="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center" title="Cetak">
                                     <span class="material-symbols-outlined text-[18px]">print</span>
@@ -56,7 +56,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-8 text-center text-slate-400">Belum ada data BAST</td>
+                        <td colspan="5" class="px-4 py-8 text-center text-slate-400">Belum ada data BAST</td>
                     </tr>
                     @endforelse
                 </tbody>
