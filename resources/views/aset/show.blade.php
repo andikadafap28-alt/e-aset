@@ -278,7 +278,7 @@
                 $timeline->push((object)[
                     'date' => $asset->created_at,
                     'type' => 'Perolehan Aset',
-                    'desc' => 'Aset didaftarkan ke sistem dengan NIBAR: ' . $asset->asset_code . '. Harga Perolehan: Rp ' . number_format($asset->harga_perolehan, 0, ',', '.'),
+                    'desc' => 'Aset didaftarkan ke sistem dengan NIBAR: ' . $asset->asset_code . '. Harga Perolehan: Rp ' . number_format((float)($asset->harga_perolehan ?? 0), 0, ',', '.'),
                     'color' => 'blue'
                 ]);
 
@@ -297,7 +297,7 @@
                     $timeline->push((object)[
                         'date' => $m->created_at,
                         'type' => 'Pemeliharaan',
-                        'desc' => "Jenis: {$m->jenis_pemeliharaan}. Biaya: Rp " . number_format($m->biaya, 0, ',', '.') . ". Teknisi: {$m->teknisi}",
+                        'desc' => "Jenis: {$m->jenis_pemeliharaan}. Biaya: Rp " . number_format((float)($m->biaya ?? 0), 0, ',', '.') . ". Teknisi: {$m->teknisi}",
                         'color' => 'emerald'
                     ]);
                 }
@@ -349,7 +349,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
                         <p class="text-xs text-indigo-600 font-semibold uppercase tracking-wider mb-1">Harga Perolehan</p>
-                        <p class="text-xl font-bold text-slate-800">Rp {{ number_format($asset->harga_perolehan, 0, ',', '.') }}</p>
+                        <p class="text-xl font-bold text-slate-800">Rp {{ number_format((float)($asset->harga_perolehan ?? 0), 0, ',', '.') }}</p>
                     </div>
                     <div class="bg-sky-50/50 p-4 rounded-xl border border-sky-100">
                         <p class="text-xs text-sky-600 font-semibold uppercase tracking-wider mb-1">Umur Ekonomis</p>
@@ -357,11 +357,11 @@
                     </div>
                     <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
                         <p class="text-xs text-amber-600 font-semibold uppercase tracking-wider mb-1">Akumulasi Penyusutan</p>
-                        <p class="text-xl font-bold text-slate-800">Rp {{ number_format($asset->accumulated_depreciation, 0, ',', '.') }}</p>
+                        <p class="text-xl font-bold text-slate-800">Rp {{ number_format((float)($asset->accumulated_depreciation ?? 0), 0, ',', '.') }}</p>
                     </div>
                     <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
                         <p class="text-xs text-emerald-600 font-semibold uppercase tracking-wider mb-1">Nilai Buku Saat Ini</p>
-                        <p class="text-xl font-bold text-slate-800">Rp {{ number_format($asset->book_value, 0, ',', '.') }}</p>
+                        <p class="text-xl font-bold text-slate-800">Rp {{ number_format((float)($asset->book_value ?? 0), 0, ',', '.') }}</p>
                     </div>
                 </div>
 
@@ -374,7 +374,7 @@
                         </div>
                         <div class="flex justify-between border-b border-slate-200 pb-2">
                             <span>Penyusutan per Tahun</span>
-                            <span class="font-medium text-slate-800">Rp {{ number_format($asset->annual_depreciation, 0, ',', '.') }}</span>
+                            <span class="font-medium text-slate-800">Rp {{ number_format((float)($asset->annual_depreciation ?? 0), 0, ',', '.') }}</span>
                         </div>
                         <div class="flex justify-between border-b border-slate-200 pb-2">
                             <span>Tahun Penggunaan</span>
@@ -533,7 +533,7 @@
                 <div x-show="jenisKoreksi === 'Nilai' || jenisKoreksi === 'Nilai & Kondisi'" style="display: none;">
                     <label class="block text-sm font-medium text-slate-700 mb-1">Harga Perolehan Baru (Rp) <span class="text-rose-500">*</span></label>
                     <input type="number" name="nilai_baru" value="{{ (int)$asset->harga_perolehan }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
-                    <p class="text-[10px] text-slate-500 mt-1">Harga Lama: Rp {{ number_format($asset->harga_perolehan, 0, ',', '.') }}</p>
+                    <p class="text-[10px] text-slate-500 mt-1">Harga Lama: Rp {{ number_format((float)($asset->harga_perolehan ?? 0), 0, ',', '.') }}</p>
                 </div>
 
                 <div x-show="jenisKoreksi === 'Kondisi' || jenisKoreksi === 'Nilai & Kondisi'" style="display: none;">

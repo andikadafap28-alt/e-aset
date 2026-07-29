@@ -118,7 +118,7 @@
                     </div>
                     <div>
                         <p class="text-xs font-medium text-indigo-400 uppercase tracking-wider mb-1">Harga Perolehan</p>
-                        <p class="text-sm font-semibold text-slate-800">Rp {{ number_format($asset->harga_perolehan, 0, ',', '.') }}</p>
+                        <p class="text-sm font-semibold text-slate-800">Rp {{ number_format((float)($asset->harga_perolehan ?? 0), 0, ',', '.') }}</p>
                     </div>
                     <div>
                         <p class="text-xs font-medium text-indigo-400 uppercase tracking-wider mb-1">Penanggung Jawab</p>
