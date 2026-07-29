@@ -108,9 +108,9 @@
                 </tr>
                 <tr>
                     <td class="align-top"></td>
-                    <td class="align-top">Unit / Ruangan</td>
+                    <td class="align-top">Jabatan</td>
                     <td class="align-top">:</td>
-                    <td><span class="editable-field" contenteditable="true">Ruang Perawatan / Poli</span></td>
+                    <td><span class="editable-field" contenteditable="true">Jabatan Peminjam</span></td>
                 </tr>
             </table>
             <p class="mt-2 text-justify">Selanjutnya disebut sebagai <b>PIHAK KEDUA</b> (Yang Menerima).</p>
