@@ -86,13 +86,21 @@ class KibImport implements ToCollection
 
             $nibar = $nibarVal;
             $noRegister = isset($colMap['no_register']) ? $row[$colMap['no_register']] : null;
+            
+            // Nomor register di DB bertipe integer. Jika data dari KIB berupa NIBAR (27 digit), kita set null
+            // agar tidak menyebabkan error SQL Integer Overflow (max 2147483647).
+            if (!empty($noRegister) && (strlen((string)$noRegister) > 9 || !is_numeric($noRegister))) {
+                $noRegister = null;
+            }
+
             $location = isset($colMap['location']) ? $row[$colMap['location']] : null;
             $priceRaw = isset($colMap['purchase_price']) ? $row[$colMap['purchase_price']] : 0;
             $yearRaw = isset($colMap['year_purchased']) ? $row[$colMap['year_purchased']] : null;
-            $merk = isset($colMap['merk']) ? $row[$colMap['merk']] : null;
-            $penyedia = isset($colMap['penyedia']) ? $row[$colMap['penyedia']] : null;
-            
-            // Kategori default
+            $year = (!empty($yearRaw) && is_numeric(trim((string)$yearRaw)) && strlen(trim((string)$yearRaw)) == 4) 
+                ? (int)trim((string)$yearRaw) 
+                : ((!empty($yearRaw) && strtotime(trim((string)$yearRaw))) ? date('Y', strtotime(trim((string)$yearRaw))) : date('Y'));
+            $price = (!empty($priceRaw) && is_numeric(trim((string)$priceRaw))) ? (float)trim((string)$priceRaw) : 0;
+
             $category = 'Peralatan dan Mesin';
             if (isset($colMap['category']) && !empty($row[$colMap['category']])) {
                 $category = $row[$colMap['category']];
@@ -101,11 +109,20 @@ class KibImport implements ToCollection
                 $category = ucwords(strtolower(trim((string)$row[6])));
             }
 
-            // Jika tidak ada nibar dan tidak ada no register, kemungkinan ini baris sub-total, lewati
+            $merk = isset($colMap['merk']) ? $row[$colMap['merk']] : null;
+            $penyedia = isset($colMap['penyedia']) ? $row[$colMap['penyedia']] : null;
+
+            // Jika tidak ada nibar, no register, dan kode108 asli kosong, kemungkinan ini baris sub-total, lewati
             if (empty($nibar) && empty($noRegister) && empty($kode108)) {
                 continue;
             }
             
+            // Autogenerate no_register HANYA JIKA ini bukan baris kosong
+            if (empty($noRegister)) {
+                $lastReg = \App\Models\Asset::where('kode_108', $kode108)->max('no_register');
+                $noRegister = $lastReg ? $lastReg + 1 : 1;
+            }
+
             if (empty($nibar)) {
                 $nibar = 'AST-' . time() . '-' . rand(100,999);
             }
