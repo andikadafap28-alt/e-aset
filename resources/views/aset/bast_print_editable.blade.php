@@ -85,7 +85,7 @@
         <!-- KOP SURAT -->
         <div class="border-b-[3px] border-black pb-2 mb-6 text-center relative flex justify-between items-center">
             <div class="w-24">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Lambang_Kabupaten_Lamongan.png" alt="Logo Lamongan" class="w-20 mx-auto">
+                <img src="{{ asset('img/logo-lamongan.png') }}" alt="Logo Lamongan" class="w-20 mx-auto">
             </div>
             <div class="flex-1">
                 <div class="font-bold text-base leading-snug">PEMERINTAH KABUPATEN LAMONGAN</div>
@@ -95,7 +95,7 @@
                 <div>Telp. (0322) 4670302 Email : puskesmasmantup@yahoo.co.id</div>
             </div>
             <div class="w-24">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Bakti_Husada_logo.svg/1024px-Bakti_Husada_logo.svg.png" alt="Bakti Husada" class="w-20 mx-auto">
+                <img src="{{ asset('img/logo-husada.png') }}" alt="Bakti Husada" class="w-20 mx-auto">
             </div>
         </div>
         
@@ -129,7 +129,7 @@
                 <tr>
                     <td class="align-top py-0.5">Untuk Keperluan</td>
                     <td class="align-top py-0.5">:</td>
-                    <td class="py-0.5"><span class="editable-field" contenteditable="true">{{ $loan->notes ?: 'Pelayanan Ponkesdes/Pustu .....................' }}</span></td>
+                    <td class="py-0.5"><span class="editable-field" contenteditable="true">{{ $loan->notes ? ucwords(strtolower($loan->notes)) : 'Pelayanan Ponkesdes/Pustu .....................' }}</span></td>
                 </tr>
             </table>
         </div>
@@ -164,7 +164,7 @@
 
         <!-- FOOTER TEXT -->
         <div class="mb-8 text-justify">
-            <p class="editable-field" contenteditable="true">Yang selanjutnya akan diserahkan kepada koordinator yang ada di {{ $loan->notes ?: 'Pelayanan Ponkesdes/Pustu ............................' }} dengan daftar nama terlampir.</p>
+            <p class="editable-field" contenteditable="true">Yang selanjutnya akan diserahkan kepada koordinator yang ada di {{ $loan->notes ? ucwords(strtolower($loan->notes)) : 'Pelayanan Ponkesdes/Pustu ............................' }} dengan daftar nama terlampir.</p>
         </div>
 
         <!-- SIGNATURES -->

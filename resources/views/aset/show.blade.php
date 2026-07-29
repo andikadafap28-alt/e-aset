@@ -731,21 +731,21 @@
                     <label class="block text-sm font-medium text-slate-700 mb-1">Keterangan / Keperluan</label>
                     <input type="text" name="notes" list="keperluan-list" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Pilih atau ketik nama pustu/polindes...">
                     <datalist id="keperluan-list">
-                        <option value="Pelayanan PUSTU SUKOBENDU MANTUP"></option>
-                        <option value="Pelayanan PUSTU SUMBERDADI MANTUP"></option>
-                        <option value="Pelayanan PUSTU SUMBERKEREP MANTUP"></option>
-                        <option value="Pelayanan POLINDES RUMPUK"></option>
-                        <option value="Pelayanan POLINDES SUMBERKEREP"></option>
-                        <option value="Pelayanan POLINDES SUKOSARI"></option>
-                        <option value="Pelayanan POLINDES MOJOSARI"></option>
-                        <option value="Pelayanan POLINDES PLABUHANREJO"></option>
-                        <option value="Pelayanan POLINDES SUMBERBENDO"></option>
-                        <option value="Pelayanan PONKESDES SUMBERAGUNG"></option>
-                        <option value="Pelayanan PONKESDES KEDUNGSOKO"></option>
-                        <option value="Pelayanan PONKESDES TUGU"></option>
-                        <option value="Pelayanan PONKESDES KEDUKBEMBEM"></option>
-                        <option value="Pelayanan PONKESDES SIDOMULYO"></option>
-                        <option value="Pelayanan PONKESDES TUNGGUNJAGIR"></option>
+                        <option value="Pelayanan Pustu Sukobendu"></option>
+                        <option value="Pelayanan Pustu Sumberdadi"></option>
+                        <option value="Pelayanan Pustu Sumberkerep"></option>
+                        <option value="Pelayanan Polindes Rumpuk"></option>
+                        <option value="Pelayanan Polindes Sumberkerep"></option>
+                        <option value="Pelayanan Polindes Sukosari"></option>
+                        <option value="Pelayanan Polindes Mojosari"></option>
+                        <option value="Pelayanan Polindes Plabuhanrejo"></option>
+                        <option value="Pelayanan Polindes Sumberbendo"></option>
+                        <option value="Pelayanan Ponkesdes Sumberagung"></option>
+                        <option value="Pelayanan Ponkesdes Kedungsoko"></option>
+                        <option value="Pelayanan Ponkesdes Tugu"></option>
+                        <option value="Pelayanan Ponkesdes Kedukbembem"></option>
+                        <option value="Pelayanan Ponkesdes Sidomulyo"></option>
+                        <option value="Pelayanan Ponkesdes Tunggunjagir"></option>
                     </datalist>
                 </div>
             </div>
