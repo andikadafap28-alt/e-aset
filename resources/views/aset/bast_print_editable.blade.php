@@ -164,27 +164,33 @@
 
         <!-- FOOTER TEXT -->
         <div class="mb-8 text-justify">
-            <p class="editable-field" contenteditable="true">Yang selanjutnya akan diserahkan kepada koordinator yang ada di Pelayanan Ponkesdes/Pustu ............................ dengan daftar nama terlampir.</p>
+            <p class="editable-field" contenteditable="true">Yang selanjutnya akan diserahkan kepada koordinator yang ada di {{ $loan->notes ?: 'Pelayanan Ponkesdes/Pustu ............................' }} dengan daftar nama terlampir.</p>
         </div>
 
         <!-- SIGNATURES -->
-        <div class="flex justify-between mt-8 relative">
+        <div class="flex justify-between mt-8 relative items-start">
             
-            <div class="text-center w-[250px]">
-                <br>
-                <div class="mb-0">Pengurus barang Pembantu</div>
-                <div class="mb-16">Puskesmas Mantup</div>
-                
-                <div class="font-bold underline editable-field" contenteditable="true">Andika Dafa Penta Pratama</div>
-                <div>NIP. <span class="editable-field" contenteditable="true">...........................</span></div>
+            <div class="text-center w-[250px] flex flex-col h-[180px]">
+                <div>
+                    <div>&nbsp;</div>
+                    <div class="mb-0">Pengurus Barang Pembantu</div>
+                    <div>Puskesmas Mantup</div>
+                </div>
+                <div class="mt-auto">
+                    <div class="font-bold underline editable-field" contenteditable="true">Andika Dafa Penta Pratama</div>
+                    <div>NIP. <span class="editable-field" contenteditable="true">19990728 202504 1 003</span></div>
+                </div>
             </div>
             
-            <div class="text-center w-[250px]">
-                <div class="mb-0">Mantup, <span class="editable-field" contenteditable="true">{{ \Carbon\Carbon::parse($loan->loan_date)->translatedFormat('d F Y') }}</span></div>
-                <div class="mb-16">Penerima Barang</div>
-                
-                <div class="font-bold underline editable-field" contenteditable="true">{{ $loan->borrower_name }}</div>
-                <div>NIP. <span class="editable-field" contenteditable="true">{{ $borrowerNip ?: '...........................' }}</span></div>
+            <div class="text-center w-[250px] flex flex-col h-[180px]">
+                <div>
+                    <div class="mb-0">Mantup, <span class="editable-field" contenteditable="true">{{ \Carbon\Carbon::parse($loan->loan_date)->translatedFormat('d F Y') }}</span></div>
+                    <div>Penerima Barang</div>
+                </div>
+                <div class="mt-auto">
+                    <div class="font-bold underline editable-field" contenteditable="true">{{ $loan->borrower_name }}</div>
+                    <div>NIP. <span class="editable-field" contenteditable="true">{{ $borrowerNip ?: '...........................' }}</span></div>
+                </div>
             </div>
         </div>
 
@@ -195,11 +201,21 @@
                 <div class="mb-16">Kepala Puskesmas Mantup</div>
                 
                 <div class="font-bold underline editable-field" contenteditable="true">dr. Muhamad Sunaryadi</div>
-                <div>NIP. <span class="editable-field" contenteditable="true">196903132002121007</span></div>
+                <div>NIP. <span class="editable-field" contenteditable="true">19690313 200212 1 007</span></div>
             </div>
         </div>
         
     </div>
+
+    @if(request('action') == 'print')
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                window.print();
+            }, 500);
+        };
+    </script>
+    @endif
 
 </body>
 </html>

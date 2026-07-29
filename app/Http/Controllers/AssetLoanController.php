@@ -130,6 +130,12 @@ class AssetLoanController extends Controller
         $employee = \App\Models\Employee::where('name', $loan->borrower_name)->first();
         $borrowerNip = $employee ? $employee->nip : '';
         
+        // Format NIP (e.g., 199907282025041003 -> 19990728 202504 1 003)
+        $borrowerNipRaw = preg_replace('/[^0-9]/', '', $borrowerNip);
+        if (strlen($borrowerNipRaw) == 18) {
+            $borrowerNip = substr($borrowerNipRaw, 0, 8) . ' ' . substr($borrowerNipRaw, 8, 6) . ' ' . substr($borrowerNipRaw, 14, 1) . ' ' . substr($borrowerNipRaw, 15, 3);
+        }
+        
         return view('aset.bast_print_editable', compact('loan', 'date', 'borrowerNip'));
     }
 
