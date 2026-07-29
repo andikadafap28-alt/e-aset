@@ -15,7 +15,7 @@ class AssetController extends Controller
      */
     public function index()
     {
-        $assets = Asset::with('category')->latest()->get();
+        $assets = Asset::with('category')->orderBy('kode_108', 'asc')->orderBy('no_register', 'asc')->get();
         return view('aset.data', compact('assets'));
     }
 
@@ -31,13 +31,13 @@ class AssetController extends Controller
             $query->where('kode_108', 'like', $kib . '%');
         }
 
-        $assets = $query->latest()->get();
+        $assets = $query->orderBy('kode_108', 'asc')->orderBy('no_register', 'asc')->get();
         return view('aset.bmd', compact('assets'));
     }
 
     public function aspakIndex()
     {
-        $assets = Asset::with('category')->where('source', 'ASPAK')->latest()->get();
+        $assets = Asset::with('category')->where('source', 'ASPAK')->orderBy('kode_108', 'asc')->orderBy('no_register', 'asc')->get();
         return view('aset.aspak', compact('assets'));
     }
 

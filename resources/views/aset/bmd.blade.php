@@ -106,7 +106,7 @@
                     <td class="py-3 px-5 text-sm text-slate-600">{{ $index + 1 }}</td>
                     <td class="py-3 px-5 text-sm font-medium text-slate-700">
                         {{ $asset->kode_108 ?: '-' }}
-                        <div class="text-[10px] text-slate-400 font-normal mt-0.5" title="NIBAR">NIBAR: {{ $asset->asset_code }}</div>
+                        
                     </td>
                     <td class="py-3 px-5 text-sm font-semibold text-slate-800">
                         {{ $asset->name }}
