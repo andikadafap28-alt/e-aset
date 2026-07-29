@@ -234,17 +234,19 @@ class KibImport implements ToCollection
             ];
         }
 
-        // Eksekusi upsert massal per 200 baris untuk efisiensi
-        foreach (array_chunk($batch, 200) as $chunk) {
-            \App\Models\Asset::upsert(
-                $chunk,
-                ['asset_code'],
-                [
-                    'name', 'kode_108', 'no_register', 'location', 
-                    'year_purchased', 'harga_perolehan', 'condition', 
-                    'category', 'source', 'merk', 'penyedia', 'tanggal_bast', 'updated_at'
-                ]
-            );
+        // Eksekusi massal menggunakan DB Transaction agar sangat cepat
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            foreach ($batch as $data) {
+                \App\Models\Asset::updateOrCreate(
+                    ['asset_code' => $data['asset_code']],
+                    $data
+                );
+            }
+            \Illuminate\Support\Facades\DB::commit();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            throw $e;
         }
     }
 }
