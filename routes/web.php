@@ -87,8 +87,12 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('aset')->name('aset.')->group(function () {
         Route::get('/data/items', [AssetController::class, 'index'])->name('data.items');
         Route::get('/bmd', [AssetController::class, 'bmdIndex'])->name('bmd.index');
+        Route::get('/bmd/template', [AssetController::class, 'downloadTemplateKib'])->name('bmd.template');
         Route::post('/bmd/import', [AssetController::class, 'bmdImport'])->name('bmd.import');
         Route::get('/aspak', [AssetController::class, 'aspakIndex'])->name('aspak.index');
+
+        Route::get('/pengadaan/create', [AssetController::class, 'createPengadaan'])->name('pengadaan.create');
+        Route::post('/pengadaan', [AssetController::class, 'storePengadaan'])->name('pengadaan.store');
 
         Route::get('/categories', [\App\Http\Controllers\AssetCategoryController::class, 'index'])->name('categories.index');
         Route::post('/categories', [\App\Http\Controllers\AssetCategoryController::class, 'store'])->name('categories.store');

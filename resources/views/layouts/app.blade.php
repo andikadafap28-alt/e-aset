@@ -97,6 +97,10 @@
                             <span class="material-symbols-outlined text-[20px]">folder</span>
                             <span class="text-sm">Kategori Aset</span>
                         </a>
+                        <a href="{{ route('aset.pengadaan.create') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('aset.pengadaan.create') ? 'bg-slate-800 text-white font-medium' : 'hover:bg-slate-800 hover:text-white' }}">
+                            <span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                            <span class="text-sm">Input Pengadaan BMD</span>
+                        </a>
                         <a href="{{ route('aset.pengadaan.items') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('aset.pengadaan.*') ? 'bg-slate-800 text-white font-medium' : 'hover:bg-slate-800 hover:text-white' }}">
                             <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
                             <span class="text-sm">Pengadaan</span>

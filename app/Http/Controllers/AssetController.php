@@ -230,6 +230,87 @@ class AssetController extends Controller
         }
     }
 
+    public function downloadTemplateKib()
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="Template_KIB.csv"',
+        ];
+
+        $columns = ['Kode Barang', 'NIBAR', 'Nomor Register', 'Nama Barang / Spesifikasi', 'Lokasi', 'Merek', 'Harga', 'Tanggal Perolehan'];
+        $callback = function() use ($columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            // Contoh data
+            fputcsv($file, ['1.3.2.07.01.01.005', '', '1', 'Tensimeter Digital Onemed', 'Puskesmas', 'Onemed', '441780', '2026-04-23']);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function createPengadaan(Request $request)
+    {
+        $masterKode108 = \App\Models\MasterKode108::orderBy('kode', 'asc')->get();
+        $categories = \App\Models\AssetCategory::orderBy('nama_kategori', 'asc')->get();
+        return view('aset.pengadaan_form', compact('masterKode108', 'categories'));
+    }
+
+    public function storePengadaan(Request $request)
+    {
+        $validated = $request->validate([
+            'kode_108' => 'required|string',
+            'name' => 'required|string|max:255',
+            'merk' => 'nullable|string|max:255',
+            'jumlah' => 'required|integer|min:1',
+            'harga_perolehan' => 'required|numeric|min:0',
+            'tanggal_bast' => 'required|date',
+            'penyedia' => 'nullable|string|max:255',
+            'category_id' => 'required|exists:asset_categories,id',
+            'condition' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
+            'location' => 'required|string|max:255',
+            'year_purchased' => 'required|digits:4',
+        ]);
+
+        $jumlah = $validated['jumlah'];
+        $kode108 = $validated['kode_108'];
+        
+        $catObj = \App\Models\AssetCategory::find($request->category_id);
+        $categoryName = $catObj ? $catObj->nama_kategori : '-';
+
+        $lastRegister = Asset::where('kode_108', $kode108)->max('no_register');
+        $startRegister = $lastRegister ? $lastRegister + 1 : 1;
+
+        $createdAssets = 0;
+
+        for ($i = 1; $i <= $jumlah; $i++) {
+            $currentReg = $startRegister + ($i - 1);
+            $assetCode = $kode108 . ' - ' . str_pad($currentReg, 4, '0', STR_PAD_LEFT);
+            
+            Asset::create([
+                'asset_code' => $assetCode,
+                'name' => $validated['name'],
+                'merk' => $validated['merk'],
+                'category_id' => $validated['category_id'],
+                'category' => $categoryName,
+                'location' => $validated['location'],
+                'year_purchased' => $validated['year_purchased'],
+                'condition' => $validated['condition'],
+                'harga_perolehan' => $validated['harga_perolehan'],
+                'kode_108' => $kode108,
+                'no_register' => $currentReg,
+                'status_aktif' => true,
+                'tanggal_bast' => $validated['tanggal_bast'],
+                'penyedia' => $validated['penyedia'],
+                'source' => 'BMD',
+            ]);
+            $createdAssets++;
+        }
+
+        return redirect()->route('aset.index')->with('success', "$createdAssets Aset Pengadaan berhasil ditambahkan.");
+    }
+
+
     /**
      * Display the specified resource.
      */
