@@ -205,12 +205,15 @@
 
         <!-- CENTER SIGNATURE -->
         <div class="flex justify-center mt-6">
-            <div class="text-center w-[300px]">
-                <div class="mb-0">Mengetahui,</div>
-                <div class="mb-16">Kepala Puskesmas Mantup</div>
-                
-                <div class="font-bold underline editable-field" id="val_ttd_kepala_name" contenteditable="true">{!! $customData['val_ttd_kepala_name'] ?? 'dr. Muhamad Sunaryadi' !!}</div>
-                <div>NIP. <span class="editable-field" id="val_ttd_kepala_nip" contenteditable="true">{!! $customData['val_ttd_kepala_nip'] ?? '19690313 200212 1 007' !!}</span></div>
+            <div class="text-center w-[300px] flex flex-col h-[180px]">
+                <div>
+                    <div class="mb-0">Mengetahui,</div>
+                    <div>Kepala Puskesmas Mantup</div>
+                </div>
+                <div class="mt-auto">
+                    <div class="font-bold underline editable-field" id="val_ttd_kepala_name" contenteditable="true">{!! $customData['val_ttd_kepala_name'] ?? 'dr. Muhamad Sunaryadi' !!}</div>
+                    <div>NIP. <span class="editable-field" id="val_ttd_kepala_nip" contenteditable="true">{!! $customData['val_ttd_kepala_nip'] ?? '19690313 200212 1 007' !!}</span></div>
+                </div>
             </div>
         </div>
         

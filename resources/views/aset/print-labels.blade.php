@@ -55,6 +55,7 @@
         .label-logo {
             width: 42px;
             height: auto;
+            flex-shrink: 0;
         }
 
         .label-text {
@@ -65,26 +66,31 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            overflow: hidden;
         }
 
         .label-text .kategori {
-            font-size: 9.5pt;
+            font-size: 8.5pt;
             font-weight: bold;
             color: #000;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .label-text .kode {
-            font-size: 11pt;
+            font-size: 8pt;
             font-weight: bold;
-            margin-top: 4px;
+            margin-top: 3px;
             color: #000;
-            letter-spacing: 0.3px;
+            line-height: 1.1;
+            word-break: break-all;
         }
 
         .label-text .tahun {
-            font-size: 9.5pt;
+            font-size: 8.5pt;
             font-weight: bold;
-            margin-top: 4px;
+            margin-top: 3px;
             color: #000;
         }
 
@@ -94,6 +100,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .label-footer {
@@ -149,10 +156,10 @@
             <div class="stiker-label">
                 <div class="label-header">PEMERINTAH KABUPATEN LAMONGAN</div>
                 <div class="label-body">
-                    <img src="{{ asset('images/logo-lamongan.png') }}" class="label-logo" alt="Logo">
+                    <img src="{{ asset('img/logo-lamongan.png') }}" class="label-logo" alt="Logo">
                     <div class="label-text">
                         <div class="kategori">13.17.07.03.12.00</div>
-                        <div class="kode">{{ $asset->asset_code }}</div>
+                        <div class="kode">{{ $asset->kode_108 ?: '-' }}</div>
                         <div class="tahun">{{ $asset->year_purchased }}</div>
                     </div>
                     <div class="label-qr">
