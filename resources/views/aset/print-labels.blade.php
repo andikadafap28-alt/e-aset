@@ -79,18 +79,18 @@
         }
 
         .label-text .kode {
-            font-size: 8pt;
+            font-size: 9pt;
             font-weight: bold;
             margin-top: 3px;
             color: #000;
-            line-height: 1.1;
-            word-break: break-all;
+            line-height: 1.2;
+            word-break: break-word;
         }
 
         .label-text .tahun {
             font-size: 8.5pt;
             font-weight: bold;
-            margin-top: 3px;
+            margin-top: 4px;
             color: #000;
         }
 
@@ -159,7 +159,7 @@
                     <img src="{{ asset('img/logo-lamongan.png') }}" class="label-logo" alt="Logo">
                     <div class="label-text">
                         <div class="kategori">13.17.07.03.12.00</div>
-                        <div class="kode">{{ $asset->kode_108 ?: '-' }}</div>
+                        <div class="kode">{{ $asset->kode_108 ?: '-' }}<br/><span style="font-size: 7.5pt; font-weight: normal;">{{ $asset->name }}</span></div>
                         <div class="tahun">{{ $asset->year_purchased }}</div>
                     </div>
                     <div class="label-qr">
