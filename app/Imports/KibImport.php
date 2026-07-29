@@ -101,7 +101,8 @@ class KibImport implements ToCollection
             $nibarVal = isset($colMap['nibar']) ? $row[$colMap['nibar']] : null;
             
             // Skip jika kosong atau itu adalah baris header
-            if (empty(trim((string)$namaBarang)) || strtolower(trim((string)$namaBarang)) == 'spesifikasi nama barang' || strtolower(trim((string)$namaBarang)) == 'nama barang') {
+            $namaBarangLower = strtolower(trim((string)$namaBarang));
+            if (empty($namaBarangLower) || str_contains($namaBarangLower, 'nama barang') || str_contains($namaBarangLower, 'spesifikasi nama')) {
                 continue;
             }
 
