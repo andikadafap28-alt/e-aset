@@ -26,6 +26,10 @@
     </div>
     <div class="flex flex-wrap items-center gap-2 self-start md:self-auto">
         @if($asset->status_aktif)
+            <button @click="$dispatch('open-modal-bast')" class="text-blue-600 hover:text-white border border-blue-200 hover:bg-blue-600 hover:border-blue-600 bg-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Buatkan BAST
+            </button>
             <button @click="$dispatch('open-modal-koreksi')" class="text-amber-600 hover:text-white border border-amber-200 hover:bg-amber-600 hover:border-amber-600 bg-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 Koreksi Nilai/Kondisi
@@ -614,6 +618,63 @@
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-5 rounded-lg shadow-sm transition-all flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     Simpan Riwayat
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
+
+<!-- Modal Buatkan BAST -->
+@if($asset->status_aktif)
+<div x-data="{ showModal: false }" @open-modal-bast.window="showModal = true" x-show="showModal" class="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/50 backdrop-blur-sm" style="display: none;">
+    <div @click.away="showModal = false" class="relative w-full max-w-lg p-6 bg-white rounded-2xl shadow-xl transform transition-all mt-10 mb-10">
+        <div class="flex items-center justify-between mb-5 border-b border-slate-100 pb-3">
+            <div>
+                <h3 class="text-lg font-bold text-slate-900">Buatkan BAST / Peminjaman</h3>
+                <p class="text-xs text-slate-500 mt-1">Serahkan aset ini kepada petugas secara resmi.</p>
+            </div>
+            <button @click="showModal = false" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <form action="{{ route('peminjaman.store') }}" method="POST">
+            @csrf
+            <input type="hidden" name="asset_id" value="{{ $asset->id }}">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Nama Petugas / Peminjam <span class="text-rose-500">*</span></label>
+                    <input type="text" name="borrower_name" required placeholder="Contoh: dr. Budi" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Kontak Petugas (Opsional)</label>
+                    <input type="text" name="borrower_contact" placeholder="No HP/WA" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal Serah Terima <span class="text-rose-500">*</span></label>
+                    <input type="date" name="loan_date" required value="{{ date('Y-m-d') }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Batas Waktu Pinjaman (Opsional)</label>
+                    <input type="date" name="expected_return_date" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Keterangan / Keperluan</label>
+                    <textarea name="notes" rows="2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Catatan keperluan..."></textarea>
+                </div>
+            </div>
+            
+            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+                <button type="button" @click="showModal = false" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">Batal</button>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-5 rounded-lg shadow-sm transition-all flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    Buat BAST
                 </button>
             </div>
         </form>

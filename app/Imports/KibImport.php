@@ -233,8 +233,19 @@ class KibImport implements ToCollection
             $year = date('Y');
             if (!empty($yearRaw)) {
                 $yearStr = trim((string)$yearRaw);
-                if (is_numeric($yearStr) && strlen($yearStr) == 4) {
-                    $year = $yearStr;
+                if (is_numeric($yearStr)) {
+                    if (strlen($yearStr) == 4) {
+                        $year = $yearStr;
+                    } elseif ($yearStr > 10000 && $yearStr < 100000) {
+                        try {
+                            $dateObj = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($yearStr);
+                            $year = $dateObj->format('Y');
+                        } catch (\Exception $e) {
+                            $year = substr($yearStr, 0, 4);
+                        }
+                    } else {
+                        $year = substr($yearStr, 0, 4);
+                    }
                 } elseif (strtotime($yearStr)) {
                     $year = date('Y', strtotime($yearStr));
                 } else {
