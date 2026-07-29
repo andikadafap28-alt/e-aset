@@ -57,7 +57,7 @@
                             <td class="p-4 text-center">
                                 <input type="checkbox" name="asset_ids[]" value="{{ $asset->id }}" class="asset-checkbox rounded border-slate-300 text-indigo-600 shadow-sm focus:ring-indigo-500 w-4 h-4 cursor-pointer">
                             </td>
-                            <td class="p-4 font-medium text-slate-800">{{ $asset->kode_108 ?: '-' }}</td>
+                            <td class="p-4 font-medium text-slate-800">{{ $asset->kode_108 ?: '-' }}{{ strlen($asset->asset_code) >= 38 ? '.' . substr($asset->asset_code, 35, 3) : '' }}{{ $asset->no_register ? ' - ' . str_pad($asset->no_register, 3, '0', STR_PAD_LEFT) : '' }}</td>
                             <td class="p-4 text-slate-600">{{ $asset->name }}</td>
                             <td class="p-4 text-slate-600">
                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700">

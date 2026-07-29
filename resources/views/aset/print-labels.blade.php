@@ -159,7 +159,7 @@
                     <img src="{{ asset('img/logo-lamongan.png') }}" class="label-logo" alt="Logo">
                     <div class="label-text">
                         <div class="kategori">13.17.07.03.12.00</div>
-                        <div class="kode">{{ $asset->kode_108 ?: '-' }}<br/><span style="font-size: 7.5pt; font-weight: normal;">{{ $asset->name }}</span></div>
+                        <div class="kode">{{ $asset->kode_108 ?: '-' }}{{ strlen($asset->asset_code) >= 38 ? '.' . substr($asset->asset_code, 35, 3) : '' }}{{ $asset->no_register ? ' - ' . str_pad($asset->no_register, 3, '0', STR_PAD_LEFT) : '' }}<br/><span style="font-size: 7.5pt; font-weight: normal;">{{ $asset->name }}</span></div>
                         <div class="tahun">{{ $asset->year_purchased }}</div>
                     </div>
                     <div class="label-qr">
