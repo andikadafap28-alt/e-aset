@@ -61,6 +61,11 @@ class KibImport implements ToCollection
             $colMap['name_spec'] = 13; // Default Spesifikasi Nama Barang (kolom N)
         }
 
+        // Caches untuk optimasi performa mass import
+        $masterKodeCache = [];
+        $maxRegisterCache = [];
+        $batch = [];
+
         foreach ($rows as $index => $row) {
             // Deteksi baris data
             $namaBarang = null;
@@ -121,9 +126,14 @@ class KibImport implements ToCollection
             
             $masterKode = null;
             if (!empty($kode108)) {
-                $masterKode = \App\Models\MasterKode108::where('kode', $kode108)->first();
-                if ($masterKode) {
-                    $category = $masterKode->uraian;
+                if (!array_key_exists($kode108, $masterKodeCache)) {
+                    $masterKodeObj = \App\Models\MasterKode108::where('kode', $kode108)->first();
+                    $masterKodeCache[$kode108] = $masterKodeObj ? $masterKodeObj->uraian : null;
+                }
+                
+                if ($masterKodeCache[$kode108]) {
+                    $category = $masterKodeCache[$kode108];
+                    $masterKode = true;
                 }
             }
 
@@ -162,12 +172,16 @@ class KibImport implements ToCollection
             
             // Autogenerate no_register HANYA JIKA ini bukan baris kosong
             if (empty($noRegister)) {
-                $lastReg = \App\Models\Asset::where('kode_108', $kode108)->max('no_register');
-                $noRegister = $lastReg ? $lastReg + 1 : 1;
+                if (!array_key_exists($kode108, $maxRegisterCache)) {
+                    $lastReg = \App\Models\Asset::where('kode_108', $kode108)->max('no_register');
+                    $maxRegisterCache[$kode108] = $lastReg ? (int)$lastReg : 0;
+                }
+                $maxRegisterCache[$kode108]++;
+                $noRegister = $maxRegisterCache[$kode108];
             }
 
             if (empty($nibar)) {
-                $nibar = 'AST-' . time() . '-' . rand(100,999);
+                $nibar = 'AST-' . time() . '-' . rand(100,999) . $index;
             }
 
             // Bersihkan harga (hilangkan Rp, titik, koma, spasi)
@@ -201,22 +215,34 @@ class KibImport implements ToCollection
             // Pastikan tidak ada data yang null untuk nama
             if (empty($finalName)) continue;
 
-            // Masukkan ke DB
-            Asset::updateOrCreate(
-                ['asset_code' => $nibar],
+            $batch[] = [
+                'asset_code' => $nibar,
+                'name' => substr($finalName, 0, 255),
+                'kode_108' => $kode108,
+                'no_register' => $noRegister,
+                'location' => $location ?: 'Puskesmas',
+                'year_purchased' => $year,
+                'harga_perolehan' => $price,
+                'condition' => 'Baik',
+                'category' => substr($category, 0, 255),
+                'source' => $this->source,
+                'merk' => substr($merk, 0, 255),
+                'penyedia' => substr($penyedia, 0, 255),
+                'tanggal_bast' => (!empty($yearRaw) && strtotime(trim((string)$yearRaw))) ? date('Y-m-d', strtotime(trim((string)$yearRaw))) : "$year-01-01",
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        // Eksekusi upsert massal per 200 baris untuk efisiensi
+        foreach (array_chunk($batch, 200) as $chunk) {
+            \App\Models\Asset::upsert(
+                $chunk,
+                ['asset_code'],
                 [
-                    'name' => substr($finalName, 0, 255),
-                    'kode_108' => $kode108,
-                    'no_register' => $noRegister,
-                    'location' => $location ?: 'Puskesmas',
-                    'year_purchased' => $year,
-                    'harga_perolehan' => $price,
-                    'condition' => 'Baik',
-                    'category' => substr($category, 0, 255),
-                    'source' => $this->source,
-                    'merk' => substr($merk, 0, 255),
-                    'penyedia' => substr($penyedia, 0, 255),
-                    'tanggal_bast' => (!empty($yearRaw) && strtotime(trim((string)$yearRaw))) ? date('Y-m-d', strtotime(trim((string)$yearRaw))) : "$year-01-01",
+                    'name', 'kode_108', 'no_register', 'location', 
+                    'year_purchased', 'harga_perolehan', 'condition', 
+                    'category', 'source', 'merk', 'penyedia', 'tanggal_bast', 'updated_at'
                 ]
             );
         }
