@@ -225,7 +225,7 @@
                             <td class="py-3 px-5 whitespace-nowrap flex gap-2">
                                 <a href="{{ route('aset.peminjaman.print', $loan->id) }}" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1 text-xs bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors inline-flex">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                    Print / Edit BAST
+                                    Lihat / Cetak BAST
                                 </a>
                                 <form action="{{ route('aset.peminjaman.destroy', $loan->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus riwayat BAST ini?');">
                                     @csrf
@@ -725,7 +725,24 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Keterangan / Keperluan</label>
-                    <textarea name="notes" rows="2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Catatan keperluan..."></textarea>
+                    <input type="text" name="notes" list="keperluan-list" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm" placeholder="Pilih atau ketik nama pustu/polindes...">
+                    <datalist id="keperluan-list">
+                        <option value="Pelayanan PUSTU SUKOBENDU MANTUP"></option>
+                        <option value="Pelayanan PUSTU SUMBERDADI MANTUP"></option>
+                        <option value="Pelayanan PUSTU SUMBERKEREP MANTUP"></option>
+                        <option value="Pelayanan POLINDES RUMPUK"></option>
+                        <option value="Pelayanan POLINDES SUMBERKEREP"></option>
+                        <option value="Pelayanan POLINDES SUKOSARI"></option>
+                        <option value="Pelayanan POLINDES MOJOSARI"></option>
+                        <option value="Pelayanan POLINDES PLABUHANREJO"></option>
+                        <option value="Pelayanan POLINDES SUMBERBENDO"></option>
+                        <option value="Pelayanan PONKESDES SUMBERAGUNG"></option>
+                        <option value="Pelayanan PONKESDES KEDUNGSOKO"></option>
+                        <option value="Pelayanan PONKESDES TUGU"></option>
+                        <option value="Pelayanan PONKESDES KEDUKBEMBEM"></option>
+                        <option value="Pelayanan PONKESDES SIDOMULYO"></option>
+                        <option value="Pelayanan PONKESDES TUNGGUNJAGIR"></option>
+                    </datalist>
                 </div>
             </div>
             
