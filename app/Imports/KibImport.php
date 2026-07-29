@@ -118,27 +118,37 @@ class KibImport implements ToCollection
             $category = 'Peralatan dan Mesin';
             $k108 = (string)$kode108;
             $fname = strtoupper($this->fileName ?? '');
+            
+            $masterKode = null;
+            if (!empty($kode108)) {
+                $masterKode = \App\Models\MasterKode108::where('kode', $kode108)->first();
+                if ($masterKode) {
+                    $category = $masterKode->uraian;
+                }
+            }
 
-            if (isset($colMap['category']) && !empty($row[$colMap['category']])) {
-                $category = $row[$colMap['category']];
-            } elseif (isset($row[6]) && strtoupper(trim((string)$row[6])) == $row[6] && !empty($row[6]) && strlen(trim((string)$row[6])) > 3) {
-                // Seringkali kolom 6 berisi Nama Grup (cth: ALAT ANGKUTAN)
-                $category = ucwords(strtolower(trim((string)$row[6])));
-            } else {
-                // Deteksi KIB otomatis berdasarkan nama file atau awalan kode_108
-                if (str_contains($fname, 'KIB A')) $category = 'Tanah';
-                elseif (str_contains($fname, 'KIB B')) $category = 'Peralatan dan Mesin';
-                elseif (str_contains($fname, 'KIB C')) $category = 'Gedung dan Bangunan';
-                elseif (str_contains($fname, 'KIB D')) $category = 'Jalan, Irigasi dan Jaringan';
-                elseif (str_contains($fname, 'KIB E')) $category = 'Aset Tetap Lainnya';
-                elseif (str_contains($fname, 'KIB F')) $category = 'Konstruksi dalam Pengerjaan';
-                else {
-                    if (str_starts_with($k108, '1.3.1')) $category = 'Tanah';
-                    elseif (str_starts_with($k108, '1.3.2')) $category = 'Peralatan dan Mesin';
-                    elseif (str_starts_with($k108, '1.3.3')) $category = 'Gedung dan Bangunan';
-                    elseif (str_starts_with($k108, '1.3.4')) $category = 'Jalan, Irigasi dan Jaringan';
-                    elseif (str_starts_with($k108, '1.3.5')) $category = 'Aset Tetap Lainnya';
-                    elseif (str_starts_with($k108, '1.3.6')) $category = 'Konstruksi dalam Pengerjaan';
+            if (!$masterKode) {
+                if (isset($colMap['category']) && !empty($row[$colMap['category']])) {
+                    $category = $row[$colMap['category']];
+                } elseif (isset($row[6]) && strtoupper(trim((string)$row[6])) == $row[6] && !empty($row[6]) && strlen(trim((string)$row[6])) > 3) {
+                    // Seringkali kolom 6 berisi Nama Grup (cth: ALAT ANGKUTAN)
+                    $category = ucwords(strtolower(trim((string)$row[6])));
+                } else {
+                    // Deteksi KIB otomatis berdasarkan nama file atau awalan kode_108
+                    if (str_contains($fname, 'KIB A')) $category = 'Tanah';
+                    elseif (str_contains($fname, 'KIB B')) $category = 'Peralatan dan Mesin';
+                    elseif (str_contains($fname, 'KIB C')) $category = 'Gedung dan Bangunan';
+                    elseif (str_contains($fname, 'KIB D')) $category = 'Jalan, Irigasi dan Jaringan';
+                    elseif (str_contains($fname, 'KIB E')) $category = 'Aset Tetap Lainnya';
+                    elseif (str_contains($fname, 'KIB F')) $category = 'Konstruksi dalam Pengerjaan';
+                    else {
+                        if (str_starts_with($k108, '1.3.1')) $category = 'Tanah';
+                        elseif (str_starts_with($k108, '1.3.2')) $category = 'Peralatan dan Mesin';
+                        elseif (str_starts_with($k108, '1.3.3')) $category = 'Gedung dan Bangunan';
+                        elseif (str_starts_with($k108, '1.3.4')) $category = 'Jalan, Irigasi dan Jaringan';
+                        elseif (str_starts_with($k108, '1.3.5')) $category = 'Aset Tetap Lainnya';
+                        elseif (str_starts_with($k108, '1.3.6')) $category = 'Konstruksi dalam Pengerjaan';
+                    }
                 }
             }
 
