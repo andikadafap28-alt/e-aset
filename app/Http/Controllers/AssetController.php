@@ -232,21 +232,7 @@ class AssetController extends Controller
 
     public function downloadTemplateKib()
     {
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="Template_KIB.csv"',
-        ];
-
-        $columns = ['Kode Barang', 'NIBAR', 'Nomor Register', 'Nama Barang / Spesifikasi', 'Lokasi', 'Merek', 'Harga', 'Tanggal Perolehan'];
-        $callback = function() use ($columns) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
-            // Contoh data
-            fputcsv($file, ['1.3.2.07.01.01.005', '', '1', 'Tensimeter Digital Onemed', 'Puskesmas', 'Onemed', '441780', '2026-04-23']);
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        return Excel::download(new \App\Exports\TemplateKibExport, 'Template_KIB_A.xlsx');
     }
 
     public function createPengadaan(Request $request)
