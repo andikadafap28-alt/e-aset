@@ -64,7 +64,10 @@
                         <input type="checkbox" name="asset_ids[]" value="{{ $asset->id }}" class="asset-checkbox rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
                     </td>
                     <td class="py-3 px-5 text-sm text-slate-600">{{ $index + 1 }}</td>
-                    <td class="py-3 px-5 text-sm font-medium text-slate-700">{{ $asset->asset_code }}</td>
+                    <td class="py-3 px-5 text-sm font-medium text-slate-700">
+                        {{ $asset->kode_108 ?: '-' }}
+                        <div class="text-[10px] text-slate-400 font-normal mt-0.5" title="NIBAR">NIBAR: {{ $asset->asset_code }}</div>
+                    </td>
                     <td class="py-3 px-5 text-sm font-semibold text-slate-800">
                         {{ $asset->name }}
                         @if(!$asset->status_aktif)
@@ -92,26 +95,29 @@
                         <div class="flex items-center justify-end gap-2">
                             <a href="{{ route('aset.show', $asset->id) }}" class="text-sky-600 hover:text-sky-800 font-medium text-sm transition-colors px-2 py-1 bg-sky-50 hover:bg-sky-100 rounded">Detail/Edit</a>
                             
-                            <form action="{{ route('aset.destroy', $asset->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus aset ini?');" class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-rose-600 hover:text-rose-800 font-medium text-sm transition-colors px-2 py-1 bg-rose-50 hover:bg-rose-100 rounded">Hapus</button>
-                            </form>
+                            <a href="#" onclick="event.preventDefault(); if(confirm('Apakah Anda yakin ingin menghapus aset ini?')) { document.getElementById('delete-form-{{ $asset->id }}').submit(); }" class="text-rose-600 hover:text-rose-800 font-medium text-sm transition-colors px-2 py-1 bg-rose-50 hover:bg-rose-100 rounded">Hapus</a>
                         </div>
                     </td>
                 </tr>
                 @empty
-                <tr>
-                    <td colspan="8" class="py-8 text-center text-slate-500 text-sm">
-                        Belum ada data aset. <a href="{{ route('aset.create') }}" class="text-indigo-600 hover:underline">Tambahkan sekarang</a>.
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="7" class="py-10 text-center text-slate-500">
+                            Tidak ada data aset ASPAK ditemukan.
+                        </td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 </div>
 </form>
+
+@foreach($assets as $asset)
+    <form id="delete-form-{{ $asset->id }}" action="{{ route('aset.destroy', $asset->id) }}" method="POST" class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
+@endforeach
 
     <!-- Modal Import ASPAK -->
     <div x-data="{ showImportModal: false }" @open-modal-import.window="showImportModal = true" x-show="showImportModal" class="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/50 backdrop-blur-sm" style="display: none;">

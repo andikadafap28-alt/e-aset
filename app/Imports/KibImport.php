@@ -101,12 +101,26 @@ class KibImport implements ToCollection
                 : ((!empty($yearRaw) && strtotime(trim((string)$yearRaw))) ? date('Y', strtotime(trim((string)$yearRaw))) : date('Y'));
             $price = (!empty($priceRaw) && is_numeric(trim((string)$priceRaw))) ? (float)trim((string)$priceRaw) : 0;
 
+            // Lewati baris penomoran template (baris 3) di mana kode_108 berisi '1' dan nibar berisi '3'
+            if (trim((string)$kode108) === '1' && trim((string)$nibar) === '3') {
+                continue;
+            }
+
             $category = 'Peralatan dan Mesin';
             if (isset($colMap['category']) && !empty($row[$colMap['category']])) {
                 $category = $row[$colMap['category']];
-            } elseif (isset($row[6]) && strtoupper(trim((string)$row[6])) == $row[6] && !empty($row[6])) {
+            } elseif (isset($row[6]) && strtoupper(trim((string)$row[6])) == $row[6] && !empty($row[6]) && strlen(trim((string)$row[6])) > 3) {
                 // Seringkali kolom 6 berisi Nama Grup (cth: ALAT ANGKUTAN)
                 $category = ucwords(strtolower(trim((string)$row[6])));
+            } else {
+                // Deteksi KIB otomatis berdasarkan awalan kode_108 jika tidak ada di Excel
+                $k108 = (string)$kode108;
+                if (str_starts_with($k108, '1.3.1')) $category = 'Tanah';
+                elseif (str_starts_with($k108, '1.3.2')) $category = 'Peralatan dan Mesin';
+                elseif (str_starts_with($k108, '1.3.3')) $category = 'Gedung dan Bangunan';
+                elseif (str_starts_with($k108, '1.3.4')) $category = 'Jalan, Irigasi dan Jaringan';
+                elseif (str_starts_with($k108, '1.3.5')) $category = 'Aset Tetap Lainnya';
+                elseif (str_starts_with($k108, '1.3.6')) $category = 'Konstruksi dalam Pengerjaan';
             }
 
             $merk = isset($colMap['merk']) ? $row[$colMap['merk']] : null;
