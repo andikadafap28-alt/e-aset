@@ -229,8 +229,8 @@ class KibImport implements ToCollection
                 'merk' => substr($merk, 0, 255),
                 'penyedia' => substr($penyedia, 0, 255),
                 'tanggal_bast' => (!empty($yearRaw) && strtotime(trim((string)$yearRaw))) ? date('Y-m-d', strtotime(trim((string)$yearRaw))) : "$year-01-01",
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now()->toDateTimeString(),
+                'updated_at' => now()->toDateTimeString(),
             ];
         }
 
