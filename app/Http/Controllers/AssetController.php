@@ -361,7 +361,7 @@ class AssetController extends Controller
         $asset = Asset::findOrFail($id);
         $asset->delete();
 
-        return redirect()->route('aset.index')->with('success', 'Aset berhasil dihapus.');
+        return back()->with('success', 'Aset berhasil dihapus.');
     }
 
     public function storeCorrection(Request $request, string $id)
@@ -491,7 +491,7 @@ class AssetController extends Controller
             'set_rusak_berat' => 'diubah kondisinya menjadi Rusak Berat',
         };
 
-        return redirect()->route('aset.index')->with('success', count($request->asset_ids) . " aset berhasil $actionText.");
+        return back()->with('success', count($request->asset_ids) . " aset berhasil $actionText.");
     }
 
     public function createMutasi()
