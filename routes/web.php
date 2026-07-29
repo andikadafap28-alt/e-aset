@@ -121,12 +121,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pemeliharaan/{id}/cancel', [\App\Http\Controllers\AssetMaintenanceController::class, 'cancel'])->name('pemeliharaan.cancel');
         Route::get('/monitoring/items', [AssetController::class, 'monitoring'])->name('monitoring.items');
         Route::get('/pelabelan/items', [AssetController::class, 'pelabelan'])->name('pelabelan.items');
-        Route::post('/aset/pelabelan/print', [AssetController::class, 'printLabels'])->name('aset.pelabelan.print');
+        Route::post('/pelabelan/print', [AssetController::class, 'printLabels'])->name('pelabelan.print');
 
-        Route::post('/aset/{id}/koreksi', [AssetController::class, 'storeCorrection'])->name('aset.koreksi.store');
+        Route::post('/{id}/koreksi', [AssetController::class, 'storeCorrection'])->name('koreksi.store');
         
-        Route::post('/aset/{id}/kalibrasi', [\App\Http\Controllers\AssetCalibrationController::class, 'store'])->name('aset.kalibrasi.store');
-        Route::delete('/aset/kalibrasi/{id}', [\App\Http\Controllers\AssetCalibrationController::class, 'destroy'])->name('aset.kalibrasi.destroy');
+        Route::post('/{id}/kalibrasi', [\App\Http\Controllers\AssetCalibrationController::class, 'store'])->name('kalibrasi.store');
+        Route::delete('/kalibrasi/{id}', [\App\Http\Controllers\AssetCalibrationController::class, 'destroy'])->name('kalibrasi.destroy');
 
         Route::get('/print-queue/data', [AssetController::class, 'getPrintQueueData'])->name('print-queue.data');
         Route::post('/print-queue/remove/{id}', [AssetController::class, 'removeFromPrintQueue'])->name('print-queue.remove');
