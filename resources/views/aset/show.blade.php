@@ -222,11 +222,19 @@
                             <td class="py-3 px-5 whitespace-nowrap">{{ \Carbon\Carbon::parse($loan->loan_date)->translatedFormat('d M Y') }}</td>
                             <td class="py-3 px-5 font-medium text-slate-800">{{ $loan->borrower_name }}</td>
                             <td class="py-3 px-5">{{ $loan->borrower_contact ?: '-' }}</td>
-                            <td class="py-3 px-5">
+                            <td class="py-3 px-5 whitespace-nowrap flex gap-2">
                                 <a href="{{ route('aset.peminjaman.print', $loan->id) }}" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1 text-xs bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors inline-flex">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                                     Print / Edit BAST
                                 </a>
+                                <form action="{{ route('aset.peminjaman.destroy', $loan->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus riwayat BAST ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-rose-600 hover:text-rose-800 font-medium flex items-center gap-1 text-xs bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors inline-flex">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        Hapus
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         @empty
@@ -693,6 +701,11 @@
                             <option value="{{ $emp->name }}"></option>
                         @endforeach
                     </datalist>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Jabatan Petugas / Peminjam</label>
+                    <input type="text" name="borrower_position" placeholder="Contoh: Bidan Desa" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
                 </div>
                 
                 <div>

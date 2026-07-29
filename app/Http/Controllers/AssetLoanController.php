@@ -29,6 +29,7 @@ class AssetLoanController extends Controller
         AssetLoan::create([
             'asset_id' => $request->asset_id,
             'borrower_name' => $request->borrower_name,
+            'borrower_position' => $request->borrower_position,
             'borrower_contact' => $request->borrower_contact,
             'loan_date' => $request->loan_date,
             'expected_return_date' => $request->expected_return_date,
@@ -123,11 +124,19 @@ class AssetLoanController extends Controller
     {
         $loan = AssetLoan::with(['asset', 'approver'])->findOrFail($id);
         
-        $verifyUrl = route('verify.bast', $loan->id);
-        $qrCode = base64_encode(QrCode::format('svg')->size(100)->generate($verifyUrl));
-        
         $date = \Carbon\Carbon::now()->translatedFormat('d F Y');
         
-        return view('aset.bast_print_editable', compact('loan', 'qrCode', 'date'));
+        // Find NIP of borrower if exists in Employee table
+        $employee = \App\Models\Employee::where('name', $loan->borrower_name)->first();
+        $borrowerNip = $employee ? $employee->nip : '';
+        
+        return view('aset.bast_print_editable', compact('loan', 'date', 'borrowerNip'));
+    }
+
+    public function destroy($id)
+    {
+        $loan = AssetLoan::findOrFail($id);
+        $loan->delete();
+        return back()->with('success', 'Riwayat BAST berhasil dihapus.');
     }
 }
