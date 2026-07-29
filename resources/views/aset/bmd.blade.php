@@ -13,10 +13,20 @@
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             Import KIB (Excel)
         </button>
-        <a href="{{ route('aset.bmd.template') }}" class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Download Template
-        </a>
+        <div class="relative" x-data="{ openTemplate: false }">
+            <button @click="openTemplate = !openTemplate" class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Download Template
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div x-show="openTemplate" @click.away="openTemplate = false" class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl z-50 overflow-hidden border border-slate-100" style="display: none;">
+                <a href="{{ route('aset.bmd.template', ['kib' => 'A']) }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-sky-50 hover:text-sky-700 border-b border-slate-50">KIB A (Tanah)</a>
+                <a href="{{ route('aset.bmd.template', ['kib' => 'B']) }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-sky-50 hover:text-sky-700 border-b border-slate-50">KIB B (Peralatan dan Mesin)</a>
+                <a href="{{ route('aset.bmd.template', ['kib' => 'C']) }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-sky-50 hover:text-sky-700 border-b border-slate-50">KIB C (Gedung dan Bangunan)</a>
+                <a href="{{ route('aset.bmd.template', ['kib' => 'D']) }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-sky-50 hover:text-sky-700 border-b border-slate-50">KIB D (Jalan dan Jaringan)</a>
+                <a href="{{ route('aset.bmd.template', ['kib' => 'E']) }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-sky-50 hover:text-sky-700">KIB E (Aset Lainnya)</a>
+            </div>
+        </div>
         <a href="{{ route('aset.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             Tambah Aset

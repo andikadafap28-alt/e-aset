@@ -47,7 +47,8 @@ class AssetController extends Controller
             'file_excel' => 'required|mimes:xlsx,xls,csv'
         ]);
 
-        Excel::import(new KibImport($request->input('source', 'BMD')), $request->file('file_excel'));
+        $fileName = $request->file('file_excel')->getClientOriginalName();
+        Excel::import(new KibImport($request->input('source', 'BMD'), $fileName), $request->file('file_excel'));
 
         return back()->with('success', 'Data KIB berhasil diimport.');
     }
@@ -230,9 +231,11 @@ class AssetController extends Controller
         }
     }
 
-    public function downloadTemplateKib()
+    public function downloadTemplateKib(Request $request)
     {
-        return Excel::download(new \App\Exports\TemplateKibExport, 'Template_KIB_A.xlsx');
+        $kib = $request->query('kib', 'A');
+        $fileName = 'Template_KIB_' . strtoupper($kib) . '.xlsx';
+        return Excel::download(new \App\Exports\TemplateKibExport, $fileName);
     }
 
     public function createPengadaan(Request $request)

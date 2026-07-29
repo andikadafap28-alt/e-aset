@@ -11,10 +11,12 @@ use Illuminate\Support\Str;
 class KibImport implements ToCollection
 {
     protected $source;
+    protected $fileName;
 
-    public function __construct($source = 'BMD')
+    public function __construct($source = 'BMD', $fileName = '')
     {
         $this->source = $source;
+        $this->fileName = $fileName;
     }
 
     public function collection(Collection $rows)
@@ -32,9 +34,10 @@ class KibImport implements ToCollection
                 if ($val === 'nibar' || str_contains($val, 'nibar')) $colMap['nibar'] = $colIdx;
                 if (str_contains($val, 'register')) $colMap['no_register'] = $colIdx;
                 if (str_contains($val, 'spesifikasi nama')) {
-                    $colMap['name'] = $colIdx;
-                } elseif (str_contains($val, 'nama barang') || str_contains($val, 'uraian')) {
-                    if (!isset($colMap['name'])) $colMap['name'] = $colIdx; // Ambil yang pertama ketemu jika tidak ada spesifikasi nama
+                    $colMap['name_spec'] = $colIdx;
+                } 
+                if (str_contains($val, 'nama barang') || str_contains($val, 'uraian')) {
+                    $colMap['name_primary'] = $colIdx;
                 }
                 if (str_contains($val, 'merek') || str_contains($val, 'merk') || str_contains($val, 'tipe')) $colMap['merk'] = $colIdx;
                 if (str_contains($val, 'lokasi') || str_contains($val, 'alamat')) $colMap['location'] = $colIdx;
@@ -53,17 +56,23 @@ class KibImport implements ToCollection
         if (!isset($colMap['nibar'])) {
             $colMap['nibar'] = 7; // Default col 7 if image format KIB B
         }
-        if (!isset($colMap['name'])) {
-            $colMap['name'] = 9; // Default Spesifikasi Nama Barang
+        if (!isset($colMap['name_primary']) && !isset($colMap['name_spec'])) {
+            $colMap['name_primary'] = 8; // Default Nama Barang (kolom I)
+            $colMap['name_spec'] = 13; // Default Spesifikasi Nama Barang (kolom N)
         }
 
         foreach ($rows as $index => $row) {
-            // Deteksi baris data: Jika kolom 'name' atau 'nibar' ada isinya dan bukan header
-            $namaBarang = isset($colMap['name']) ? $row[$colMap['name']] : null;
+            // Deteksi baris data
+            $namaBarang = null;
+            if (isset($colMap['name_primary']) && !empty(trim((string)$row[$colMap['name_primary']]))) {
+                $namaBarang = $row[$colMap['name_primary']];
+            } elseif (isset($colMap['name_spec']) && !empty(trim((string)$row[$colMap['name_spec']]))) {
+                $namaBarang = $row[$colMap['name_spec']];
+            }
             $nibarVal = isset($colMap['nibar']) ? $row[$colMap['nibar']] : null;
             
             // Skip jika kosong atau itu adalah baris header
-            if (empty($namaBarang) || strtolower(trim((string)$namaBarang)) == 'spesifikasi nama barang' || strtolower(trim((string)$namaBarang)) == 'nama barang') {
+            if (empty(trim((string)$namaBarang)) || strtolower(trim((string)$namaBarang)) == 'spesifikasi nama barang' || strtolower(trim((string)$namaBarang)) == 'nama barang') {
                 continue;
             }
 
@@ -107,20 +116,30 @@ class KibImport implements ToCollection
             }
 
             $category = 'Peralatan dan Mesin';
+            $k108 = (string)$kode108;
+            $fname = strtoupper($this->fileName ?? '');
+
             if (isset($colMap['category']) && !empty($row[$colMap['category']])) {
                 $category = $row[$colMap['category']];
             } elseif (isset($row[6]) && strtoupper(trim((string)$row[6])) == $row[6] && !empty($row[6]) && strlen(trim((string)$row[6])) > 3) {
                 // Seringkali kolom 6 berisi Nama Grup (cth: ALAT ANGKUTAN)
                 $category = ucwords(strtolower(trim((string)$row[6])));
             } else {
-                // Deteksi KIB otomatis berdasarkan awalan kode_108 jika tidak ada di Excel
-                $k108 = (string)$kode108;
-                if (str_starts_with($k108, '1.3.1')) $category = 'Tanah';
-                elseif (str_starts_with($k108, '1.3.2')) $category = 'Peralatan dan Mesin';
-                elseif (str_starts_with($k108, '1.3.3')) $category = 'Gedung dan Bangunan';
-                elseif (str_starts_with($k108, '1.3.4')) $category = 'Jalan, Irigasi dan Jaringan';
-                elseif (str_starts_with($k108, '1.3.5')) $category = 'Aset Tetap Lainnya';
-                elseif (str_starts_with($k108, '1.3.6')) $category = 'Konstruksi dalam Pengerjaan';
+                // Deteksi KIB otomatis berdasarkan nama file atau awalan kode_108
+                if (str_contains($fname, 'KIB A')) $category = 'Tanah';
+                elseif (str_contains($fname, 'KIB B')) $category = 'Peralatan dan Mesin';
+                elseif (str_contains($fname, 'KIB C')) $category = 'Gedung dan Bangunan';
+                elseif (str_contains($fname, 'KIB D')) $category = 'Jalan, Irigasi dan Jaringan';
+                elseif (str_contains($fname, 'KIB E')) $category = 'Aset Tetap Lainnya';
+                elseif (str_contains($fname, 'KIB F')) $category = 'Konstruksi dalam Pengerjaan';
+                else {
+                    if (str_starts_with($k108, '1.3.1')) $category = 'Tanah';
+                    elseif (str_starts_with($k108, '1.3.2')) $category = 'Peralatan dan Mesin';
+                    elseif (str_starts_with($k108, '1.3.3')) $category = 'Gedung dan Bangunan';
+                    elseif (str_starts_with($k108, '1.3.4')) $category = 'Jalan, Irigasi dan Jaringan';
+                    elseif (str_starts_with($k108, '1.3.5')) $category = 'Aset Tetap Lainnya';
+                    elseif (str_starts_with($k108, '1.3.6')) $category = 'Konstruksi dalam Pengerjaan';
+                }
             }
 
             $merk = isset($colMap['merk']) ? $row[$colMap['merk']] : null;
