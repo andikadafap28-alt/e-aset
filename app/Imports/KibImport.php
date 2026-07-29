@@ -24,32 +24,56 @@ class KibImport implements ToCollection
         $headerFound = false;
         $colMap = []; // Akan menyimpan index kolom
 
-        // Coba scan 15 baris pertama untuk mencari header
-        foreach ($rows->take(15) as $rowIndex => $row) {
-            foreach ($row as $colIdx => $colVal) {
-                $val = strtolower(trim((string)$colVal));
-                if (empty($val)) continue;
+        $isKibB = str_contains(strtoupper($this->fileName ?? ''), 'KIB B');
+        
+        if ($isKibB) {
+            // Hardcode mapping KIB B sesuai permintaan user
+            $colMap['name_primary'] = 8; // I (Nama Barang)
+            $colMap['nibar'] = 9; // J
+            $colMap['no_register'] = 10; // K
+            $colMap['name_spec'] = 11; // L (Spesifikasi Nama Barang)
+            $colMap['spec_lainnya'] = 12; // M (Spesifikasi Lainnya)
+            $colMap['merk'] = 14; // O (Merek/Tipe)
+            $colMap['location'] = 15; // P
+            $colMap['no_polisi'] = 16; // Q
+            $colMap['no_rangka'] = 17; // R
+            $colMap['no_bpkb'] = 18; // S
+            $colMap['jumlah'] = 19; // T
+            $colMap['satuan'] = 20; // U
+            $colMap['purchase_price'] = 22; // W (Harga Satuan)
+            $colMap['nilai_perolehan'] = 23; // X
+            $colMap['cara_perolehan'] = 24; // Y
+            $colMap['year_purchased'] = 25; // Z (Tanggal Perolehan)
+            $colMap['status_penggunaan'] = 26; // AA
+            $colMap['keterangan'] = 28; // AC
+        } else {
+            // Scan header row jika bukan KIB B
+            foreach ($rows->take(15) as $rowIndex => $row) {
+                foreach ($row as $colIdx => $colVal) {
+                    $val = strtolower(trim((string)$colVal));
+                    if (empty($val)) continue;
 
-                if (str_contains($val, 'kode barang') || str_contains($val, 'kode_108')) $colMap['kode_108'] = $colIdx;
-                if ($val === 'nibar' || str_contains($val, 'nibar')) $colMap['nibar'] = $colIdx;
-                if (str_contains($val, 'register')) $colMap['no_register'] = $colIdx;
-                if (str_contains($val, 'spesifikasi nama')) {
-                    $colMap['name_spec'] = $colIdx;
-                } 
-                if (str_contains($val, 'nama barang') || str_contains($val, 'uraian')) {
-                    $colMap['name_primary'] = $colIdx;
+                    if (str_contains($val, 'kode barang') || str_contains($val, 'kode_108')) $colMap['kode_108'] = $colIdx;
+                    if ($val === 'nibar' || str_contains($val, 'nibar')) $colMap['nibar'] = $colIdx;
+                    if (str_contains($val, 'register')) $colMap['no_register'] = $colIdx;
+                    if (str_contains($val, 'spesifikasi nama')) {
+                        $colMap['name_spec'] = $colIdx;
+                    } 
+                    if (str_contains($val, 'nama barang') || str_contains($val, 'uraian')) {
+                        $colMap['name_primary'] = $colIdx;
+                    }
+                    if (str_contains($val, 'merek') || str_contains($val, 'merk') || str_contains($val, 'tipe')) $colMap['merk'] = $colIdx;
+                    if (str_contains($val, 'lokasi') || str_contains($val, 'alamat')) $colMap['location'] = $colIdx;
+                    if (str_contains($val, 'harga') || str_contains($val, 'satuan perolehan') || str_contains($val, 'nilai')) {
+                        if (!isset($colMap['purchase_price'])) $colMap['purchase_price'] = $colIdx;
+                    }
+                    if (str_contains($val, 'tanggal') || str_contains($val, 'tahun')) {
+                        if (!isset($colMap['year_purchased'])) $colMap['year_purchased'] = $colIdx;
+                    }
+                    if (str_contains($val, 'kategori') || str_contains($val, 'kib')) $colMap['category'] = $colIdx;
+                    if (str_contains($val, 'penyedia') || str_contains($val, 'pihak ketiga')) $colMap['penyedia'] = $colIdx;
+                    if (str_contains($val, 'kondisi')) $colMap['condition'] = $colIdx;
                 }
-                if (str_contains($val, 'merek') || str_contains($val, 'merk') || str_contains($val, 'tipe')) $colMap['merk'] = $colIdx;
-                if (str_contains($val, 'lokasi') || str_contains($val, 'alamat')) $colMap['location'] = $colIdx;
-                if (str_contains($val, 'harga') || str_contains($val, 'satuan perolehan') || str_contains($val, 'nilai')) {
-                    if (!isset($colMap['purchase_price'])) $colMap['purchase_price'] = $colIdx;
-                }
-                if (str_contains($val, 'tanggal') || str_contains($val, 'tahun')) {
-                    if (!isset($colMap['year_purchased'])) $colMap['year_purchased'] = $colIdx;
-                }
-                if (str_contains($val, 'kategori') || str_contains($val, 'kib')) $colMap['category'] = $colIdx;
-                if (str_contains($val, 'penyedia') || str_contains($val, 'pihak ketiga')) $colMap['penyedia'] = $colIdx;
-                if (str_contains($val, 'kondisi')) $colMap['condition'] = $colIdx;
             }
         }
 
@@ -83,8 +107,21 @@ class KibImport implements ToCollection
 
             // Ekstrak Kode 108
             $kode108 = null;
-            // Jika kode 108 terpecah di 6 kolom pertama (format BMD KIB)
-            if (isset($row[0]) && isset($row[1]) && isset($row[2]) && is_numeric($row[0]) && is_numeric($row[1])) {
+            
+            if ($isKibB) {
+                // KIB B Khusus: Kode Barang di A-F (0-5) lalu H (7)
+                $parts = [];
+                $indices = [0, 1, 2, 3, 4, 5, 7]; // A, B, C, D, E, F, H
+                foreach ($indices as $i) {
+                    if (isset($row[$i]) && trim((string)$row[$i]) !== '') {
+                        $parts[] = str_pad(trim((string)$row[$i]), ($i >= 3 ? 2 : 1), '0', STR_PAD_LEFT);
+                    }
+                }
+                if (count($parts) >= 3) {
+                    $kode108 = implode('.', $parts);
+                }
+            } else if (isset($row[0]) && isset($row[1]) && isset($row[2]) && is_numeric($row[0]) && is_numeric($row[1])) {
+                // Jika kode 108 terpecah di 6 kolom pertama (format BMD KIB)
                 $parts = [];
                 for ($i=0; $i<=5; $i++) {
                     if (isset($row[$i]) && trim((string)$row[$i]) !== '') {
