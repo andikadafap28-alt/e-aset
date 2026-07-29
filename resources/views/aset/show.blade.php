@@ -58,6 +58,9 @@
         <button @click="activeTab = 'tab3'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab3', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab3' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             Mutasi
         </button>
+        <button @click="activeTab = 'tab_bast'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab_bast', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab_bast' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
+            Riwayat BAST
+        </button>
         <button @click="activeTab = 'tab_kalibrasi'" :class="{ 'border-indigo-500 text-indigo-600': activeTab === 'tab_kalibrasi', 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': activeTab !== 'tab_kalibrasi' }" class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-colors focus:outline-none">
             Riwayat Kalibrasi
         </button>
@@ -193,6 +196,44 @@
                             <td colspan="4" class="py-8 text-center text-slate-500">
                                 <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                                 <p>Data mutasi belum tersedia.</p>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Riwayat BAST -->
+        <div x-show="activeTab === 'tab_bast'" style="display: none;" class="p-2">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-slate-500 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
+                            <th class="py-3 px-5">Tgl BAST</th>
+                            <th class="py-3 px-5">Peminjam/Petugas</th>
+                            <th class="py-3 px-5">Kontak</th>
+                            <th class="py-3 px-5">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-slate-100">
+                        @forelse($loans ?? [] as $loan)
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="py-3 px-5 whitespace-nowrap">{{ \Carbon\Carbon::parse($loan->loan_date)->translatedFormat('d M Y') }}</td>
+                            <td class="py-3 px-5 font-medium text-slate-800">{{ $loan->borrower_name }}</td>
+                            <td class="py-3 px-5">{{ $loan->borrower_contact ?: '-' }}</td>
+                            <td class="py-3 px-5">
+                                <a href="{{ route('peminjaman.print', $loan->id) }}" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1 text-xs bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors inline-flex">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                    Print / Edit BAST
+                                </a>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="py-8 text-center text-slate-500">
+                                <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                                <p>Belum ada riwayat BAST untuk aset ini.</p>
                             </td>
                         </tr>
                         @endforelse
@@ -639,7 +680,7 @@
             </button>
         </div>
         
-        <form action="{{ route('peminjaman.store') }}" method="POST">
+        <form action="{{ route('aset.peminjaman.store') }}" method="POST">
             @csrf
             <input type="hidden" name="asset_id" value="{{ $asset->id }}">
             

@@ -118,4 +118,16 @@ class AssetLoanController extends Controller
 
         return view('aset.verify_bast', compact('loan'));
     }
+
+    public function printBast($id)
+    {
+        $loan = AssetLoan::with(['asset', 'approver'])->findOrFail($id);
+        
+        $verifyUrl = route('verify.bast', $loan->id);
+        $qrCode = base64_encode(QrCode::format('svg')->size(100)->generate($verifyUrl));
+        
+        $date = \Carbon\Carbon::now()->translatedFormat('d F Y');
+        
+        return view('aset.bast_print_editable', compact('loan', 'qrCode', 'date'));
+    }
 }

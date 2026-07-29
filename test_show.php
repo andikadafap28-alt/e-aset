@@ -1,6 +1,6 @@
 <?php
 try {
-    $asset = \App\Models\Asset::findOrFail(43);
+    $asset = \App\Models\Asset::firstOrFail();
     echo view('aset.show', compact('asset'))->render();
     echo "OK\n";
 } catch (\Exception $e) {
