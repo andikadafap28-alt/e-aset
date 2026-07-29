@@ -49,16 +49,16 @@ class KibImport implements ToCollection
                 }
                 if (str_contains($val, 'kategori') || str_contains($val, 'kib')) $colMap['category'] = $colIdx;
                 if (str_contains($val, 'penyedia') || str_contains($val, 'pihak ketiga')) $colMap['penyedia'] = $colIdx;
+                if (str_contains($val, 'kondisi')) $colMap['condition'] = $colIdx;
             }
         }
 
         // Jika tidak ketemu 'nibar', kita berasumsi ini bukan file KIB yang valid atau kita gunakan default map
         if (!isset($colMap['nibar'])) {
-            $colMap['nibar'] = 7; // Default col 7 if image format KIB B
+            $colMap['nibar'] = 2; // Default col 2 if flat template (NIBAR)
         }
         if (!isset($colMap['name_primary']) && !isset($colMap['name_spec'])) {
-            $colMap['name_primary'] = 8; // Default Nama Barang (kolom I)
-            $colMap['name_spec'] = 13; // Default Spesifikasi Nama Barang (kolom N)
+            $colMap['name_primary'] = 1; // Default Nama Barang (kolom B)
         }
 
         // Caches untuk optimasi performa mass import
@@ -223,7 +223,7 @@ class KibImport implements ToCollection
                 'location' => $location ?: 'Puskesmas',
                 'year_purchased' => $year,
                 'harga_perolehan' => $price,
-                'condition' => 'Baik',
+                'condition' => isset($colMap['condition']) && !empty($row[$colMap['condition']]) ? substr(trim((string)$row[$colMap['condition']]), 0, 255) : 'Baik',
                 'category' => substr($category, 0, 255),
                 'source' => $this->source,
                 'merk' => substr($merk, 0, 255),

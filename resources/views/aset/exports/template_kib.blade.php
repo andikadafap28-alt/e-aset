@@ -1,89 +1,34 @@
 <table>
     <thead>
         <tr>
-            <th colspan="11">Penggolongan dan Kodefikasi Barang</th>
-            <th rowspan="2">NIBAR</th>
-            <th rowspan="2">Nomor Register</th>
-            <th rowspan="2">Spesifikasi Nama Barang</th>
-            <th colspan="2" rowspan="2">Spesifikasi Lainnya</th>
-            <th rowspan="2">Jumlah</th>
-            <th rowspan="2">Satuan</th>
-            <th rowspan="2">Lokasi</th>
-            <th rowspan="2">Titik Koordinat</th>
-            <th colspan="5">Bukti Kepemilikan Dokumen</th>
-            <th rowspan="2">Harga Satuan Perolehan Rp.</th>
-            <th rowspan="2">Nilai Perolehan Rp.</th>
-            <th rowspan="2">Cara Perolehan</th>
-            <th colspan="2" rowspan="2">Tanggal Perolehan</th>
-            <th rowspan="2">Status Penggunaan</th>
-            <th colspan="2" rowspan="2">Keterangan</th>
-        </tr>
-        <tr>
-            <th colspan="8">Kode Barang</th>
-            <th colspan="3">Nama Barang</th>
-            <th>Nama</th>
-            <th>Nomor</th>
-            <th colspan="2">Tanggal</th>
-            <th>Nama Kepemilikan Dokumen</th>
-        </tr>
-        <tr>
-            <th colspan="8">1</th>
-            <th colspan="3">2</th>
-            <th>3</th>
-            <th>4</th>
-            <th>5</th>
-            <th colspan="2">6</th>
-            <th>7</th>
-            <th>8</th>
-            <th>9</th>
-            <th>10</th>
-            <th>11</th>
-            <th>12</th>
-            <th colspan="2">13</th>
-            <th>14</th>
-            <th>15</th>
-            <th>16</th>
-            <th>17</th>
-            <th colspan="2">18</th>
-            <th>19</th>
-            <th colspan="2">20</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">Kode Barang</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">Nama Barang</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">NIBAR</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">Nomor Register</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">Lokasi</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">Kondisi</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">Tahun Perolehan</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">Harga Perolehan</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">Merk</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">Penyedia</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">Tanggal BAST</th>
+            <th style="font-weight: bold; background-color: #d1d5db;">Keterangan</th>
         </tr>
     </thead>
     <tbody>
         <tr>
+            <td>1.3.1.01.01.01</td>
+            <td>Contoh Barang</td>
+            <td style="text-align: left;">120135240200000010000020171310101040060000001</td>
+            <td>0001</td>
+            <td>Puskesmas</td>
+            <td>Baik</td>
+            <td>2020</td>
+            <td>5000000</td>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>2020-01-01</td>
+            <td>-</td>
         </tr>
     </tbody>
 </table>
