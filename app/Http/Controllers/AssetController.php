@@ -307,7 +307,8 @@ class AssetController extends Controller
     {
         $asset = Asset::findOrFail($id);
         $loans = \App\Models\AssetLoan::where('asset_id', $id)->orderBy('created_at', 'desc')->get();
-        return view('aset.show', compact('asset', 'loans'));
+        $employees = \App\Models\Employee::orderBy('name', 'asc')->get();
+        return view('aset.show', compact('asset', 'loans', 'employees'));
     }
 
     /**

@@ -687,7 +687,12 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Nama Petugas / Peminjam <span class="text-rose-500">*</span></label>
-                    <input type="text" name="borrower_name" required placeholder="Contoh: dr. Budi" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                    <input type="text" name="borrower_name" list="employee-list" required placeholder="Contoh: dr. Budi" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                    <datalist id="employee-list">
+                        @foreach($employees ?? [] as $emp)
+                            <option value="{{ $emp->name }}"></option>
+                        @endforeach
+                    </datalist>
                 </div>
                 
                 <div>
