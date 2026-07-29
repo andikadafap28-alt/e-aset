@@ -31,8 +31,10 @@ class KibImport implements ToCollection
                 if (str_contains($val, 'kode barang') || str_contains($val, 'kode_108')) $colMap['kode_108'] = $colIdx;
                 if ($val === 'nibar' || str_contains($val, 'nibar')) $colMap['nibar'] = $colIdx;
                 if (str_contains($val, 'register')) $colMap['no_register'] = $colIdx;
-                if (str_contains($val, 'spesifikasi nama') || str_contains($val, 'nama barang') || str_contains($val, 'uraian')) {
-                    if (!isset($colMap['name'])) $colMap['name'] = $colIdx; // Ambil yang pertama ketemu
+                if (str_contains($val, 'spesifikasi nama')) {
+                    $colMap['name'] = $colIdx;
+                } elseif (str_contains($val, 'nama barang') || str_contains($val, 'uraian')) {
+                    if (!isset($colMap['name'])) $colMap['name'] = $colIdx; // Ambil yang pertama ketemu jika tidak ada spesifikasi nama
                 }
                 if (str_contains($val, 'merek') || str_contains($val, 'merk') || str_contains($val, 'tipe')) $colMap['merk'] = $colIdx;
                 if (str_contains($val, 'lokasi') || str_contains($val, 'alamat')) $colMap['location'] = $colIdx;
@@ -148,7 +150,7 @@ class KibImport implements ToCollection
                     'no_register' => $noRegister,
                     'location' => $location ?: 'Puskesmas',
                     'year_purchased' => $year,
-                    'purchase_price' => $price,
+                    'harga_perolehan' => $price,
                     'condition' => 'Baik',
                     'category' => substr($category, 0, 255),
                     'source' => $this->source,
