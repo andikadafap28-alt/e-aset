@@ -142,6 +142,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/peminjaman/{id}/approve', [\App\Http\Controllers\AssetLoanController::class, 'approveLoan'])->name('peminjaman.approve');
         Route::post('/peminjaman/{id}/reject', [\App\Http\Controllers\AssetLoanController::class, 'rejectLoan'])->name('peminjaman.reject');
         Route::get('/peminjaman/{id}/print', [\App\Http\Controllers\AssetLoanController::class, 'printBast'])->name('peminjaman.print');
+        Route::post('/peminjaman/{id}/save-print-data', [\App\Http\Controllers\AssetLoanController::class, 'savePrintData'])->name('peminjaman.save-print-data');
         Route::delete('/peminjaman/{id}', [\App\Http\Controllers\AssetLoanController::class, 'destroy'])->name('peminjaman.destroy');
         
         Route::post('/import-kode-108', [InventoryController::class, 'importKode108'])->name('import-kode-108');

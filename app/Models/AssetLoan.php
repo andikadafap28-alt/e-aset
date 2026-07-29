@@ -18,6 +18,7 @@ class AssetLoan extends Model
         'approval_status',
         'approved_by',
         'notes',
+        'custom_print_data',
     ];
 
     protected $casts = [

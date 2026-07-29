@@ -136,7 +136,19 @@ class AssetLoanController extends Controller
             $borrowerNip = substr($borrowerNipRaw, 0, 8) . ' ' . substr($borrowerNipRaw, 8, 6) . ' ' . substr($borrowerNipRaw, 14, 1) . ' ' . substr($borrowerNipRaw, 15, 3);
         }
         
-        return view('aset.bast_print_editable', compact('loan', 'date', 'borrowerNip'));
+        $customData = json_decode($loan->custom_print_data, true) ?: [];
+        
+        return view('aset.bast_print_editable', compact('loan', 'date', 'borrowerNip', 'customData'));
+    }
+
+    public function savePrintData(Request $request, $id)
+    {
+        $loan = AssetLoan::findOrFail($id);
+        $loan->update([
+            'custom_print_data' => json_encode($request->all())
+        ]);
+
+        return response()->json(['status' => 'success']);
     }
 
     public function destroy($id)

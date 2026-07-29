@@ -51,7 +51,10 @@
                 width: 100%;
                 height: 100%;
                 margin: 0;
-                padding: 15mm;
+                padding-top: 5mm;
+                padding-left: 15mm;
+                padding-right: 15mm;
+                padding-bottom: 15mm;
                 box-shadow: none;
                 border: none;
             }
@@ -73,10 +76,16 @@
             <h1 class="font-bold text-slate-800">Cetak BAST / Peminjaman</h1>
             <p class="text-xs text-slate-500">Edit teks dengan mengkliknya sebelum mencetak.</p>
         </div>
-        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-            Cetak Dokumen
-        </button>
+        <div class="flex gap-2">
+            <button onclick="savePrintData()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span id="save-btn-text">Simpan Perubahan</span>
+            </button>
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Cetak Dokumen
+            </button>
+        </div>
     </div>
 
     <!-- A4 Paper -->
@@ -101,7 +110,7 @@
         
         <!-- TITLE -->
         <div class="text-center mb-6">
-            <h2 class="font-bold text-[15px] editable-field" contenteditable="true">BUKTI SERAH TERIMA BARANG</h2>
+            <h2 class="font-bold text-[17px] editable-field" id="val_title" contenteditable="true">{!! $customData['val_title'] ?? 'BUKTI SERAH TERIMA BARANG' !!}</h2>
         </div>
 
         <!-- CONTENT -->
@@ -114,22 +123,22 @@
                 <tr>
                     <td class="w-32 align-top py-0.5">Nama</td>
                     <td class="w-4 align-top py-0.5">:</td>
-                    <td class="py-0.5"><span class="editable-field" contenteditable="true">{{ $loan->borrower_name }}</span></td>
+                    <td class="py-0.5"><span class="editable-field" id="val_borrower_name" contenteditable="true">{!! $customData['val_borrower_name'] ?? $loan->borrower_name !!}</span></td>
                 </tr>
                 <tr>
                     <td class="align-top py-0.5">NIP</td>
                     <td class="align-top py-0.5">:</td>
-                    <td class="py-0.5"><span class="editable-field" contenteditable="true">{{ $borrowerNip ?: '.........................................' }}</span></td>
+                    <td class="py-0.5"><span class="editable-field" id="val_borrower_nip" contenteditable="true">{!! $customData['val_borrower_nip'] ?? ($borrowerNip ?: '.........................................') !!}</span></td>
                 </tr>
                 <tr>
                     <td class="align-top py-0.5">Jabatan</td>
                     <td class="align-top py-0.5">:</td>
-                    <td class="py-0.5"><span class="editable-field" contenteditable="true">{{ $loan->borrower_position ?: '.........................................' }}</span></td>
+                    <td class="py-0.5"><span class="editable-field" id="val_borrower_position" contenteditable="true">{!! $customData['val_borrower_position'] ?? ($loan->borrower_position ?: '.........................................') !!}</span></td>
                 </tr>
                 <tr>
                     <td class="align-top py-0.5">Untuk Keperluan</td>
                     <td class="align-top py-0.5">:</td>
-                    <td class="py-0.5"><span class="editable-field" contenteditable="true">{{ $loan->notes ? ucwords(strtolower($loan->notes)) : 'Pelayanan Ponkesdes/Pustu .....................' }}</span></td>
+                    <td class="py-0.5"><span class="editable-field" id="val_notes" contenteditable="true">{!! $customData['val_notes'] ?? ($loan->notes ? ucwords(strtolower($loan->notes)) : 'Pelayanan Ponkesdes/Pustu .....................') !!}</span></td>
                 </tr>
             </table>
         </div>
@@ -152,19 +161,19 @@
             </thead>
             <tbody>
                 <tr>
-                    <td class="border border-black p-2 text-center align-top"><span class="editable-field" contenteditable="true">{{ \Carbon\Carbon::parse($loan->loan_date)->translatedFormat('d F Y') }}</span></td>
-                    <td class="border border-black p-2 align-top"><span class="editable-field" contenteditable="true">{{ $loan->asset->name }}</span></td>
-                    <td class="border border-black p-2 align-top"><span class="editable-field" contenteditable="true">{{ $loan->asset->merk ?: '-' }} {{ $loan->asset->tipe ? '/ '.$loan->asset->tipe : '' }}</span></td>
-                    <td class="border border-black p-2 text-center align-top"><span class="editable-field" contenteditable="true">1 unit</span></td>
-                    <td class="border border-black p-2 align-top"><span class="editable-field" contenteditable="true">{{ $loan->asset->location ?: '-' }}</span></td>
-                    <td class="border border-black p-2 align-top"><span class="editable-field" contenteditable="true">{{ $loan->asset->funding_source ?: '-' }}</span></td>
+                    <td class="border border-black p-2 text-center align-top"><span class="editable-field" id="val_tgl" contenteditable="true">{!! $customData['val_tgl'] ?? \Carbon\Carbon::parse($loan->loan_date)->translatedFormat('d F Y') !!}</span></td>
+                    <td class="border border-black p-2 align-top"><span class="editable-field" id="val_asset_name" contenteditable="true">{!! $customData['val_asset_name'] ?? $loan->asset->name !!}</span></td>
+                    <td class="border border-black p-2 align-top"><span class="editable-field" id="val_asset_merk" contenteditable="true">{!! $customData['val_asset_merk'] ?? ($loan->asset->merk ?: '-' . ' ' . ($loan->asset->tipe ? '/ '.$loan->asset->tipe : '')) !!}</span></td>
+                    <td class="border border-black p-2 text-center align-top"><span class="editable-field" id="val_asset_qty" contenteditable="true">{!! $customData['val_asset_qty'] ?? '1 unit' !!}</span></td>
+                    <td class="border border-black p-2 align-top"><span class="editable-field" id="val_asset_loc" contenteditable="true">{!! $customData['val_asset_loc'] ?? ($loan->asset->location ?: '-') !!}</span></td>
+                    <td class="border border-black p-2 align-top"><span class="editable-field" id="val_asset_fund" contenteditable="true">{!! $customData['val_asset_fund'] ?? ($loan->asset->funding_source ?: '-') !!}</span></td>
                 </tr>
             </tbody>
         </table>
 
         <!-- FOOTER TEXT -->
         <div class="mb-8 text-justify">
-            <p class="editable-field" contenteditable="true">Yang selanjutnya akan diserahkan kepada koordinator yang ada di {{ $loan->notes ? ucwords(strtolower($loan->notes)) : 'Pelayanan Ponkesdes/Pustu ............................' }} dengan daftar nama terlampir.</p>
+            <p class="editable-field" id="val_footer" contenteditable="true">{!! $customData['val_footer'] ?? ('Yang selanjutnya akan diserahkan kepada koordinator yang ada di ' . ($loan->notes ? ucwords(strtolower($loan->notes)) : 'Pelayanan Ponkesdes/Pustu ............................') . ' dengan daftar nama terlampir.') !!}</p>
         </div>
 
         <!-- SIGNATURES -->
@@ -177,19 +186,19 @@
                     <div>Puskesmas Mantup</div>
                 </div>
                 <div class="mt-auto">
-                    <div class="font-bold underline editable-field" contenteditable="true">Andika Dafa Penta Pratama</div>
-                    <div>NIP. <span class="editable-field" contenteditable="true">19990728 202504 1 003</span></div>
+                    <div class="font-bold underline editable-field" id="val_ttd_pengurus_name" contenteditable="true">{!! $customData['val_ttd_pengurus_name'] ?? 'Andika Dafa Penta Pratama' !!}</div>
+                    <div>NIP. <span class="editable-field" id="val_ttd_pengurus_nip" contenteditable="true">{!! $customData['val_ttd_pengurus_nip'] ?? '19990728 202504 1 003' !!}</span></div>
                 </div>
             </div>
             
             <div class="text-center w-[250px] flex flex-col h-[180px]">
                 <div>
-                    <div class="mb-0">Mantup, <span class="editable-field" contenteditable="true">{{ \Carbon\Carbon::parse($loan->loan_date)->translatedFormat('d F Y') }}</span></div>
+                    <div class="mb-0">Mantup, <span class="editable-field" id="val_ttd_date" contenteditable="true">{!! $customData['val_ttd_date'] ?? \Carbon\Carbon::parse($loan->loan_date)->translatedFormat('d F Y') !!}</span></div>
                     <div>Penerima Barang</div>
                 </div>
                 <div class="mt-auto">
-                    <div class="font-bold underline editable-field" contenteditable="true">{{ $loan->borrower_name }}</div>
-                    <div>NIP. <span class="editable-field" contenteditable="true">{{ $borrowerNip ?: '...........................' }}</span></div>
+                    <div class="font-bold underline editable-field" id="val_ttd_penerima_name" contenteditable="true">{!! $customData['val_ttd_penerima_name'] ?? $loan->borrower_name !!}</div>
+                    <div>NIP. <span class="editable-field" id="val_ttd_penerima_nip" contenteditable="true">{!! $customData['val_ttd_penerima_nip'] ?? ($borrowerNip ?: '...........................') !!}</span></div>
                 </div>
             </div>
         </div>
@@ -200,8 +209,8 @@
                 <div class="mb-0">Mengetahui,</div>
                 <div class="mb-16">Kepala Puskesmas Mantup</div>
                 
-                <div class="font-bold underline editable-field" contenteditable="true">dr. Muhamad Sunaryadi</div>
-                <div>NIP. <span class="editable-field" contenteditable="true">19690313 200212 1 007</span></div>
+                <div class="font-bold underline editable-field" id="val_ttd_kepala_name" contenteditable="true">{!! $customData['val_ttd_kepala_name'] ?? 'dr. Muhamad Sunaryadi' !!}</div>
+                <div>NIP. <span class="editable-field" id="val_ttd_kepala_nip" contenteditable="true">{!! $customData['val_ttd_kepala_nip'] ?? '19690313 200212 1 007' !!}</span></div>
             </div>
         </div>
         
@@ -216,6 +225,51 @@
         };
     </script>
     @endif
+
+    <script>
+        function savePrintData() {
+            const btnText = document.getElementById('save-btn-text');
+            btnText.innerText = 'Menyimpan...';
+
+            const fields = document.querySelectorAll('.editable-field');
+            let data = {};
+            fields.forEach(field => {
+                if(field.id) {
+                    data[field.id] = field.innerHTML;
+                }
+            });
+
+            fetch('{{ route("aset.peminjaman.save-print-data", $loan->id) }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === 'success') {
+                    btnText.innerText = 'Berhasil Disimpan!';
+                    setTimeout(() => {
+                        btnText.innerText = 'Simpan Perubahan';
+                    }, 2000);
+                } else {
+                    btnText.innerText = 'Gagal Menyimpan';
+                    setTimeout(() => {
+                        btnText.innerText = 'Simpan Perubahan';
+                    }, 2000);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                btnText.innerText = 'Gagal Menyimpan';
+                setTimeout(() => {
+                    btnText.innerText = 'Simpan Perubahan';
+                }, 2000);
+            });
+        }
+    </script>
 
 </body>
 </html>
