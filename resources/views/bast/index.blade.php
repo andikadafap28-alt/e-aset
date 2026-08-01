@@ -35,8 +35,16 @@
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-4 py-3 font-medium text-slate-800 align-middle">{{ \Carbon\Carbon::parse($bast->handover_date)->format('d-m-Y') }}</td>
                         <td class="px-4 py-3 align-middle">
-                            <span class="block font-medium text-slate-800">{{ $bast->asset->name ?? '-' }}</span>
-                            <span class="text-xs text-slate-500">{{ $bast->asset->asset_code ?? '-' }}</span>
+                            @if($bast->items && $bast->items->count() > 1)
+                                <span class="block font-medium text-slate-800">{{ $bast->items->first()->asset->name ?? '-' }} <span class="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full ml-1">+{{ $bast->items->count() - 1 }} lainnya</span></span>
+                                <span class="text-xs text-slate-500">{{ $bast->items->count() }} barang</span>
+                            @elseif($bast->items && $bast->items->count() == 1)
+                                <span class="block font-medium text-slate-800">{{ $bast->items->first()->asset->name ?? '-' }}</span>
+                                <span class="text-xs text-slate-500">{{ $bast->items->first()->asset->asset_code ?? '-' }}</span>
+                            @else
+                                <span class="block font-medium text-slate-800">{{ $bast->asset->name ?? '-' }}</span>
+                                <span class="text-xs text-slate-500">{{ $bast->asset->asset_code ?? '-' }}</span>
+                            @endif
                         </td>
                         <td class="px-4 py-3 align-middle">{{ $bast->employee ? str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], ucwords(strtolower($bast->employee->name), " .-")) : '-' }}</td>
                         <td class="px-4 py-3 align-middle">{{ $bast->keperluan }}</td>

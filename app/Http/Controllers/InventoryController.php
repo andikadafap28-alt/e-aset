@@ -468,6 +468,27 @@ class InventoryController extends Controller
         return redirect("/{$kategori_besar}/{$transaksi->item_id}/detail")->with('success', 'Detail transaksi berhasil diperbarui!');
     }
 
+    public function downloadTemplateTransaksi()
+    {
+        return Excel::download(new \App\Exports\TemplateTransaksiLogistikExport, 'Template_Import_Transaksi_Logistik.xlsx');
+    }
+
+    public function importTransaksiLogistik(Request $request, $kategori_besar)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        try {
+            DB::transaction(function () use ($request, $kategori_besar) {
+                Excel::import(new \App\Imports\TransaksiLogistikImport($kategori_besar), $request->file('file_excel'));
+            });
+            return redirect("/{$kategori_besar}/items")->with('success', 'Data transaksi logistik berhasil diimport!');
+        } catch (\Exception $e) {
+            return redirect("/{$kategori_besar}/items")->withErrors(['msg' => 'Gagal mengimport transaksi: ' . $e->getMessage()]);
+        }
+    }
+
     public function importLogistik(Request $request, $kategori_besar)
     {
         $request->validate([
@@ -870,5 +891,99 @@ class InventoryController extends Controller
         
         // Redirect to detail page
         return redirect("/{$item->kategori_besar}/{$item->id}/detail")->with('success', 'Berhasil memindai barang: ' . $item->nama_barang);
+    public function parseAiInput(Request $request, $kategori_besar)
+    {
+        $request->validate([
+            'prompt' => 'required|string'
+        ]);
+
+        $prompt = $request->prompt;
+        
+        // Ambil data referensi barang untuk mencocokkan id
+        $items = Item::where('kategori_besar', $kategori_besar)->get(['id', 'nama_barang']);
+        
+        $itemContext = "--- DAFTAR BARANG YANG TERSEDIA DI SISTEM ---\n";
+        foreach ($items as $item) {
+            $itemContext .= "ID: {$item->id} | Nama: {$item->nama_barang}\n";
+        }
+        
+        $systemPrompt = "Kamu adalah sistem pemroses natural language untuk inventori.\n" .
+                        "Tugasmu: Ekstrak informasi dari teks User menjadi array JSON daftar transaksi.\n" .
+                        $itemContext . "\n" .
+                        "ATURAN PENTING:\n" .
+                        "1. User bisa menginput banyak transaksi sekaligus.\n" .
+                        "2. Analisis barang berdasarkan DAFTAR BARANG YANG TERSEDIA di atas. Pastikan menggunakan ID barang (item_id) yang sesuai.\n" .
+                        "3. Tentukan 'jenis_transaksi' ('masuk' atau 'keluar'). Jika user bilang 'sudah terpakai semua' ATAU barang yang awalnya hutang di-SPJ-kan (masuk lalu keluar) di bulan yang sama, maka buat DUA baris transaksi: 1 masuk dan 1 keluar dengan jumlah yang sama.\n" .
+                        "4. 'tanggal_transaksi' adalah tanggal fisik barang dipakai/diterima (format YYYY-MM-DD).\n" .
+                        "5. 'tanggal_spj' adalah tanggal dokumen SPJ diurus (format YYYY-MM-DD). Jika User menyebutkan bulan SPJ (misal Agustus), jadikan tanggal_spj sebagai hari pertama bulan tersebut (misal 2026-08-01).\n" .
+                        "6. 'status_hutang': bernilai true (boolean) JIKA tanggal_spj berbeda/lebih baru dari tanggal_transaksi untuk transaksi 'masuk'.\n" .
+                        "7. HARUS merespons HANYA dengan JSON murni, tanpa markdown formatting, tanpa penjelasan tambahan. Format JSON harus berupa array of objects:\n" .
+                        "[\n  {\n    \"item_id\": 1,\n    \"nama_barang\": \"Bolpoin\",\n    \"jenis_transaksi\": \"masuk\",\n    \"jumlah\": 1,\n    \"tanggal_transaksi\": \"2026-02-23\",\n    \"tanggal_spj\": \"2026-08-01\",\n    \"status_hutang\": true\n  }\n]";
+
+        $apiKey = env('GEMINI_API_KEY');
+        $geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=" . $apiKey;
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
+                ->timeout(20)
+                ->post($geminiUrl, [
+                    'system_instruction' => ['parts' => [['text' => $systemPrompt]]],
+                    'contents' => [['parts' => [['text' => $prompt]]]],
+                    'generationConfig' => ['maxOutputTokens' => 1000]
+                ]);
+
+            if (!$response->successful()) {
+                return response()->json(['success' => false, 'message' => 'Gagal terhubung ke AI.']);
+            }
+
+            $botReply = $response->json('candidates.0.content.parts.0.text');
+            $botReply = trim(str_replace(['```json', '```'], '', $botReply));
+            
+            $parsedData = json_decode($botReply, true);
+            
+            if (!$parsedData || !is_array($parsedData)) {
+                return response()->json(['success' => false, 'message' => 'Format balasan AI tidak valid.', 'raw' => $botReply]);
+            }
+            
+            return response()->json(['success' => true, 'data' => $parsedData]);
+            
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function storeAiParsedTransactions(Request $request, $kategori_besar)
+    {
+        $request->validate([
+            'transactions' => 'required|array'
+        ]);
+
+        try {
+            DB::transaction(function () use ($request, $kategori_besar) {
+                foreach ($request->transactions as $tx) {
+                    $item = Item::where('kategori_besar', $kategori_besar)->find($tx['item_id']);
+                    if (!$item) continue;
+                    
+                    InventoryTransaction::create([
+                        'item_id' => $item->id,
+                        'jenis_transaksi' => $tx['jenis_transaksi'],
+                        'jumlah' => $tx['jumlah'],
+                        'harga_satuan' => $item->harga_satuan,
+                        'tanggal_transaksi' => $tx['tanggal_transaksi'],
+                        'tanggal_spj' => $tx['tanggal_spj'] ?? $tx['tanggal_transaksi'],
+                        'status_hutang' => filter_var($tx['status_hutang'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                        'status_approval' => $tx['jenis_transaksi'] == 'keluar' ? 'requested' : 'handed_over',
+                        'keterangan' => '[Asisten AI] Entri otomatis'
+                    ]);
+
+                    if ($tx['jenis_transaksi'] == 'masuk') {
+                        $item->increment('stok_sekarang', $tx['jumlah']);
+                    }
+                }
+            });
+            return response()->json(['success' => true, 'message' => 'Berhasil menyimpan transaksi dari AI.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 }

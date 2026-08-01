@@ -49,8 +49,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih Barang (Aset) <span class="text-red-500">*</span></label>
-                        <select name="asset_id" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" required>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih Barang / Aset <span class="text-xs text-slate-500 font-normal">(Bisa pilih lebih dari 1)</span> <span class="text-red-500">*</span></label>
+                        <select id="asset-select" name="asset_ids[]" multiple class="w-full" required placeholder="Cari dan pilih barang...">
                             <option value="">-- Pilih Barang --</option>
                             @foreach($assets as $asset)
                                 <option value="{{ $asset->id }}">{{ $asset->asset_code }} | {{ $asset->name }} | {{ $asset->category }}</option>
@@ -58,6 +58,22 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- TomSelect Library -->
+                <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+                <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        new TomSelect("#asset-select", {
+                            plugins: ['remove_button'],
+                            create: false,
+                            sortField: {
+                                field: "text",
+                                direction: "asc"
+                            }
+                        });
+                    });
+                </script>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>

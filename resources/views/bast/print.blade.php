@@ -167,14 +167,31 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td style="text-align: center;">{{ \Carbon\Carbon::parse($bast->handover_date)->isoFormat('D MMMM Y') }}</td>
-                <td>{{ $bast->asset->name ?? '-' }}</td>
-                <td>{{ $bast->asset->merk ?? 'Tanpa Merk' }} / {{ $bast->asset->type ?? '-' }}</td>
-                <td style="text-align: center;">1 unit</td>
-                <td>{{ $bast->keterangan }}</td>
-                <td>{{ $bast->sumber_dana }}</td>
-            </tr>
+            @if($bast->items && $bast->items->count() > 0)
+                @foreach($bast->items as $index => $item)
+                <tr>
+                    @if($index === 0)
+                    <td style="text-align: center;" rowspan="{{ $bast->items->count() }}">{{ \Carbon\Carbon::parse($bast->handover_date)->isoFormat('D MMMM Y') }}</td>
+                    @endif
+                    <td>{{ $item->asset->name ?? '-' }}</td>
+                    <td>{{ $item->asset->merk ?? 'Tanpa Merk' }} / {{ $item->asset->type ?? '-' }}</td>
+                    <td style="text-align: center;">1 unit</td>
+                    @if($index === 0)
+                    <td rowspan="{{ $bast->items->count() }}">{{ $bast->keterangan }}</td>
+                    <td rowspan="{{ $bast->items->count() }}">{{ $bast->sumber_dana }}</td>
+                    @endif
+                </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($bast->handover_date)->isoFormat('D MMMM Y') }}</td>
+                    <td>{{ $bast->asset->name ?? '-' }}</td>
+                    <td>{{ $bast->asset->merk ?? 'Tanpa Merk' }} / {{ $bast->asset->type ?? '-' }}</td>
+                    <td style="text-align: center;">1 unit</td>
+                    <td>{{ $bast->keterangan }}</td>
+                    <td>{{ $bast->sumber_dana }}</td>
+                </tr>
+            @endif
         </tbody>
     </table>
 

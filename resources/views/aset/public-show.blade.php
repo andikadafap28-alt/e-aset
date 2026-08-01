@@ -25,7 +25,7 @@
             <div class="bg-white rounded-2xl shadow-lg border border-slate-100 p-6">
                 <div class="flex items-start justify-between mb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-slate-900">{{ $asset->name }}</h2>
+                        <h2 class="text-xl font-bold text-slate-900">{{ str_replace(' - ya', '', $asset->name) }}</h2>
                         <span class="inline-block px-2.5 py-1 mt-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
                             {{ is_object($asset->category) ? $asset->category->nama_kategori : ($asset->getAttribute('category') ?: '-') }}
                         </span>
@@ -42,7 +42,15 @@
                 <div class="space-y-4 mt-6">
                     <div>
                         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Kode Barang</p>
-                        <p class="text-sm font-semibold text-slate-800">{{ $asset->asset_code }}</p>
+                        <p class="text-sm font-semibold text-slate-800">{{ $asset->kode_108 ?: '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">NIBAR (Nomor Induk Barang)</p>
+                        <div class="bg-slate-50 rounded-lg p-3 border border-slate-100 inline-block w-full">
+                            <p class="text-sm font-semibold text-slate-700 font-mono tracking-[0.2em] leading-relaxed">
+                                {!! implode('<br>', str_split($asset->asset_code, 15)) !!}
+                            </p>
+                        </div>
                     </div>
                     <div x-data="{ expanded: false }">
                         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Lokasi</p>

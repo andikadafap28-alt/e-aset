@@ -223,7 +223,18 @@ Route::middleware(['auth'])->group(function () {
         
         Route::get('/export', [InventoryController::class, 'exportPage']);
         Route::post('/export/download', [InventoryController::class, 'downloadExcel']);
+        
+        // Import Saldo (Existing)
         Route::post('/import', [InventoryController::class, 'importLogistik']);
+        
+        // Import Transaksi (New)
+        Route::get('/import-transaksi/template', [InventoryController::class, 'downloadTemplateTransaksi'])->name('inventory.import.transaksi.template');
+        Route::post('/import-transaksi', [InventoryController::class, 'importTransaksiLogistik'])->name('inventory.import.transaksi');
+        
         Route::get('/{id}/label', [InventoryController::class, 'printLabel']);
+        
+        // AI Assistant Input
+        Route::post('/ai-assistant/parse', [InventoryController::class, 'parseAiInput'])->name('inventory.ai.parse');
+        Route::post('/ai-assistant/store', [InventoryController::class, 'storeAiParsedTransactions'])->name('inventory.ai.store');
     });
 });

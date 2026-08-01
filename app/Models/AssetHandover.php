@@ -17,4 +17,9 @@ class AssetHandover extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
+    public function items()
+    {
+        return $this->hasMany(AssetHandoverItem::class);
+    }
 }

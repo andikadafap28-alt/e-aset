@@ -11,7 +11,7 @@ class AssetHandoverController extends Controller
 {
     public function index()
     {
-        $handovers = AssetHandover::with(['asset', 'employee'])->latest()->get();
+        $handovers = AssetHandover::with(['asset', 'employee', 'items.asset'])->latest()->get();
         return view('bast.index', compact('handovers'));
     }
 
@@ -25,7 +25,8 @@ class AssetHandoverController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'asset_id' => 'required|exists:assets,id',
+            'asset_ids' => 'required|array',
+            'asset_ids.*' => 'exists:assets,id',
             'employee_id' => 'required|exists:employees,id',
             'handover_date' => 'required|date',
             'keperluan' => 'nullable|string',
@@ -33,14 +34,28 @@ class AssetHandoverController extends Controller
             'sumber_dana' => 'nullable|string',
         ]);
 
-        $handover = AssetHandover::create($request->all());
+        $handover = AssetHandover::create([
+            'employee_id' => $request->employee_id,
+            'handover_date' => $request->handover_date,
+            'keperluan' => $request->keperluan,
+            'keterangan' => $request->keterangan,
+            'sumber_dana' => $request->sumber_dana,
+            // 'asset_id' diabaikan atau dibiarkan null karena menggunakan tabel pivot
+        ]);
 
-        return redirect()->route('bast.show', $handover->id)->with('success', 'BAST berhasil dibuat.');
+        foreach ($request->asset_ids as $assetId) {
+            \App\Models\AssetHandoverItem::create([
+                'asset_handover_id' => $handover->id,
+                'asset_id' => $assetId
+            ]);
+        }
+
+        return redirect()->route('bast.show', $handover->id)->with('success', 'BAST berhasil dibuat untuk ' . count($request->asset_ids) . ' barang.');
     }
 
     public function show(AssetHandover $bast)
     {
-        $bast->load('asset', 'employee');
+        $bast->load('asset', 'employee', 'items.asset');
         return view('bast.print', compact('bast'));
     }
     
