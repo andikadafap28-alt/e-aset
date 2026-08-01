@@ -127,70 +127,18 @@
                         <span class="material-symbols-outlined text-sm transition-transform duration-200" :class="asetOpen ? 'rotate-180' : ''">expand_more</span>
                     </button>
                     
-                    <div x-show="asetOpen" x-collapse class="space-y-4 mt-3 bg-slate-800/30 rounded-xl p-3">
-                        <!-- Grup Master Data -->
-                        <div>
-                            <p class="text-[10px] font-semibold text-slate-500 mb-2 pl-2">DATA INDUK</p>
-                            <a href="{{ route('aset.data.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('aset.data.items') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">dataset</span>
-                                <span class="text-[13px]">Data Aset</span>
-                            </a>
-                            <a href="{{ route('aset.categories.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('aset.categories.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">folder</span>
-                                <span class="text-[13px]">Kategori Aset</span>
-                            </a>
-                        </div>
-                        
-                        <!-- Grup Siklus -->
-                        <div>
-                            <p class="text-[10px] font-semibold text-slate-500 mb-2 pl-2 border-t border-slate-700 pt-3">SIKLUS ASET</p>
-                            <a href="{{ route('aset.pengadaan.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('aset.pengadaan.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
-                                <span class="text-[13px]">Pengadaan BMD</span>
-                            </a>
-                            <a href="{{ route('aset.bantuan_sarpras.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('aset.bantuan_sarpras.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">handshake</span>
-                                <span class="text-[13px]">Bantuan Sarpras</span>
-                            </a>
-                            <a href="{{ route('aset.mutasi.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('aset.mutasi.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">swap_horiz</span>
-                                <span class="text-[13px]">Mutasi Aset</span>
-                            </a>
-                            <a href="{{ route('aset.pemeliharaan.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('aset.pemeliharaan.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">build</span>
-                                <span class="text-[13px]">Pemeliharaan</span>
-                            </a>
-                            <a href="{{ route('aset.monitoring.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('aset.monitoring.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">monitor_heart</span>
-                                <span class="text-[13px]">Monitoring</span>
-                            </a>
-                        </div>
-                        
-                        <!-- Grup Utilitas -->
-                        <div>
-                            <p class="text-[10px] font-semibold text-slate-500 mb-2 pl-2 border-t border-slate-700 pt-3">OPERASIONAL</p>
-                            <a href="{{ route('aset.pelabelan.items') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('aset.pelabelan.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">qr_code_2</span>
-                                <span class="text-[13px]">Label QR Code</span>
-                            </a>
-                            <a href="{{ route('bast.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('bast.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">assignment</span>
-                                <span class="text-[13px]">Cetak BAST</span>
-                            </a>
-                        </div>
-
-                        <!-- Grup Sumber Data -->
-                        <div>
-                            <p class="text-[10px] font-semibold text-slate-500 mb-2 pl-2 border-t border-slate-700 pt-3">SUMBER DATA</p>
-                            <a href="{{ route('aset.bmd.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('aset.bmd.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">source</span>
-                                <span class="text-[13px]">KIB BMD</span>
-                            </a>
-                            <a href="{{ route('aset.aspak.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('aset.aspak.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">health_and_safety</span>
-                                <span class="text-[13px]">ASPAK</span>
-                            </a>
-                        </div>
+                    <div x-show="asetOpen" x-collapse class="pl-11 pr-4 mt-1 space-y-1 mb-2">
+                        <a href="{{ route('aset.data.items') }}" class="{{ request()->routeIs('aset.data.items') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Data Aset</a>
+                        <a href="{{ route('aset.categories.index') }}" class="{{ request()->routeIs('aset.categories.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Kategori Aset</a>
+                        <a href="{{ route('aset.pengadaan.items') }}" class="{{ request()->routeIs('aset.pengadaan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Pengadaan BMD</a>
+                        <a href="{{ route('aset.bantuan_sarpras.items') }}" class="{{ request()->routeIs('aset.bantuan_sarpras.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Bantuan Sarpras</a>
+                        <a href="{{ route('aset.mutasi.items') }}" class="{{ request()->routeIs('aset.mutasi.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Mutasi Aset</a>
+                        <a href="{{ route('aset.pemeliharaan.index') }}" class="{{ request()->routeIs('aset.pemeliharaan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Pemeliharaan</a>
+                        <a href="{{ route('aset.monitoring.items') }}" class="{{ request()->routeIs('aset.monitoring.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Monitoring</a>
+                        <a href="{{ route('aset.pelabelan.items') }}" class="{{ request()->routeIs('aset.pelabelan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Label QR Code</a>
+                        <a href="{{ route('bast.index') }}" class="{{ request()->routeIs('bast.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Cetak BAST</a>
+                        <a href="{{ route('aset.bmd.index') }}" class="{{ request()->routeIs('aset.bmd.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">KIB BMD</a>
+                        <a href="{{ route('aset.aspak.index') }}" class="{{ request()->routeIs('aset.aspak.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">ASPAK</a>
                     </div>
                 </div>
                 @endif
@@ -225,43 +173,23 @@
                         <span class="material-symbols-outlined text-sm transition-transform duration-200" :class="sistemOpen ? 'rotate-180' : ''">expand_more</span>
                     </button>
                     
-                    <div x-show="sistemOpen" x-collapse class="space-y-4 mt-3 bg-slate-800/30 rounded-xl p-3">
-                        <div>
-                            <p class="text-[10px] font-semibold text-slate-500 mb-2 pl-2">MASTER DATA</p>
-                            <a href="{{ route('employees.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('employees.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">badge</span>
-                                <span class="text-[13px]">Data Pegawai</span>
-                            </a>
-                            <a href="{{ route('rooms.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('rooms.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">meeting_room</span>
-                                <span class="text-[13px]">Master Lokasi</span>
-                            </a>
-                        </div>
-
-                        <div>
-                            <p class="text-[10px] font-semibold text-slate-500 mb-2 pl-2 border-t border-slate-700 pt-3">INTEGRASI AI</p>
-                            <a href="{{ route('asisten.wa') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('asisten.wa') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="text-[18px] font-bold text-emerald-400">W</span>
-                                <span class="text-[13px]">Asisten WhatsApp</span>
-                            </a>
-                            <a href="{{ route('asisten.tele') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('asisten.tele') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="text-[18px] font-bold text-sky-400">T</span>
-                                <span class="text-[13px]">Asisten Telegram</span>
-                            </a>
-                        </div>
-                        
-                        <div>
-                            <p class="text-[10px] font-semibold text-slate-500 mb-2 pl-2 border-t border-slate-700 pt-3">KONFIGURASI</p>
-                            <a href="{{ route('settings.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 {{ request()->routeIs('settings.*') ? 'bg-slate-700 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                                <span class="material-symbols-outlined text-[18px]">settings</span>
-                                <span class="text-[13px]">Pengaturan Umum</span>
-                            </a>
-                        </div>
+                    <div x-show="sistemOpen" x-collapse class="pl-11 pr-4 mt-1 space-y-1 mb-2">
+                        <a href="{{ route('employees.index') }}" class="{{ request()->routeIs('employees.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Data Pegawai</a>
+                        <a href="{{ route('rooms.index') }}" class="{{ request()->routeIs('rooms.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Master Lokasi</a>
+                        <a href="{{ route('asisten.wa') }}" class="{{ request()->routeIs('asisten.wa') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Asisten WhatsApp</a>
+                        <a href="{{ route('asisten.tele') }}" class="{{ request()->routeIs('asisten.tele') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Asisten Telegram</a>
+                        <a href="{{ route('settings.index') }}" class="{{ request()->routeIs('settings.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Pengaturan Umum</a>
                     </div>
                 </div>
                 @endif
             </nav>
 
+            <!-- Copyright/Footer -->
+            <div class="px-6 py-4 border-t border-slate-800">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">RAKSA</p>
+                <p class="text-[10px] font-medium text-slate-400 mt-1">Rawat Aset, Kendalikan Stok Andal</p>
+                <p class="text-[9px] text-slate-500 mt-2">&copy; 2026 Puskesmas Mantup</p>
+            </div>
             <!-- User Area -->
             <div class="p-4 border-t border-slate-800">
                 <div class="flex items-center gap-3 px-2">
