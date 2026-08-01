@@ -146,10 +146,18 @@
                 @endif
             </div>
 
-            <!-- Location -->
+            <!-- Location / Room -->
             <div>
-                <label for="location" class="block text-sm font-medium text-slate-700 mb-1">Lokasi</label>
-                <input type="text" name="location" id="location" value="{{ old('location', $asset->location ?? '') }}" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Contoh: Ruang UGD / Pustu A" required>
+                <label for="room_id" class="block text-sm font-medium text-slate-700 mb-1">Lokasi Ruangan</label>
+                <select name="room_id" id="room_id" class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                    <option value="">-- Pilih Lokasi --</option>
+                    @foreach($rooms as $room)
+                        <option value="{{ $room->id }}" {{ old('room_id', $asset->room_id ?? '') == $room->id ? 'selected' : '' }} data-lat="{{ $room->latitude }}" data-lng="{{ $room->longitude }}" data-pj="{{ $room->penanggung_jawab }}">
+                            {{ $room->name }} ({{ $room->type }})
+                        </option>
+                    @endforeach
+                </select>
+                <p class="text-xs text-slate-500 mt-1">Pilih dari Master Data Lokasi. Jika belum ada, tambahkan dulu di menu Master Lokasi.</p>
             </div>
 
             <!-- Penanggung Jawab -->
@@ -263,6 +271,27 @@
             document.getElementById('latitude').value = defaultLat;
             document.getElementById('longitude').value = defaultLng;
         }
+
+        // Auto-fill from Room selection
+        document.getElementById('room_id').addEventListener('change', function() {
+            var selected = this.options[this.selectedIndex];
+            if(selected.value) {
+                var lat = selected.getAttribute('data-lat');
+                var lng = selected.getAttribute('data-lng');
+                var pj = selected.getAttribute('data-pj');
+
+                if(pj) document.getElementById('penanggung_jawab').value = pj;
+
+                if(lat && lng) {
+                    document.getElementById('latitude').value = lat;
+                    document.getElementById('longitude').value = lng;
+                    
+                    var newLatLng = new L.LatLng(lat, lng);
+                    marker.setLatLng(newLatLng);
+                    map.setView(newLatLng, 15);
+                }
+            }
+        });
         
         // Dropdown Logic Kode 108
         @if(!isset($asset))

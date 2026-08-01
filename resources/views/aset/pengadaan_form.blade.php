@@ -94,9 +94,16 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Lokasi Aset <span class="text-rose-500">*</span></label>
-                            <input type="text" name="location" value="{{ old('location', 'Puskesmas Induk') }}" required class="w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm text-sm">
-                            @error('location') <span class="text-rose-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Lokasi Ruangan <span class="text-rose-500">*</span></label>
+                            <select name="room_id" required class="w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm text-sm">
+                                <option value="">-- Pilih Lokasi --</option>
+                                @foreach($rooms as $room)
+                                    <option value="{{ $room->id }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>
+                                        {{ $room->name }} ({{ $room->type }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('room_id') <span class="text-rose-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
                     </div>
 

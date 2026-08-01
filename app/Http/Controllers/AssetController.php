@@ -88,7 +88,8 @@ class AssetController extends Controller
         ];
         $masterKode108 = \App\Models\MasterKode108::orderBy('kode', 'asc')->get();
         $categories = \App\Models\AssetCategory::orderBy('nama_kategori', 'asc')->get();
-        return view('aset.form', compact('pengadaanData', 'masterKode108', 'categories'));
+        $rooms = \App\Models\Room::orderBy('name', 'asc')->get();
+        return view('aset.form', compact('pengadaanData', 'masterKode108', 'categories', 'rooms'));
     }
 
     /**
@@ -120,7 +121,7 @@ class AssetController extends Controller
             'category' => 'nullable|string|max:255', // Legacy
             'category_id' => 'required|exists:asset_categories,id',
             'harga_perolehan' => 'nullable|numeric',
-            'location' => 'required|string|max:255',
+            'room_id' => 'required|exists:rooms,id',
             'penanggung_jawab' => 'nullable|string|max:255',
             'year_purchased' => 'required|digits:4',
             'last_calibration' => 'nullable|date',
@@ -144,6 +145,9 @@ class AssetController extends Controller
         $validated['pengadaan_id'] = $pengadaanId;
         $validated['harga_perolehan'] = $hargaPerolehan;
         $validated['status_aktif'] = true;
+        
+        $room = \App\Models\Room::find($validated['room_id']);
+        $validated['location'] = $room ? $room->name : '-';
         
         // Fix for legacy 'category' column which is NOT NULL in database
         if (empty($validated['category'])) {
@@ -242,7 +246,8 @@ class AssetController extends Controller
     {
         $masterKode108 = \App\Models\MasterKode108::orderBy('kode', 'asc')->get();
         $categories = \App\Models\AssetCategory::orderBy('nama_kategori', 'asc')->get();
-        return view('aset.pengadaan_form', compact('masterKode108', 'categories'));
+        $rooms = \App\Models\Room::orderBy('name', 'asc')->get();
+        return view('aset.pengadaan_form', compact('masterKode108', 'categories', 'rooms'));
     }
 
     public function storePengadaan(Request $request)
@@ -257,7 +262,7 @@ class AssetController extends Controller
             'penyedia' => 'nullable|string|max:255',
             'category_id' => 'required|exists:asset_categories,id',
             'condition' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
-            'location' => 'required|string|max:255',
+            'room_id' => 'required|exists:rooms,id',
             'year_purchased' => 'required|digits:4',
         ]);
 
@@ -266,6 +271,9 @@ class AssetController extends Controller
         
         $catObj = \App\Models\AssetCategory::find($request->category_id);
         $categoryName = $catObj ? $catObj->nama_kategori : '-';
+        
+        $room = \App\Models\Room::find($validated['room_id']);
+        $locationName = $room ? $room->name : '-';
 
         $lastRegister = Asset::where('kode_108', $kode108)->max('no_register');
         $startRegister = $lastRegister ? $lastRegister + 1 : 1;
@@ -282,7 +290,8 @@ class AssetController extends Controller
                 'merk' => $validated['merk'],
                 'category_id' => $validated['category_id'],
                 'category' => $categoryName,
-                'location' => $validated['location'],
+                'room_id' => $validated['room_id'],
+                'location' => $locationName,
                 'year_purchased' => $validated['year_purchased'],
                 'condition' => $validated['condition'],
                 'harga_perolehan' => $validated['harga_perolehan'],
@@ -319,7 +328,8 @@ class AssetController extends Controller
         $asset = Asset::findOrFail($id);
         $masterKode108 = \App\Models\MasterKode108::orderBy('kode', 'asc')->get();
         $categories = \App\Models\AssetCategory::orderBy('nama_kategori', 'asc')->get();
-        return view('aset.form', compact('asset', 'masterKode108', 'categories'));
+        $rooms = \App\Models\Room::orderBy('name', 'asc')->get();
+        return view('aset.form', compact('asset', 'masterKode108', 'categories', 'rooms'));
     }
 
     /**
@@ -333,7 +343,7 @@ class AssetController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'nullable|string|max:255', // Legacy
             'category_id' => 'required|exists:asset_categories,id',
-            'location' => 'required|string|max:255',
+            'room_id' => 'required|exists:rooms,id',
             'penanggung_jawab' => 'nullable|string|max:255',
             'year_purchased' => 'required|digits:4',
             'last_calibration' => 'nullable|date',
@@ -349,6 +359,9 @@ class AssetController extends Controller
             $catObj = \App\Models\AssetCategory::find($request->category_id);
             $validated['category'] = $catObj ? $catObj->nama_kategori : '-';
         }
+        
+        $room = \App\Models\Room::find($validated['room_id']);
+        $validated['location'] = $room ? $room->name : '-';
 
         $asset->update($validated);
 

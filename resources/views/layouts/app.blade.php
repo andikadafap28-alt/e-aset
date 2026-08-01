@@ -45,8 +45,14 @@
                 <div>
                     <a href="{{ url('/dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->is('dashboard') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
                         <span class="material-symbols-outlined {{ request()->is('dashboard') ? 'icon-fill' : '' }}">dashboard</span>
-                        <span>Dashboard</span>
+                        <span>Dashboard Utama</span>
                     </a>
+                    @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'kepala')
+                    <a href="{{ route('dashboard.eksekutif') }}" class="mt-2 flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('dashboard.eksekutif') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <span class="material-symbols-outlined {{ request()->routeIs('dashboard.eksekutif') ? 'icon-fill' : '' }}">map</span>
+                        <span>Dashboard Eksekutif (GIS)</span>
+                    </a>
+                    @endif
                 </div>
 
                 <!-- Section 2: Manajemen Persediaan -->
@@ -160,6 +166,10 @@
                     <a href="{{ route('employees.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('employees.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
                         <span class="material-symbols-outlined {{ request()->routeIs('employees.*') ? 'icon-fill' : '' }}">badge</span>
                         <span>Data Pegawai</span>
+                    </a>
+                    <a href="{{ route('rooms.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('rooms.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <span class="material-symbols-outlined {{ request()->routeIs('rooms.*') ? 'icon-fill' : '' }}">meeting_room</span>
+                        <span>Master Lokasi</span>
                     </a>
                     <a href="{{ route('bast.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('bast.*') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 font-semibold' : 'hover:bg-slate-800 hover:text-white' }}">
                         <span class="material-symbols-outlined {{ request()->routeIs('bast.*') ? 'icon-fill' : '' }}">assignment</span>

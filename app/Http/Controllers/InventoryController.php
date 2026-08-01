@@ -891,6 +891,8 @@ class InventoryController extends Controller
         
         // Redirect to detail page
         return redirect("/{$item->kategori_besar}/{$item->id}/detail")->with('success', 'Berhasil memindai barang: ' . $item->nama_barang);
+    }
+
     public function parseAiInput(Request $request, $kategori_besar)
     {
         $request->validate([

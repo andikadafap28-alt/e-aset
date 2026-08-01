@@ -18,6 +18,12 @@ class ChatbotService
         $cleanMessage = strtolower(trim($message));
 
         // Command handler
+        if ($cleanMessage === '/start') {
+            return "Selamat datang di Layanan Asisten E-Aset Puskesmas Mantup!\n\nSilakan pilih kategori yang ingin ditanyakan:\n1️⃣ Persediaan\n2️⃣ Aset\n3️⃣ Pengadaan\n\nAtau ketik /laporan untuk mendapatkan ringkasan aset dan persediaan saat ini.";
+        } elseif ($cleanMessage === '/laporan') {
+            return $this->generateLaporan();
+        }
+
         if ($cleanMessage === '1') {
             Cache::put($modeKey, 'persediaan', 86400); // 24 hours
             return "✅ *Mode Persediaan* diaktifkan.\nSilakan tanyakan seputar kuantitas/jumlah stok dan harga barang/obat.";
@@ -197,5 +203,28 @@ class ChatbotService
         }
 
         return trim($botReply);
+    }
+
+    private function generateLaporan()
+    {
+        $totalAset = \App\Models\Asset::where('status_aktif', true)->count();
+        $totalRusak = \App\Models\Asset::where('status_aktif', true)->whereIn('condition', ['Rusak Ringan', 'Rusak Berat'])->count();
+        $totalPersediaan = \App\Models\Item::sum('stok_sekarang');
+        
+        $nilaiAset = \App\Models\Asset::sum('harga_perolehan');
+        $formatRp = 'Rp ' . number_format((float)$nilaiAset, 0, ',', '.');
+        
+        $laporan = "📊 *LAPORAN RINGKAS E-ASET* 📊\n\n";
+        $laporan .= "🔹 *Data Aset Tetap:*\n";
+        $laporan .= "- Total Aset Aktif: *{$totalAset}* unit\n";
+        $laporan .= "- Total Aset Rusak: *{$totalRusak}* unit\n";
+        $laporan .= "- Nilai Perolehan Aset: *{$formatRp}*\n\n";
+        
+        $laporan .= "🔹 *Data Persediaan Logistik:*\n";
+        $laporan .= "- Total Kuantitas Barang: *{$totalPersediaan}* unit/satuan\n\n";
+        
+        $laporan .= "Data ini di-generate secara otomatis oleh sistem.\nSilakan akses dashboard E-Aset untuk rincian lebih lengkap.";
+        
+        return $laporan;
     }
 }

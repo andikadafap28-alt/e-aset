@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Schedule;
 Schedule::command('app:check-low-stock')->dailyAt('08:00');
 Schedule::command('app:check-loan-due')->dailyAt('08:00');
 Schedule::command('app:check-maintenance-due')->dailyAt('08:00');
+Schedule::command('telegram:alerts')->dailyAt('08:00');
 
 // Mencegah Supabase menjadi paused dengan melakukan ping setiap 4 jam
 Schedule::command('supabase:keep-alive')->everyFourHours();

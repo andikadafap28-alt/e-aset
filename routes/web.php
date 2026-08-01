@@ -60,6 +60,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboard (Bisa diakses semua role)
     Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard/eksekutif', [\App\Http\Controllers\ExecutiveDashboardController::class, 'index'])->name('dashboard.eksekutif');
 
     // ==========================================
     // KHUSUS ADMIN (Pengaturan Sistem & Integrasi)
@@ -83,6 +84,8 @@ Route::middleware(['auth'])->group(function () {
     // ATAU kita pasang role:admin pada aksi tulis/ubah/hapus di route.
     // Demi keamanan, kita batasi aksi "menyimpan" di Controller untuk Manajemen dan User.
     // ==========================================
+
+    Route::resource('rooms', \App\Http\Controllers\RoomController::class);
 
     Route::prefix('aset')->name('aset.')->group(function () {
         Route::get('/data/items', [AssetController::class, 'index'])->name('data.items');
