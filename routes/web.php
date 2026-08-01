@@ -228,6 +228,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/export/download', [InventoryController::class, 'downloadExcel']);
         
         // Import Saldo (Existing)
+        Route::get('/import/template', [InventoryController::class, 'downloadTemplateLogistik'])->name('inventory.import.template');
         Route::post('/import', [InventoryController::class, 'importLogistik']);
         
         // Import Transaksi (New)

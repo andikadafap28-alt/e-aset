@@ -473,6 +473,11 @@ class InventoryController extends Controller
         return Excel::download(new \App\Exports\TemplateTransaksiLogistikExport, 'Template_Import_Transaksi_Logistik.xlsx');
     }
 
+    public function downloadTemplateLogistik()
+    {
+        return Excel::download(new \App\Exports\TemplateLogistikExport, 'Template_Import_Saldo_Bulanan.xlsx');
+    }
+
     public function importTransaksiLogistik(Request $request, $kategori_besar)
     {
         $request->validate([

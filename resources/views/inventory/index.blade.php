@@ -150,6 +150,13 @@
                     <p class="text-xs text-slate-500 mt-1">Digunakan sebagai tanggal transaksi untuk pencatatan stok.</p>
                 </div>
 
+                <div class="mb-4">
+                    <a href="{{ route('inventory.import.template', $kategori_besar) }}" class="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4-4m4 4V4"></path></svg>
+                        Download Template Excel
+                    </a>
+                </div>
+
                 <div class="mb-5">
                     <label class="block text-sm font-medium text-slate-700 mb-2">Upload File Excel (.xlsx, .csv) <span class="text-rose-500">*</span></label>
                     <input type="file" name="file_excel" required accept=".xlsx, .xls, .csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-colors cursor-pointer border border-slate-200 rounded-lg">
@@ -173,6 +180,49 @@
                         Batal
                     </button>
                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-5 rounded-lg shadow-sm shadow-blue-600/20 transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        Mulai Import
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Import Excel (Transaksi/Mutasi) -->
+    <div x-show="showImportTransaksiModal" class="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/50 backdrop-blur-sm" style="display: none;">
+        <div @click.away="showImportTransaksiModal = false" class="relative w-full max-w-md p-6 bg-white rounded-2xl shadow-xl transform transition-all">
+            <div class="flex items-center justify-between mb-5">
+                <h3 class="text-lg font-bold text-slate-900">Import Transaksi (Mutasi)</h3>
+                <button @click="showImportTransaksiModal = false" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form action="{{ route('inventory.import.transaksi', $kategori_besar) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                
+                <div class="mb-4">
+                    <a href="{{ route('inventory.import.transaksi.template', $kategori_besar) }}" class="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4-4m4 4V4"></path></svg>
+                        Download Template Mutasi
+                    </a>
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Upload File Excel (.xlsx, .csv) <span class="text-rose-500">*</span></label>
+                    <input type="file" name="file_excel" required accept=".xlsx, .xls, .csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-colors cursor-pointer border border-slate-200 rounded-lg">
+                    
+                    <div class="mt-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <p class="text-xs font-semibold text-slate-700 mb-2">Catatan Mutasi:</p>
+                        <p class="text-xs text-slate-500">Fitur ini digunakan untuk merekam pergerakan barang (keluar/masuk) harian. Pastikan format kolom sesuai dengan template yang diunduh.</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" @click="showImportTransaksiModal = false" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-5 rounded-lg shadow-sm shadow-indigo-600/20 transition-all flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                         Mulai Import
                     </button>
