@@ -138,6 +138,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/mutasi/items', [AssetController::class, 'mutasi'])->name('mutasi.items');
         Route::get('/mutasi/create', [AssetController::class, 'createMutasi'])->name('mutasi.create');
         Route::post('/mutasi', [AssetController::class, 'storeMutasi'])->name('mutasi.store');
+        Route::get('/penyusutan', [\App\Http\Controllers\DepreciationController::class, 'index'])->name('penyusutan.index');
 
         Route::get('/peminjaman', [\App\Http\Controllers\AssetLoanController::class, 'index'])->name('peminjaman.index');
         Route::post('/peminjaman', [\App\Http\Controllers\AssetLoanController::class, 'store'])->name('peminjaman.store');

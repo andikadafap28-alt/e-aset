@@ -13,9 +13,15 @@ class AssetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $assets = Asset::with('category')->orderBy('kode_108', 'asc')->orderBy('no_register', 'asc')->get();
+        $query = Asset::with('category')->orderBy('kode_108', 'asc')->orderBy('no_register', 'asc');
+        
+        if ($request->has('year') && $request->year != '') {
+            $query->where('year_purchased', $request->year);
+        }
+
+        $assets = $query->get();
         return view('aset.data', compact('assets'));
     }
 

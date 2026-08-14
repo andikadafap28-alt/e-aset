@@ -139,6 +139,7 @@
                         <a href="{{ route('bast.index') }}" class="{{ request()->routeIs('bast.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Cetak BAST</a>
                         <a href="{{ route('aset.bmd.index') }}" class="{{ request()->routeIs('aset.bmd.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">KIB BMD</a>
                         <a href="{{ route('aset.aspak.index') }}" class="{{ request()->routeIs('aset.aspak.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">ASPAK</a>
+                        <a href="{{ route('aset.penyusutan.index') }}" class="{{ request()->routeIs('aset.penyusutan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Laporan Penyusutan</a>
                     </div>
                 </div>
                 @endif
@@ -184,12 +185,7 @@
                 @endif
             </nav>
 
-            <!-- Copyright/Footer -->
-            <div class="px-6 py-4 border-t border-slate-800">
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">RAKSA</p>
-                <p class="text-[10px] font-medium text-slate-400 mt-1">Rawat Aset, Kendalikan Stok Andal</p>
-                <p class="text-[9px] text-slate-500 mt-2">&copy; 2026 Puskesmas Mantup</p>
-            </div>
+
             <!-- User Area -->
             <div class="p-4 border-t border-slate-800">
                 <div class="flex items-center gap-3 px-2">
@@ -217,29 +213,20 @@
                     <h2 class="text-xl font-bold text-slate-800">@yield('header_title', 'RAKSA')</h2>
                 </div>
                 
-                <div class="flex items-center gap-6">
-                    <div class="hidden md:flex px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-full items-center gap-2 shadow-sm">
-                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        <span class="text-[11px] font-bold text-blue-700 uppercase tracking-wide">Sistem Aktif</span>
-                    </div>
-                    
-                    <button class="relative text-slate-400 hover:text-slate-600 transition-colors">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
-                    </button>
-                    
-                    <div class="flex items-center gap-3 pl-6 border-l border-slate-200">
-                        <div class="text-right hidden md:block">
-                            <p class="text-sm font-bold text-slate-700">{{ auth()->user()?->name ?? 'Administrator' }}</p>
-                            <p class="text-xs text-slate-500 font-medium">Healthcare Admin</p>
-                        </div>
-                    </div>
-                </div>
             </header>
 
             <!-- Main Scrollable Content -->
-            <main class="flex-1 overflow-y-auto p-6 md:p-8">
-                @yield('content')
+            <main class="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col">
+                <div class="flex-1">
+                    @yield('content')
+                </div>
+                
+                <!-- Footer Content -->
+                <footer class="mt-10 pt-6 border-t border-slate-200 flex flex-col items-center justify-center text-center">
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">RAKSA</p>
+                    <p class="text-[11px] font-medium text-slate-400">Respons Akurat Kelola Seluruh Aset</p>
+                    <p class="text-[10px] text-slate-400 mt-2">&copy; 2026 Puskesmas Mantup. Hak Cipta Dilindungi.</p>
+                </footer>
             </main>
         </div>
     </div>
