@@ -22,6 +22,7 @@ class AssetMaintenanceController extends Controller
             'jenis_pemeliharaan' => 'required|string|max:255',
             'tanggal_jadwal' => 'required|date',
             'catatan' => 'nullable|string',
+            'penyedia' => 'nullable|string|max:255',
         ]);
 
         AssetMaintenance::create([
@@ -29,6 +30,7 @@ class AssetMaintenanceController extends Controller
             'jenis_pemeliharaan' => $request->jenis_pemeliharaan,
             'tanggal_jadwal' => $request->tanggal_jadwal,
             'catatan' => $request->catatan,
+            'penyedia' => $request->penyedia,
             'status' => 'menunggu',
         ]);
 
@@ -43,12 +45,14 @@ class AssetMaintenanceController extends Controller
             'tanggal_pelaksanaan' => 'required|date',
             'biaya' => 'nullable|numeric',
             'catatan_hasil' => 'nullable|string',
+            'penyedia' => 'nullable|string|max:255',
         ]);
 
         $maintenance->update([
             'status' => 'selesai',
             'tanggal_pelaksanaan' => $request->tanggal_pelaksanaan,
             'biaya' => $request->biaya ?? 0,
+            'penyedia' => $request->penyedia ?? $maintenance->penyedia,
             'catatan' => $maintenance->catatan . "\n\nCatatan Hasil: " . $request->catatan_hasil,
         ]);
 

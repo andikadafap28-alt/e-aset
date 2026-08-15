@@ -205,7 +205,7 @@
             Pengurus barang Pembantu<br>
             Puskesmas Mantup
             <div class="nama-ttd">Andika Dafa Penta Pratama</div>
-            NIP. .............................
+            NIP. 199907282025041003
         </div>
         
         <div class="ttd-box">

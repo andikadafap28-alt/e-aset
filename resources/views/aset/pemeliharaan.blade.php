@@ -50,6 +50,10 @@
                             <input type="date" name="tanggal_jadwal" required value="{{ date('Y-m-d') }}" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Penyedia / Pelaksana (Opsional)</label>
+                            <input type="text" name="penyedia" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Nama teknisi atau vendor...">
+                        </div>
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
                             <textarea name="catatan" rows="2" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Kondisi alat atau keluhan..."></textarea>
                         </div>
@@ -140,6 +144,10 @@
                                                 <div>
                                                     <label class="block text-sm font-medium text-gray-700 mb-1">Total Biaya (Rp)</label>
                                                     <input type="number" name="biaya" value="0" min="0" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-green-500 focus:border-green-500">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Penyedia / Pelaksana</label>
+                                                    <input type="text" name="penyedia" value="{{ $m->penyedia }}" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-green-500 focus:border-green-500" placeholder="Nama teknisi atau vendor...">
                                                 </div>
                                                 <div>
                                                     <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Hasil</label>

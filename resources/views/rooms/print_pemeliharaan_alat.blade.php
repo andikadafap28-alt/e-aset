@@ -53,9 +53,10 @@
                 <th style="width: 5%;">No</th>
                 <th style="width: 20%;">Nama Alat (Merk)</th>
                 <th style="width: 15%;">NIBAR</th>
-                <th style="width: 15%;">Tgl Pemeliharaan</th>
-                <th style="width: 15%;">Jenis</th>
-                <th style="width: 30%;">Keterangan / Hasil</th>
+                <th style="width: 10%;">Tgl Pemeliharaan</th>
+                <th style="width: 10%;">Jenis</th>
+                <th style="width: 15%;">Penyedia / Pelaksana</th>
+                <th style="width: 25%;">Keterangan / Hasil</th>
             </tr>
         </thead>
         <tbody>
@@ -69,6 +70,7 @@
                         <td>{{ $asset->asset_code }}</td>
                         <td class="text-center">{{ $m->tanggal_pelaksanaan ? \Carbon\Carbon::parse($m->tanggal_pelaksanaan)->format('d/m/Y') : \Carbon\Carbon::parse($m->tanggal_jadwal)->format('d/m/Y') }}</td>
                         <td class="text-center">{{ $m->jenis_pemeliharaan }}</td>
+                        <td>{{ $m->penyedia ?? '-' }}</td>
                         <td>{{ $m->catatan_hasil ?? $m->catatan }}</td>
                     </tr>
                 @endforeach
@@ -76,7 +78,7 @@
             
             @if(!$hasData)
             <tr>
-                <td colspan="6" class="text-center">Belum ada riwayat pemeliharaan alat di ruangan ini.</td>
+                <td colspan="7" class="text-center">Belum ada riwayat pemeliharaan alat di ruangan ini.</td>
             </tr>
             @endif
         </tbody>

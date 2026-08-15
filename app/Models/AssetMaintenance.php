@@ -14,6 +14,7 @@ class AssetMaintenance extends Model
         'biaya',
         'status',
         'catatan',
+        'penyedia',
     ];
 
     protected $casts = [

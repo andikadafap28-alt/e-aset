@@ -186,7 +186,7 @@
             Mantup, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}<br>
             Pengurus Barang Puskesmas Mantup
             <div class="nama-ttd">Andika Dafa Penta Pratama</div>
-            NIP. .............................
+            NIP. 199907282025041003
         </div>
     </div>
 </body>
