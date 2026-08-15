@@ -56,7 +56,24 @@ class AssetHandoverController extends Controller
     public function show(AssetHandover $bast)
     {
         $bast->load('asset', 'employee', 'items.asset');
-        return view('bast.print', compact('bast'));
+        
+        $groupedItems = collect();
+        if ($bast->items && $bast->items->count() > 0) {
+            $grouped = $bast->items->groupBy(function($item) {
+                $name = $item->asset->name ?? '-';
+                $merk = $item->asset->merk ?? 'Tanpa Merk';
+                $type = $item->asset->type ?? '-';
+                return $name . '|' . $merk . '|' . $type;
+            });
+            
+            foreach($grouped as $key => $group) {
+                $first = $group->first();
+                $first->qty = $group->count();
+                $groupedItems->push($first);
+            }
+        }
+        
+        return view('bast.print', compact('bast', 'groupedItems'));
     }
     
     public function destroy(AssetHandover $bast)

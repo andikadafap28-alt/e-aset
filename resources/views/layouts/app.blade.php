@@ -133,7 +133,16 @@
                         <a href="{{ route('aset.pengadaan.items') }}" class="{{ request()->routeIs('aset.pengadaan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Pengadaan BMD</a>
                         <a href="{{ route('aset.bantuan_sarpras.items') }}" class="{{ request()->routeIs('aset.bantuan_sarpras.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Bantuan Sarpras</a>
                         <a href="{{ route('aset.mutasi.items') }}" class="{{ request()->routeIs('aset.mutasi.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Mutasi Aset</a>
-                        <a href="{{ route('aset.pemeliharaan.index') }}" class="{{ request()->routeIs('aset.pemeliharaan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Pemeliharaan</a>
+                        <div x-data="{ subPemeliharaan: {{ request()->routeIs('aset.pemeliharaan.*') ? 'true' : 'false' }} }">
+                            <button @click="subPemeliharaan = !subPemeliharaan" class="w-full flex items-center justify-between py-2 text-sm text-slate-400 hover:text-white transition-colors">
+                                <span>Pemeliharaan</span>
+                                <span class="material-symbols-outlined text-xs transition-transform duration-200" :class="subPemeliharaan ? 'rotate-180' : ''">expand_more</span>
+                            </button>
+                            <div x-show="subPemeliharaan" class="pl-4 border-l border-slate-700 ml-2 mt-1 space-y-1">
+                                <a href="{{ route('aset.pemeliharaan.index') }}" class="{{ request()->routeIs('aset.pemeliharaan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-1.5 text-xs transition-colors">Pemeliharaan Alat</a>
+                                <a href="{{ route('rooms.index') }}" class="text-slate-400 hover:text-white block py-1.5 text-xs transition-colors">Kartu Ruangan</a>
+                            </div>
+                        </div>
                         <a href="{{ route('aset.monitoring.items') }}" class="{{ request()->routeIs('aset.monitoring.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Monitoring</a>
                         <a href="{{ route('aset.pelabelan.items') }}" class="{{ request()->routeIs('aset.pelabelan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Label QR Code</a>
                         <a href="{{ route('bast.index') }}" class="{{ request()->routeIs('bast.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Cetak BAST</a>

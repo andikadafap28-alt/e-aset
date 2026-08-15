@@ -167,18 +167,18 @@
             </tr>
         </thead>
         <tbody>
-            @if($bast->items && $bast->items->count() > 0)
-                @foreach($bast->items as $index => $item)
+            @if(isset($groupedItems) && $groupedItems->count() > 0)
+                @foreach($groupedItems as $index => $item)
                 <tr>
                     @if($index === 0)
-                    <td style="text-align: center;" rowspan="{{ $bast->items->count() }}">{{ \Carbon\Carbon::parse($bast->handover_date)->isoFormat('D MMMM Y') }}</td>
+                    <td style="text-align: center;" rowspan="{{ $groupedItems->count() }}">{{ \Carbon\Carbon::parse($bast->handover_date)->isoFormat('D MMMM Y') }}</td>
                     @endif
                     <td>{{ $item->asset->name ?? '-' }}</td>
                     <td>{{ $item->asset->merk ?? 'Tanpa Merk' }} / {{ $item->asset->type ?? '-' }}</td>
-                    <td style="text-align: center;">1 unit</td>
+                    <td style="text-align: center;">{{ $item->qty }} unit</td>
                     @if($index === 0)
-                    <td rowspan="{{ $bast->items->count() }}">{{ $bast->keterangan }}</td>
-                    <td rowspan="{{ $bast->items->count() }}">{{ $bast->sumber_dana }}</td>
+                    <td rowspan="{{ $groupedItems->count() }}">{{ $bast->keterangan }}</td>
+                    <td rowspan="{{ $groupedItems->count() }}">{{ $bast->sumber_dana }}</td>
                     @endif
                 </tr>
                 @endforeach

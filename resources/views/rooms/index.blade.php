@@ -10,10 +10,25 @@
             <p class="text-sm font-medium text-slate-500 mt-1">Kelola data Pustu, Ponkesdes, dan Ruangan Puskesmas sebagai referensi lokasi aset.</p>
         </div>
         
-        <button @click="showModal = true; editMode = false; form = {name: '', type: 'Ruangan', penanggung_jawab: '', latitude: '', longitude: '', description: ''}" class="text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg shadow-sm shadow-indigo-600/20 flex items-center gap-2 transition-all">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-            Tambah Lokasi Baru
-        </button>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('rooms.template') }}" class="text-sm font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-3 py-2.5 rounded-lg shadow-sm flex items-center gap-2 transition-all" title="Download Template Excel">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <span class="hidden md:inline">Template</span>
+            </a>
+            <button @click="$refs.fileInput.click()" class="text-sm font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-3 py-2.5 rounded-lg shadow-sm flex items-center gap-2 transition-all" title="Import Excel">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <span class="hidden md:inline">Import</span>
+            </button>
+            <form id="formImport" action="{{ route('rooms.import') }}" method="POST" enctype="multipart/form-data" class="hidden">
+                @csrf
+                <input type="file" name="file" x-ref="fileInput" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" @change="document.getElementById('formImport').submit()">
+            </form>
+            <button @click="showModal = true; editMode = false; form = {name: '', type: 'Ruangan', penanggung_jawab: '', latitude: '', longitude: '', description: ''}" class="text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg shadow-sm shadow-indigo-600/20 flex items-center gap-2 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span class="hidden md:inline">Tambah Lokasi Baru</span>
+                <span class="md:hidden">Tambah</span>
+            </button>
+        </div>
     </div>
 
     <!-- Alert Messages -->
@@ -73,8 +88,20 @@
                             @endif
                         </td>
                         <td class="p-4 text-right">
-                            <div class="flex justify-end gap-2">
-                                <button @click="showModal = true; editMode = true; currentId = {{ $room->id }}; form = {name: '{{ addslashes($room->name) }}', type: '{{ $room->type }}', penanggung_jawab: '{{ addslashes($room->penanggung_jawab) }}', latitude: '{{ $room->latitude }}', longitude: '{{ $room->longitude }}', description: '{{ addslashes($room->description) }}'}" class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                            <div class="flex justify-end gap-2 items-center">
+                                <div x-data="{ openPrint: false }" class="relative inline-block text-left">
+                                    <button @click="openPrint = !openPrint" @click.away="openPrint = false" type="button" class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Cetak Kartu">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                    </button>
+                                    <div x-show="openPrint" x-transition class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10" style="display: none;">
+                                        <div class="py-1" role="menu" aria-orientation="vertical">
+                                            <a href="{{ route('rooms.print_kir', $room->id) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">KIR (Kertas F4)</a>
+                                            <a href="{{ route('rooms.print_pemeliharaan_ruangan', $room->id) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Kartu Pemeliharaan Ruangan</a>
+                                            <a href="{{ route('rooms.print_pemeliharaan_alat', $room->id) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Kartu Pemeliharaan Alat</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button @click="showModal = true; editMode = true; currentId = {{ $room->id }}; form = {name: '{{ addslashes($room->name) }}', type: '{{ $room->type }}', penanggung_jawab: '{{ addslashes($room->penanggung_jawab) }}', latitude: '{{ $room->latitude }}', longitude: '{{ $room->longitude }}', description: '{{ addslashes($room->description) }}'}" class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Edit">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                 </button>
                                 <form action="{{ route('rooms.destroy', $room->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus lokasi ini? Data aset yang berada di lokasi ini tidak akan dihapus.');">
