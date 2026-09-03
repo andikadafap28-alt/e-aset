@@ -12,6 +12,6 @@ jobs:
     steps:
       - name: Ping Supabase REST API
         run: |
-          curl -s -X GET '${{ secrets.SUPABASE_URL }}/rest/v1/?limit=1' \
+          curl -s -X GET '${{ secrets.SUPABASE_URL }}/rest/v1/rooms?select=*&limit=1' \
           -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
           -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
