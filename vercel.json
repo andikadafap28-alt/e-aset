@@ -36,7 +36,7 @@
     },
     "crons": [
         {
-            "path": "/api/keep-alive",
+            "path": "/supabase-keep-alive",
             "schedule": "0 0 * * *"
         }
     ]

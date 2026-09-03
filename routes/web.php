@@ -18,7 +18,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rute untuk mencegah Supabase dari paused (Keep Alive Ping)
-Route::get('/api/keep-alive', function () {
+Route::get('/supabase-keep-alive', function () {
     try {
         \Illuminate\Support\Facades\DB::select('SELECT 1');
         return response()->json(['status' => 'success', 'message' => 'Supabase pinged successfully.']);
