@@ -81,39 +81,51 @@
                         <option value="" disabled selected>Pilih Jenis Dokumen</option>
                         <option value="Surat Pesanan">Surat Pesanan</option>
                         <option value="BAST">BAST</option>
-                        <option value="Invoice">Invoice / Faktur</option>
-                        <option value="Kuitansi">Kuitansi</option>
-                        <option value="Lainnya">Lainnya</option>
-                    </select>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Dokumen</label>
+                        <input type="text" name="nama_dokumen" required class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500" placeholder="Contoh: Surat Pesanan / BAST">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">File (PDF/Image)</label>
+                        <input type="file" name="file" required class="w-full text-xs text-slate-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-xs font-semibold transition-colors mt-2">
+                        Upload Dokumen
+                    </button>
                 </div>
-                <div>
-                    <input type="file" name="file" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors">
-                    Upload Dokumen
-                </button>
             </form>
+            @endif
 
+            <!-- Daftar Lampiran -->
             <div class="space-y-3">
                 @forelse($dpp->attachments as $attachment)
-                    <div class="flex items-center justify-between p-3 border border-slate-100 bg-slate-50 rounded-xl">
-                        <div class="flex-1 min-w-0 pr-3">
-                            <p class="text-xs font-bold text-slate-700">{{ $attachment->jenis_file }}</p>
-                            <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="text-xs text-blue-600 hover:underline truncate block" title="{{ $attachment->file_name }}">
-                                {{ $attachment->file_name }}
-                            </a>
+                    <div class="flex items-center justify-between p-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <div class="bg-blue-100 text-blue-600 p-2 rounded-lg flex-shrink-0">
+                                <span class="material-symbols-outlined text-sm">description</span>
+                            </div>
+                            <div class="truncate">
+                                <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank" class="text-sm font-semibold text-blue-600 hover:underline truncate block">
+                                    {{ $attachment->nama_dokumen }}
+                                </a>
+                                <span class="text-[10px] text-slate-400 block">{{ $attachment->created_at->format('d/m/Y H:i') }}</span>
+                            </div>
                         </div>
-                        <form action="{{ route('dpp.attachments.destroy', $attachment->id) }}" method="POST" onsubmit="return confirm('Hapus lampiran ini?')">
+                        @if(auth()->user()?->role !== 'arsiparis')
+                        <form action="{{ route('dpp.attachment.destroy', $attachment->id) }}" method="POST" onsubmit="return confirm('Hapus dokumen ini?')" class="flex-shrink-0 ml-2">
                             @csrf
                             @method('DELETE')
-                            <button class="text-slate-400 hover:text-red-600 p-1 transition-colors" title="Hapus">
+                            <button type="submit" class="text-slate-400 hover:text-red-500 transition-colors p-1" title="Hapus Dokumen">
                                 <span class="material-symbols-outlined text-sm">close</span>
                             </button>
                         </form>
+                        @endif
                     </div>
                 @empty
-                    <div class="text-center py-4 text-xs text-slate-400 border border-dashed border-slate-200 rounded-xl">
-                        Belum ada lampiran dokumen.
+                    <div class="text-center py-6 text-slate-400">
+                        <span class="material-symbols-outlined text-3xl mb-2 opacity-50">folder_open</span>
+                        <p class="text-xs">Belum ada dokumen pendukung</p>
                     </div>
                 @endforelse
             </div>

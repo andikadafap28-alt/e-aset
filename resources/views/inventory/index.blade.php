@@ -10,7 +10,8 @@
             <p class="text-sm font-medium text-slate-500 mt-1">Kelola data master barang dan pantau mutasi aset secara real-time.</p>
         </div>
         
-        <div class="flex flex-wrap gap-3 items-center">
+        @if(auth()->user()?->role !== 'arsiparis')
+        <div class="flex flex-wrap items-center gap-3">
             
             <button @click="showAiModal = true" class="text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg shadow-sm shadow-indigo-600/20 flex items-center gap-2 transition-all group">
                 <svg class="w-4 h-4 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -59,6 +60,7 @@
                 Catat Mutasi Manual
             </a>
         </div>
+        @endif
     </div>
 
     @if(session('success'))

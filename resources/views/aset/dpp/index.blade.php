@@ -4,9 +4,11 @@
 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
     <div class="flex justify-between items-center mb-6">
         <h3 class="text-lg font-bold text-slate-800">Daftar DPP</h3>
+        @if(auth()->user()?->role !== 'arsiparis')
         <a href="{{ route('dpp.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors">
             + Buat DPP Baru
         </a>
+        @endif
     </div>
 
     @if(session('success'))
@@ -42,6 +44,7 @@
                             <a href="{{ route('dpp.pdf', $dpp->id) }}" target="_blank" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all" title="Cetak PDF">
                                 <span class="material-symbols-outlined text-xl">picture_as_pdf</span>
                             </a>
+                            @if(auth()->user()?->role !== 'arsiparis')
                             <form action="{{ route('dpp.destroy', $dpp->id) }}" method="POST" onsubmit="return confirm('Hapus dokumen ini beserta lampirannya?')">
                                 @csrf
                                 @method('DELETE')
@@ -49,6 +52,7 @@
                                     <span class="material-symbols-outlined text-xl">delete</span>
                                 </button>
                             </form>
+                            @endif
                         </div>
                     </td>
                 </tr>

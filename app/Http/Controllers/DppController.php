@@ -18,11 +18,13 @@ class DppController extends Controller
 
     public function create()
     {
+        if (auth()->user()?->role === 'arsiparis') abort(403);
         return view('aset.dpp.create');
     }
 
     public function store(Request $request)
     {
+        if (auth()->user()?->role === 'arsiparis') abort(403);
         $validated = $request->validate([
             'nomor_surat' => 'required|string|max:255',
             'kode_rup' => 'required|string|max:255',
@@ -65,6 +67,7 @@ class DppController extends Controller
 
     public function uploadAttachment(Request $request, $id)
     {
+        if (auth()->user()?->role === 'arsiparis') abort(403);
         $request->validate([
             'jenis_file' => 'required|string',
             'file' => 'required|file|max:10240', // max 10MB
@@ -87,6 +90,7 @@ class DppController extends Controller
 
     public function deleteAttachment($attachmentId)
     {
+        if (auth()->user()?->role === 'arsiparis') abort(403);
         $attachment = DppAttachment::findOrFail($attachmentId);
         
         if (Storage::disk('public')->exists($attachment->file_path)) {
@@ -100,6 +104,7 @@ class DppController extends Controller
 
     public function destroy($id)
     {
+        if (auth()->user()?->role === 'arsiparis') abort(403);
         $dpp = Dpp::findOrFail($id);
         
         // Delete all physical files for attachments

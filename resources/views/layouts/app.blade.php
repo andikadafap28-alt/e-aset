@@ -116,7 +116,7 @@
                 @endif
 
                 <!-- Section 3: Manajemen Aset -->
-                @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'kepala')
+                @if(in_array(auth()->user()?->role, ['admin', 'kepala', 'arsiparis']))
                 <div>
                     <p class="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Aset Tetap (BMD)</p>
                     <button @click="asetOpen = !asetOpen" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors text-slate-300">
@@ -128,11 +128,14 @@
                     </button>
                     
                     <div x-show="asetOpen" x-collapse class="pl-11 pr-4 mt-1 space-y-1 mb-2">
+                        @if(auth()->user()?->role !== 'arsiparis')
                         <a href="{{ route('aset.data.items') }}" class="{{ request()->routeIs('aset.data.items') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Data Aset</a>
                         <a href="{{ route('aset.categories.index') }}" class="{{ request()->routeIs('aset.categories.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Kategori Aset</a>
+                        @endif
                         <a href="{{ route('aset.pengadaan.items') }}" class="{{ request()->routeIs('aset.pengadaan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Pengadaan BMD</a>
                         <a href="{{ route('dpp.index') }}" class="{{ request()->routeIs('dpp.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Dokumen Pengadaan (DPP)</a>
                         <a href="{{ route('aset.bantuan_sarpras.items') }}" class="{{ request()->routeIs('aset.bantuan_sarpras.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Bantuan Sarpras</a>
+                        @if(auth()->user()?->role !== 'arsiparis')
                         <a href="{{ route('aset.mutasi.items') }}" class="{{ request()->routeIs('aset.mutasi.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Mutasi Aset</a>
                         <div x-data="{ subPemeliharaan: {{ request()->routeIs('aset.pemeliharaan.*') ? 'true' : 'false' }} }">
                             <button @click="subPemeliharaan = !subPemeliharaan" class="w-full flex items-center justify-between py-2 text-sm text-slate-400 hover:text-white transition-colors">
@@ -146,10 +149,13 @@
                         </div>
                         <a href="{{ route('aset.monitoring.items') }}" class="{{ request()->routeIs('aset.monitoring.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Monitoring</a>
                         <a href="{{ route('aset.pelabelan.items') }}" class="{{ request()->routeIs('aset.pelabelan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Label QR Code</a>
+                        @endif
                         <a href="{{ route('bast.index') }}" class="{{ request()->routeIs('bast.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Cetak BAST</a>
+                        @if(auth()->user()?->role !== 'arsiparis')
                         <a href="{{ route('aset.bmd.index') }}" class="{{ request()->routeIs('aset.bmd.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">KIB BMD</a>
                         <a href="{{ route('aset.aspak.index') }}" class="{{ request()->routeIs('aset.aspak.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">ASPAK</a>
                         <a href="{{ route('aset.penyusutan.index') }}" class="{{ request()->routeIs('aset.penyusutan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Laporan Penyusutan</a>
+                        @endif
                     </div>
                 </div>
                 @endif
