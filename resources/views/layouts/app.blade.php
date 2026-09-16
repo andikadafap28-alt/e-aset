@@ -43,7 +43,7 @@
                 logistikPerkantoranOpen: {{ in_array(request()->segment(1), ['atk', 'kertas_cover', 'bahan_cetak', 'benda_pos', 'bahan_komputer']) ? 'true' : 'false' }},
                 logistikMedisOpen: {{ in_array(request()->segment(1), ['obat', 'obat_apbd', 'obat_apbn', 'vaksin', 'bahan_lainnya']) ? 'true' : 'false' }},
                 logistikLainnyaOpen: {{ in_array(request()->segment(1), ['natura_pakan_lainnya', 'persediaan_lainnya']) ? 'true' : 'false' }},
-                asetOpen: {{ request()->is('aset/*') || request()->is('aset') || request()->is('bast/*') || request()->is('bast') ? 'true' : 'false' }},
+                asetOpen: {{ request()->is('aset/*') || request()->is('aset') || request()->is('bast/*') || request()->is('bast') || request()->is('dpp/*') || request()->is('dpp') ? 'true' : 'false' }},
                 laporanOpen: {{ request()->is('laporan/*') || request()->is('laporan') || request()->is('stock-opname/*') || request()->is('stock-opname') ? 'true' : 'false' }},
                 sistemOpen: {{ request()->is('employees/*') || request()->is('employees') || request()->is('rooms/*') || request()->is('rooms') || request()->is('settings/*') || request()->is('settings') || request()->is('asisten/*') ? 'true' : 'false' }} 
             }">
@@ -131,6 +131,7 @@
                         <a href="{{ route('aset.data.items') }}" class="{{ request()->routeIs('aset.data.items') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Data Aset</a>
                         <a href="{{ route('aset.categories.index') }}" class="{{ request()->routeIs('aset.categories.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Kategori Aset</a>
                         <a href="{{ route('aset.pengadaan.items') }}" class="{{ request()->routeIs('aset.pengadaan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Pengadaan BMD</a>
+                        <a href="{{ route('dpp.index') }}" class="{{ request()->routeIs('dpp.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Dokumen Pengadaan (DPP)</a>
                         <a href="{{ route('aset.bantuan_sarpras.items') }}" class="{{ request()->routeIs('aset.bantuan_sarpras.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Bantuan Sarpras</a>
                         <a href="{{ route('aset.mutasi.items') }}" class="{{ request()->routeIs('aset.mutasi.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Mutasi Aset</a>
                         <div x-data="{ subPemeliharaan: {{ request()->routeIs('aset.pemeliharaan.*') ? 'true' : 'false' }} }">

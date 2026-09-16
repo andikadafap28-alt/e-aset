@@ -154,6 +154,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/peminjaman/{id}/save-print-data', [\App\Http\Controllers\AssetLoanController::class, 'savePrintData'])->name('peminjaman.save-print-data');
         Route::delete('/peminjaman/{id}', [\App\Http\Controllers\AssetLoanController::class, 'destroy'])->name('peminjaman.destroy');
         
+        // DPP Routes
+        Route::get('/dpp', [\App\Http\Controllers\DppController::class, 'index'])->name('dpp.index');
+        Route::get('/dpp/create', [\App\Http\Controllers\DppController::class, 'create'])->name('dpp.create');
+        Route::post('/dpp', [\App\Http\Controllers\DppController::class, 'store'])->name('dpp.store');
+        Route::get('/dpp/{id}', [\App\Http\Controllers\DppController::class, 'show'])->name('dpp.show');
+        Route::delete('/dpp/{id}', [\App\Http\Controllers\DppController::class, 'destroy'])->name('dpp.destroy');
+        Route::get('/dpp/{id}/pdf', [\App\Http\Controllers\DppController::class, 'generatePdf'])->name('dpp.pdf');
+        Route::post('/dpp/{id}/attachments', [\App\Http\Controllers\DppController::class, 'uploadAttachment'])->name('dpp.attachments.upload');
+        Route::delete('/dpp/attachments/{attachmentId}', [\App\Http\Controllers\DppController::class, 'deleteAttachment'])->name('dpp.attachments.destroy');
+
         Route::post('/import-kode-108', [InventoryController::class, 'importKode108'])->name('import-kode-108');
     });
 
