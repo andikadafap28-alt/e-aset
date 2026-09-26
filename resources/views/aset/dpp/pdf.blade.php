@@ -5,7 +5,7 @@
     <title>Dokumen Persiapan Pengadaan</title>
     <style>
         @page {
-            margin: 3cm 3cm 3cm 4cm; /* Top Right Bottom Left */
+            margin: 1cm 2.54cm 1cm 3.54cm; /* Top Right Bottom Left */
         }
         body {
             font-family: "Times New Roman", Times, serif;
@@ -22,7 +22,7 @@
             width: 100%;
             border-bottom: 4px double black;
             padding-bottom: 5px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         .kop-surat table {
             width: 100%;
@@ -94,6 +94,7 @@
             float: right;
             width: 300px;
             text-align: center;
+            position: relative;
         }
         .clearfix::after {
             content: "";
@@ -201,8 +202,8 @@
                     <td style="text-align: center;">1</td>
                     <td>{{ $dpp->spesifikasi_teknis }}</td>
                     <td style="text-align: center;">{{ $dpp->jumlah }}</td>
-                    <td style="text-align: right;">Rp. {{ number_format($dpp->harga_satuan, 2, ',', '.') }}</td>
-                    <td style="text-align: right;">Rp. {{ number_format($dpp->pagu_anggaran, 2, ',', '.') }}</td>
+                    <td style="text-align: right; white-space: nowrap;">Rp. {{ number_format($dpp->harga_satuan, 2, ',', '.') }}</td>
+                    <td style="text-align: right; white-space: nowrap;">Rp. {{ number_format($dpp->pagu_anggaran, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td colspan="5">
@@ -255,10 +256,9 @@
                 Puskesmas Mantup<br>
                 
                 @if($hasGd && $ttdBase64)
-                    <img src="{{ $ttdBase64 }}" style="width: 160px; margin: -20px auto -40px auto; display: block; position: relative; z-index: -1;">
-                @else
-                    <br><br><br><br>
+                    <img src="{{ $ttdBase64 }}" style="width: 220px; position: absolute; top: -10px; left: -40px; z-index: -1;">
                 @endif
+                <br><br><br><br>
                 
                 <b><u>dr. MUHAMAD SUNARYADI</u></b><br>
                 NIP. 19690313 200212 1 007
