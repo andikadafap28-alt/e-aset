@@ -46,7 +46,7 @@ class ChatbotService
         }
 
         // Intercept DPP Creation if in DPP mode
-        if ($mode === 'dpp' && str_contains($cleanMessage, 'nomor surat:')) {
+        if ($mode === 'dpp' && (str_contains($cleanMessage, 'nomor surat:') || str_contains($cleanMessage, 'nomor surat :') || preg_match('/nomor\s+surat/i', $cleanMessage))) {
             return $this->handleDppCreation($message);
         }
 
@@ -254,56 +254,53 @@ class ChatbotService
             $data = [];
             
             foreach ($lines as $line) {
-                if (stripos($line, 'nomor surat:') !== false) {
-                    $val = trim(str_ireplace('nomor surat:', '', $line));
+                if (preg_match('/nomor\s*surat\s*:\s*(.+)/i', $line, $matches)) {
+                    $val = trim($matches[1]);
                     // Auto format nomor surat if it's just a number
                     if (!str_contains(strtoupper($val), 'PPBJ')) {
                         $year = date('Y');
                         $val = "000.3.1/{$val}/PPBJ/413.102.5.18/{$year}";
                     }
                     $data['nomor_surat'] = $val;
-                } elseif (stripos($line, 'kode rup:') !== false || stripos($line, 'kode rup') !== false) {
-                    $parts = explode(':', $line);
-                    if(count($parts) > 1) {
-                        $inputRup = strtolower(trim($parts[1]));
-                        if (str_contains($inputRup, 'obat')) {
-                            $data['kode_rup'] = '67261766';
-                            $data['nama_paket'] = 'Belanja Barang dan Jasa (Belanja Bahan Obat-obatan(JKN))';
-                            $data['spesifikasi_teknis'] = 'Belanja Obat-obatan';
-                            $data['jumlah'] = '1 Paket';
-                            $data['harga_satuan'] = 144000000.00;
-                            $data['pagu_anggaran'] = 144000000.00;
-                        } elseif (str_contains($inputRup, 'bmhp') || str_contains($inputRup, 'bahan')) {
-                            $data['kode_rup'] = '67261750';
-                            $data['nama_paket'] = 'Belanja Barang dan Jasa (Belanja Bahan-bahan lainnya (JKN))';
-                            $data['spesifikasi_teknis'] = 'Belanja Bahan-Bahan Lainnya';
-                            $data['jumlah'] = '1 Paket';
-                            $data['harga_satuan'] = 100000000.00;
-                            $data['pagu_anggaran'] = 100000000.00;
-                        } else {
-                            $data['kode_rup'] = trim($parts[1]); // Fallback
-                        }
+                } elseif (preg_match('/kode\s*rup\s*:\s*(.+)/i', $line, $matches) || preg_match('/kode\s*rup\s*(.+)/i', $line, $matches)) {
+                    $inputRup = strtolower(trim($matches[1]));
+                    if (str_contains($inputRup, 'obat')) {
+                        $data['kode_rup'] = '67261766';
+                        $data['nama_paket'] = 'Belanja Barang dan Jasa (Belanja Bahan Obat-obatan(JKN))';
+                        $data['spesifikasi_teknis'] = 'Belanja Obat-obatan';
+                        $data['jumlah'] = '1 Paket';
+                        $data['harga_satuan'] = 144000000.00;
+                        $data['pagu_anggaran'] = 144000000.00;
+                    } elseif (str_contains($inputRup, 'bmhp') || str_contains($inputRup, 'bahan')) {
+                        $data['kode_rup'] = '67261750';
+                        $data['nama_paket'] = 'Belanja Barang dan Jasa (Belanja Bahan-bahan lainnya (JKN))';
+                        $data['spesifikasi_teknis'] = 'Belanja Bahan-Bahan Lainnya';
+                        $data['jumlah'] = '1 Paket';
+                        $data['harga_satuan'] = 100000000.00;
+                        $data['pagu_anggaran'] = 100000000.00;
+                    } else {
+                        $data['kode_rup'] = trim($matches[1]); // Fallback
                     }
-                } elseif (stripos($line, 'tanggal pesanan:') !== false || stripos($line, 'tanggal pesanan') !== false) {
-                    $parts = explode(':', $line);
-                    if(count($parts) > 1) {
-                        $rawDate = trim($parts[1]);
-                        $parsedDate = date('Y-m-d', strtotime(str_replace('/', '-', $rawDate)));
-                        $data['tanggal_dpp'] = $parsedDate;
-                        $data['tanggal_mulai'] = $parsedDate;
-                    }
-                } elseif (stripos($line, 'tanggal tiba:') !== false || stripos($line, 'rencana tiba:') !== false || stripos($line, 'rencana tiba') !== false) {
-                    $parts = explode(':', $line);
-                    if(count($parts) > 1) {
-                        $rawDate = trim($parts[1]);
-                        $parsedDate = date('Y-m-d', strtotime(str_replace('/', '-', $rawDate)));
-                        $data['tanggal_selesai'] = $parsedDate;
-                    }
+                } elseif (preg_match('/tanggal\s*pesanan\s*:\s*(.+)/i', $line, $matches)) {
+                    $rawDate = trim($matches[1]);
+                    $parsedDate = date('Y-m-d', strtotime(str_replace('/', '-', $rawDate)));
+                    $data['tanggal_dpp'] = $parsedDate;
+                    $data['tanggal_mulai'] = $parsedDate;
+                } elseif (preg_match('/(?:tanggal|rencana)\s*tiba\s*:\s*(.+)/i', $line, $matches)) {
+                    $rawDate = trim($matches[1]);
+                    $parsedDate = date('Y-m-d', strtotime(str_replace('/', '-', $rawDate)));
+                    $data['tanggal_selesai'] = $parsedDate;
                 }
             }
 
             if (empty($data['nomor_surat']) || empty($data['kode_rup']) || empty($data['tanggal_dpp']) || empty($data['tanggal_selesai'])) {
-                return "⚠️ Gagal membuat DPP. Pastikan format sudah benar dan lengkap:\n\nNomor Surat: [Contoh: 333]\nKode RUP: [Obat / BMHP]\nTanggal Pesanan: [DD/MM/YYYY]\nTanggal Tiba: [DD/MM/YYYY]";
+                $missing = [];
+                if (empty($data['nomor_surat'])) $missing[] = 'Nomor Surat';
+                if (empty($data['kode_rup'])) $missing[] = 'Kode RUP';
+                if (empty($data['tanggal_dpp'])) $missing[] = 'Tanggal Pesanan';
+                if (empty($data['tanggal_selesai'])) $missing[] = 'Tanggal Tiba';
+                
+                return "⚠️ *Gagal membuat DPP: Data tidak lengkap*\n\nSistem tidak dapat mendeteksi informasi berikut: *" . implode(', ', $missing) . "*\n\nPastikan format teks Anda persis seperti ini (perhatikan tanda titik dua):\n\nNomor Surat: 333\nKode RUP: Obat\nTanggal Pesanan: 26/09/2026\nTanggal Tiba: 10/10/2026\n\n*Error Code/Diagnosa Parsing*: MISSING_FIELDS_[" . implode('_', $missing) . "]";
             }
 
             $dpp = \App\Models\Dpp::create($data);
