@@ -73,11 +73,6 @@
             border-collapse: collapse;
             margin-top: 10px;
             margin-bottom: 10px;
-            page-break-inside: auto;
-        }
-        .table-data tr {
-            page-break-inside: avoid;
-            page-break-after: auto;
         }
         .table-data th, .table-data td {
             border: 1px solid black;
@@ -256,7 +251,7 @@
                 Puskesmas Mantup<br>
                 
                 @if($hasGd && $ttdBase64)
-                    <img src="{{ $ttdBase64 }}" style="width: 220px; position: absolute; top: -10px; left: -40px; z-index: -1;">
+                    <img src="{{ $ttdBase64 }}" style="width: 240px; position: absolute; top: 15px; left: -80px; z-index: -1;">
                 @endif
                 <br><br><br><br>
                 
