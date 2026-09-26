@@ -10,12 +10,12 @@
         body {
             font-family: "Times New Roman", Times, serif;
             font-size: 11pt;
-            line-height: 1.5;
+            line-height: 1.15;
             margin: 0;
             padding: 0;
         }
         p {
-            margin: 2px 0;
+            margin: 6px 0;
             padding: 0;
         }
         .kop-surat {
