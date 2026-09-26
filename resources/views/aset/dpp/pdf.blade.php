@@ -10,13 +10,13 @@
         body {
             font-family: "Times New Roman", Times, serif;
             font-size: 11pt;
-            line-height: 1.5;
+            line-height: 1.15;
             margin: 0;
             padding: 0;
         }
         .kop-surat {
             width: 100%;
-            border-bottom: 3px solid black;
+            border-bottom: 4px double black;
             padding-bottom: 5px;
             margin-bottom: 20px;
         }
@@ -37,10 +37,17 @@
         .kop-teks {
             font-size: 12pt;
         }
-        .kop-teks h1, .kop-teks h2 {
+        .kop-teks h1 {
             margin: 0;
             padding: 0;
             font-weight: bold;
+            font-size: 14pt;
+        }
+        .kop-teks h2 {
+            margin: 0;
+            padding: 0;
+            font-weight: normal;
+            font-size: 14pt;
         }
         .kop-teks p {
             margin: 0;
@@ -69,6 +76,7 @@
             border: 1px solid black;
             padding: 5px;
             vertical-align: top;
+            text-align: justify;
         }
         .ttd {
             width: 100%;
@@ -174,11 +182,11 @@
         <table class="table-data">
             <thead>
                 <tr>
-                    <th style="width: 30px;">No.</th>
-                    <th>Spesifikasi Teknis</th>
-                    <th>Spesifikasi<br>Jumlah</th>
-                    <th>Harga Satuan<br>termasuk Pajak</th>
-                    <th>Pagu Anggaran</th>
+                    <th style="width: 5%; text-align: center;">No.</th>
+                    <th style="width: 35%; text-align: center;">Spesifikasi Teknis</th>
+                    <th style="width: 15%; text-align: center;">Spesifikasi<br>Jumlah</th>
+                    <th style="width: 25%; text-align: center;">Harga Satuan<br>termasuk Pajak</th>
+                    <th style="width: 20%; text-align: center;">Pagu Anggaran</th>
                 </tr>
             </thead>
             <tbody>
@@ -235,18 +243,9 @@
 
         <div class="ttd clearfix">
             <div class="ttd-box">
-                Menetapkan,<br>
-                Pejabat Pembuat Komitmen pada<br>
-                Puskesmas Mantup<br>
-                
                 @if($hasGd && $ttdBase64)
-                    <img src="{{ $ttdBase64 }}" style="width: 140px; margin: -20px auto -30px auto; display: block; position: relative; z-index: -1;">
-                @else
-                    <br><br><br><br>
+                    <img src="{{ $ttdBase64 }}" style="width: 300px; max-width: 100%; display: block;">
                 @endif
-                
-                <b><u>dr. MUHAMAD SUNARYADI</u></b><br>
-                NIP. 19690313 200212 1 007
             </div>
         </div>
     </div>
