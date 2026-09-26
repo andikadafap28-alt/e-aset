@@ -58,7 +58,11 @@ class TelegramWebhookController extends Controller
 
                 // Call ChatbotService
                 $botService = new \App\Services\ChatbotService();
-                $botReply = $botService->processMessage($chatId, $textMessage, 'telegram');
+                try {
+                    $botReply = $botService->processMessage($chatId, $textMessage, 'telegram');
+                } catch (\Throwable $e) {
+                    $botReply = "⚠️ Sistem mengalami error: " . $e->getMessage() . " di baris " . $e->getLine();
+                }
 
                 if (is_array($botReply) && isset($botReply['type']) && $botReply['type'] === 'document') {
                     BotConversation::create([
