@@ -46,7 +46,7 @@ class DppController extends Controller
 
         Dpp::create($validated);
 
-        return redirect()->route('aset.dpp.index')->with('success', 'DPP berhasil dibuat.');
+        return redirect()->route('dpp.index')->with('success', 'DPP berhasil dibuat.');
     }
 
     public function show($id)
@@ -116,6 +116,6 @@ class DppController extends Controller
         
         $dpp->delete();
 
-        return redirect()->route('aset.dpp.index')->with('success', 'DPP berhasil dihapus.');
+        return redirect()->route('dpp.index')->with('success', 'DPP berhasil dihapus.');
     }
 }

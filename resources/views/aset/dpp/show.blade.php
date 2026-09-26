@@ -113,7 +113,7 @@
                             </div>
                         </div>
                         @if(auth()->user()?->role !== 'arsiparis')
-                        <form action="{{ route('dpp.attachment.destroy', $attachment->id) }}" method="POST" onsubmit="return confirm('Hapus dokumen ini?')" class="flex-shrink-0 ml-2">
+                        <form action="{{ route('dpp.attachments.destroy', $attachment->id) }}" method="POST" onsubmit="return confirm('Hapus dokumen ini?')" class="flex-shrink-0 ml-2">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="text-slate-400 hover:text-red-500 transition-colors p-1" title="Hapus Dokumen">
