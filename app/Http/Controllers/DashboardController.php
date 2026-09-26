@@ -240,18 +240,27 @@ class DashboardController extends Controller
         $chartMax = $this->calculateChartMax($globalMax);
 
         // 8. Statistik Aset (Dioptimalkan agar tidak memuat semua data ke memori/N+1 Query)
-        $totalPurchaseValue = \App\Models\Asset::sum('harga_perolehan');
+        $totalPurchaseValue = \App\Models\Asset::sum('harga_perolehan') ?? 0;
         
-        $totalDepreciation = 0;
-        $totalBookValue = 0;
-        
-        // Gunakan chunking dan eager load kategori untuk mencegah N+1 Query & Out of Memory
-        \App\Models\Asset::with('category')->orderBy('id')->chunk(500, function($chunk) use (&$totalDepreciation, &$totalBookValue) {
-            foreach ($chunk as $asset) {
-                $totalDepreciation += $asset->accumulated_depreciation;
-                $totalBookValue += $asset->book_value;
-            }
-        });
+        $stats = \Illuminate\Support\Facades\DB::table('assets')
+            ->leftJoin('asset_categories', 'assets.category_id', '=', 'asset_categories.id')
+            ->whereNotNull('assets.harga_perolehan')
+            ->where('assets.harga_perolehan', '>', 0)
+            ->whereNotNull('asset_categories.umur_ekonomis')
+            ->where('asset_categories.umur_ekonomis', '>', 0)
+            ->whereNotNull('assets.year_purchased')
+            ->select(\Illuminate\Support\Facades\DB::raw('
+                SUM(
+                    LEAST(
+                        GREATEST(CAST(EXTRACT(YEAR FROM CURRENT_DATE) AS INTEGER) - CAST(assets.year_purchased AS INTEGER), 0) * ((assets.harga_perolehan - 1) / asset_categories.umur_ekonomis),
+                        assets.harga_perolehan - 1
+                    )
+                ) as total_depreciation
+            '))
+            ->first();
+
+        $totalDepreciation = $stats->total_depreciation ?? 0;
+        $totalBookValue = $totalPurchaseValue - $totalDepreciation;
 
         $assetStats = [
             'total' => \App\Models\Asset::count(),
