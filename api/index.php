@@ -46,4 +46,14 @@ putenv('APP_ROUTES_CACHE=' . $_ENV['APP_ROUTES_CACHE']);
 putenv('APP_EVENTS_CACHE=' . $_ENV['APP_EVENTS_CACHE']);
 
 // Handle the Request
-$app->handleRequest(Request::capture());
+try {
+    $app->handleRequest(Request::capture());
+} catch (\Throwable $e) {
+    http_response_code(500);
+    echo "<h1>Raw Exception on Vercel:</h1>";
+    echo "<pre>";
+    echo "Message: " . $e->getMessage() . "\n";
+    echo "File: " . $e->getFile() . " on line " . $e->getLine() . "\n\n";
+    echo "Stack Trace:\n" . $e->getTraceAsString();
+    echo "</pre>";
+}
