@@ -223,7 +223,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="5" style="border-bottom: none;">
+                    <td colspan="5">
                         - Prioritas TKDN, PPK/PP memilih dengan urutan/prioritas:<br>
                         &nbsp;&nbsp;1. Produk dalam negeri dengan nilai TKDN paling sedikit 25%;<br>
                         &nbsp;&nbsp;2. Produk dalam negeri dengan nilai TKDN kurang dari 25%;<br>
@@ -233,12 +233,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="5" style="border-top: none; border-bottom: none;">
+                    <td colspan="5">
                         - Berdasarkan urutan/prioritas diatas, barang/jasa yang ditetapkan memiliki nilai TKDN 0%, dengan alasan: ....... (contoh: pada Katalog tidak terdapat PDN dengan nilai TKDN tetapi berdasarkan pernyataan Penyedia di Katalog menyatakan sebagai PDN sesuai dokumentasi <u>sebagaimana terlampir</u>).
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="5" style="border-top: none; border-bottom: none;">
+                    <td colspan="5">
                         - Jika terdapat penyebutan merek barang/jasa, ditetapkan justifikasi teknis yang menjelaskan alasan, pertimbangan, bukti/fakta terhadap kebutuhan atas suatu merek tertentu. Justifikasi teknis sebagai berikut:<br>
                         &nbsp;&nbsp;a. Sesuai dengan hasil perencanaan pengadaan yang dituangkan pada DPA-SKPD.<br>
                         &nbsp;&nbsp;b. Mempertimbangkan nilai TKDN.<br>
@@ -246,7 +246,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="5" style="border-top: none;">
+                    <td colspan="5">
                         - Referensi harga yang berfungsi sebagai referensi untuk melakukan Negosiasi Harga <u>sebagaimana terlampir</u>.<br>
                         - Rancangan kontrak ditetapkan menggunakan Surat Pesanan sebagaimana terlampir atau jika tidak ada maka menggunakan Surat Pesanan sesuai yang tertuang di aplikasi <i>E-purchasing</i>.
                     </td>
@@ -263,7 +263,7 @@
                 Puskesmas Mantup<br>
                 
                 @if($hasGd && $ttdBase64)
-                    <img src="{{ $ttdBase64 }}" style="width: 240px; position: absolute; top: 25px; left: -45px; z-index: -1;">
+                    <img src="{{ $ttdBase64 }}" style="width: 240px; position: absolute; top: 30px; left: -5px; z-index: -1;">
                 @endif
                 <br><br><br><br>
                 
