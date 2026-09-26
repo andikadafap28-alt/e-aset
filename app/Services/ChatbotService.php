@@ -19,7 +19,7 @@ class ChatbotService
 
         // Command handler
         if ($cleanMessage === '/start') {
-            return "Selamat datang di Layanan Asisten E-Aset Puskesmas Mantup!\n\nSilakan pilih kategori yang ingin ditanyakan:\n1️⃣ Persediaan\n2️⃣ Aset\n3️⃣ Pengadaan\n\nAtau ketik /laporan untuk mendapatkan ringkasan aset dan persediaan saat ini.";
+            return "Selamat datang di Layanan Asisten E-Aset Puskesmas Mantup!\n\nSilakan pilih kategori yang ingin ditanyakan:\n1️⃣ Persediaan\n2️⃣ Aset\n3️⃣ Pengadaan\n4️⃣ Manajemen DPP\n\nAtau ketik /laporan untuk mendapatkan ringkasan aset dan persediaan saat ini.";
         } elseif ($cleanMessage === '/laporan') {
             return $this->generateLaporan();
         }
@@ -33,13 +33,21 @@ class ChatbotService
         } elseif ($cleanMessage === '3') {
             Cache::put($modeKey, 'pengadaan', 86400);
             return "✅ *Mode Pengadaan* diaktifkan.\nSilakan cari riwayat transaksi masuk/keluar atau minta dokumen pengadaan (Surat Pesanan, dll) dari Google Drive.";
+        } elseif ($cleanMessage === '4') {
+            Cache::put($modeKey, 'dpp', 86400);
+            return "✅ *Mode Manajemen DPP* diaktifkan.\n\nUntuk membuat DPP baru, silakan copy template di bawah ini, isi datanya, lalu kirimkan kembali ke sini:\n\n*Format Buat DPP:*\nNomor Surat: \nKode RUP (Obat/BMHP/Jasa/dll): \nTanggal Pesanan (DD/MM/YYYY): \nRencana Tiba (DD/MM/YYYY): \n\nAtau Anda dapat bertanya seputar data DPP yang sudah ada.";
         } elseif (in_array($cleanMessage, ['menu', 'batal', 'kembali', 'exit', 'quit'])) {
             Cache::forget($modeKey);
-            return "Sesi direset.\nSilakan pilih kategori yang ingin Anda akses:\n1️⃣ Persediaan\n2️⃣ Aset\n3️⃣ Pengadaan\n\nKetik angka 1, 2, atau 3.";
+            return "Sesi direset.\nSilakan pilih kategori yang ingin Anda akses:\n1️⃣ Persediaan\n2️⃣ Aset\n3️⃣ Pengadaan\n4️⃣ Manajemen DPP\n\nKetik angka 1, 2, 3, atau 4.";
         }
 
         if (!$mode) {
-            return "Halo! Saya RAKSA AI.\n\nSilakan pilih kategori yang ingin ditanyakan terlebih dahulu:\n1️⃣ Persediaan\n2️⃣ Aset\n3️⃣ Pengadaan\n\nKetik angka 1, 2, atau 3.";
+            return "Halo! Saya RAKSA AI.\n\nSilakan pilih kategori yang ingin ditanyakan terlebih dahulu:\n1️⃣ Persediaan\n2️⃣ Aset\n3️⃣ Pengadaan\n4️⃣ Manajemen DPP\n\nKetik angka 1, 2, 3, atau 4.";
+        }
+
+        // Intercept DPP Creation if in DPP mode
+        if ($mode === 'dpp' && str_contains($cleanMessage, 'nomor surat:')) {
+            return $this->handleDppCreation($message);
         }
 
         return $this->callGeminiApi($phoneOrChatId, $normalizedMessage, $mode, $platform);
@@ -150,6 +158,17 @@ class ChatbotService
             }
 
             $systemInstructions = "Kamu sedang berada di Mode Pengadaan.\nATURAN KETAT:\n1. Jika user meminta link/download file (misal Surat Pesanan Tensimeter), cari di Dokumen Pengadaan.\n2. JIKA ADA NAMA PENGADAAN YANG SAMA/KEMBAR, DILARANG langsung mengirim link. Kamu WAJIB menampilkan daftar pilihannya (misal: 'Ada 2 dokumen: 1. dari PT A, 2. dari PT B. Mau yang mana?').\n3. Jika hanya ada satu dokumen ATAU user sudah menyebut spesifik (nomor/penyedia), berikan tautan Drive-nya dengan format: [Nama File](Link Drive).";
+        } elseif ($mode === 'dpp') {
+            $dpps = \App\Models\Dpp::orderBy('created_at', 'desc')->limit(10)->get();
+            $dataContext .= "--- DAFTAR DPP (10 TERAKHIR) ---\n";
+            if ($dpps->isEmpty()) {
+                $dataContext .= "Belum ada data DPP.\n";
+            } else {
+                foreach($dpps as $dpp) {
+                    $dataContext .= "No. Surat: {$dpp->nomor_surat} | RUP: {$dpp->kode_rup} | Tgl Pesan: {$dpp->tanggal_dpp} | Tgl Tiba: {$dpp->tanggal_selesai}\n";
+                }
+            }
+            $systemInstructions = "Kamu sedang berada di Mode Manajemen DPP. Jawab berdasarkan data DPP di atas. Jika user bertanya cara membuat DPP, beri tahu mereka untuk membalas dengan format:\nNomor Surat: ...\nKode RUP: ...\nTanggal Pesanan: DD/MM/YYYY\nTanggal Tiba: DD/MM/YYYY";
         }
 
         // Ambil riwayat chat
@@ -226,5 +245,99 @@ class ChatbotService
         $laporan .= "Data ini di-generate secara otomatis oleh sistem.\nSilakan akses dashboard E-Aset untuk rincian lebih lengkap.";
         
         return $laporan;
+    }
+
+    private function handleDppCreation($message)
+    {
+        try {
+            $lines = explode("\n", $message);
+            $data = [];
+            
+            foreach ($lines as $line) {
+                if (stripos($line, 'nomor surat:') !== false) {
+                    $val = trim(str_ireplace('nomor surat:', '', $line));
+                    // Auto format nomor surat if it's just a number
+                    if (!str_contains(strtoupper($val), 'PPBJ')) {
+                        $year = date('Y');
+                        $val = "000.3.1/{$val}/PPBJ/413.102.5.18/{$year}";
+                    }
+                    $data['nomor_surat'] = $val;
+                } elseif (stripos($line, 'kode rup:') !== false || stripos($line, 'kode rup') !== false) {
+                    $parts = explode(':', $line);
+                    if(count($parts) > 1) {
+                        $inputRup = strtolower(trim($parts[1]));
+                        if (str_contains($inputRup, 'obat')) {
+                            $data['kode_rup'] = '67261766';
+                            $data['nama_paket'] = 'Belanja Barang dan Jasa (Belanja Bahan Obat-obatan(JKN))';
+                            $data['spesifikasi_teknis'] = 'Belanja Obat-obatan';
+                            $data['jumlah'] = '1 Paket';
+                            $data['harga_satuan'] = 144000000.00;
+                            $data['pagu_anggaran'] = 144000000.00;
+                        } elseif (str_contains($inputRup, 'bmhp') || str_contains($inputRup, 'bahan')) {
+                            $data['kode_rup'] = '67261750';
+                            $data['nama_paket'] = 'Belanja Barang dan Jasa (Belanja Bahan-bahan lainnya (JKN))';
+                            $data['spesifikasi_teknis'] = 'Belanja Bahan-Bahan Lainnya';
+                            $data['jumlah'] = '1 Paket';
+                            $data['harga_satuan'] = 100000000.00;
+                            $data['pagu_anggaran'] = 100000000.00;
+                        } else {
+                            $data['kode_rup'] = trim($parts[1]); // Fallback
+                        }
+                    }
+                } elseif (stripos($line, 'tanggal pesanan:') !== false || stripos($line, 'tanggal pesanan') !== false) {
+                    $parts = explode(':', $line);
+                    if(count($parts) > 1) {
+                        $rawDate = trim($parts[1]);
+                        $parsedDate = date('Y-m-d', strtotime(str_replace('/', '-', $rawDate)));
+                        $data['tanggal_dpp'] = $parsedDate;
+                        $data['tanggal_mulai'] = $parsedDate;
+                    }
+                } elseif (stripos($line, 'tanggal tiba:') !== false || stripos($line, 'rencana tiba:') !== false || stripos($line, 'rencana tiba') !== false) {
+                    $parts = explode(':', $line);
+                    if(count($parts) > 1) {
+                        $rawDate = trim($parts[1]);
+                        $parsedDate = date('Y-m-d', strtotime(str_replace('/', '-', $rawDate)));
+                        $data['tanggal_selesai'] = $parsedDate;
+                    }
+                }
+            }
+
+            if (empty($data['nomor_surat']) || empty($data['kode_rup']) || empty($data['tanggal_dpp']) || empty($data['tanggal_selesai'])) {
+                return "⚠️ Gagal membuat DPP. Pastikan format sudah benar dan lengkap:\n\nNomor Surat: [Contoh: 333]\nKode RUP: [Obat / BMHP]\nTanggal Pesanan: [DD/MM/YYYY]\nTanggal Tiba: [DD/MM/YYYY]";
+            }
+
+            $dpp = \App\Models\Dpp::create($data);
+
+            // Generate PDF
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('aset.dpp.pdf', compact('dpp'));
+            $pdf->setPaper('A4', 'portrait');
+            $pdfContent = $pdf->output();
+            
+            $filename = 'DPP_' . str_replace(['/', '\\'], '_', $dpp->nomor_surat) . '.pdf';
+
+            // Upload to Google Drive (Optional/Best Effort)
+            try {
+                $year = date('Y');
+                $folderPath = 'PENGADAAN_' . $year . '/DPP';
+                $fullPath = $folderPath . '/' . $filename;
+                \Illuminate\Support\Facades\Storage::disk('google')->put($fullPath, $pdfContent);
+                $driveMsg = "✅ Tersimpan di Google Drive ({$folderPath})";
+            } catch (\Exception $ex) {
+                $driveMsg = "⚠️ Gagal menyimpan ke Google Drive (Pastikan konfigurasi drive benar).";
+                \Illuminate\Support\Facades\Log::error('Drive Upload Error: ' . $ex->getMessage());
+            }
+
+            $caption = "✅ *Berhasil!* DPP dengan Nomor Surat *{$data['nomor_surat']}* telah berhasil dibuat dan disimpan ke database.\n\n{$driveMsg}\n\nBerikut adalah lampiran dokumen DPP Anda siap diunduh.";
+
+            return [
+                'type' => 'document',
+                'document' => $pdfContent,
+                'filename' => $filename,
+                'text' => $caption
+            ];
+
+        } catch (\Exception $e) {
+            return "❌ *Terjadi Kesalahan!*\nGagal menyimpan DPP ke database.\nPastikan format tanggal benar (Misal: 26/09/2026). Error: " . $e->getMessage();
+        }
     }
 }

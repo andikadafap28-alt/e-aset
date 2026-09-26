@@ -60,14 +60,23 @@ class TelegramWebhookController extends Controller
                 $botService = new \App\Services\ChatbotService();
                 $botReply = $botService->processMessage($chatId, $textMessage, 'telegram');
 
-                BotConversation::create([
-                    'phone_number' => $chatId,
-                    'sender' => 'bot',
-                    'message' => $botReply,
-                    'platform' => 'telegram'
-                ]);
-
-                $this->sendTelegramMessage($chatId, $botReply);
+                if (is_array($botReply) && isset($botReply['type']) && $botReply['type'] === 'document') {
+                    BotConversation::create([
+                        'phone_number' => $chatId,
+                        'sender' => 'bot',
+                        'message' => $botReply['text'],
+                        'platform' => 'telegram'
+                    ]);
+                    $this->sendTelegramDocument($chatId, $botReply['document'], $botReply['filename'], $botReply['text']);
+                } else {
+                    BotConversation::create([
+                        'phone_number' => $chatId,
+                        'sender' => 'bot',
+                        'message' => $botReply,
+                        'platform' => 'telegram'
+                    ]);
+                    $this->sendTelegramMessage($chatId, $botReply);
+                }
             }
         } catch (\Throwable $th) {
             Log::channel('telegram')->error('FATAL ERROR in Handle: ' . $th->getMessage());
@@ -93,6 +102,27 @@ class TelegramWebhookController extends Controller
 
         if (!$teleResponse->successful()) {
             Log::channel('telegram')->error("Telegram API Error: " . $teleResponse->body());
+        }
+    }
+
+    private function sendTelegramDocument($chatId, $fileContents, $filename, $caption)
+    {
+        $token = env('TELEGRAM_BOT_TOKEN');
+        if (!$token) return;
+
+        $teleUrl = "https://api.telegram.org/bot{$token}/sendDocument";
+
+        $teleResponse = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
+            ->timeout(60)
+            ->attach('document', $fileContents, $filename)
+            ->post($teleUrl, [
+                'chat_id' => $chatId,
+                'caption' => $caption,
+                'parse_mode' => 'Markdown'
+            ]);
+
+        if (!$teleResponse->successful()) {
+            Log::channel('telegram')->error("Telegram API Document Error: " . $teleResponse->body());
         }
     }
 }
