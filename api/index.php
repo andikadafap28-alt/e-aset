@@ -47,7 +47,9 @@ putenv('APP_EVENTS_CACHE=' . $_ENV['APP_EVENTS_CACHE']);
 
 // Handle the Request
 try {
-    $app->handleRequest(Request::capture());
+    $response = $app->handleRequest(Request::capture());
+    $response->send();
+    $app->terminate();
 } catch (\Throwable $e) {
     http_response_code(500);
     echo "<h1>Raw Exception on Vercel:</h1>";
