@@ -242,24 +242,29 @@ class DashboardController extends Controller
         // 8. Statistik Aset (Dioptimalkan agar tidak memuat semua data ke memori/N+1 Query)
         $totalPurchaseValue = \App\Models\Asset::sum('harga_perolehan') ?? 0;
         
-        $stats = \Illuminate\Support\Facades\DB::table('assets')
-            ->leftJoin('asset_categories', 'assets.category_id', '=', 'asset_categories.id')
-            ->whereNotNull('assets.harga_perolehan')
-            ->where('assets.harga_perolehan', '>', 0)
-            ->whereNotNull('asset_categories.umur_ekonomis')
-            ->where('asset_categories.umur_ekonomis', '>', 0)
-            ->whereNotNull('assets.year_purchased')
-            ->select(\Illuminate\Support\Facades\DB::raw('
-                SUM(
-                    LEAST(
-                        GREATEST(CAST(EXTRACT(YEAR FROM CURRENT_DATE) AS INTEGER) - CAST(assets.year_purchased AS INTEGER), 0) * ((assets.harga_perolehan - 1) / asset_categories.umur_ekonomis),
-                        assets.harga_perolehan - 1
-                    )
-                ) as total_depreciation
-            '))
-            ->first();
+        try {
+            $stats = \Illuminate\Support\Facades\DB::table('assets')
+                ->leftJoin('asset_categories', 'assets.category_id', '=', 'asset_categories.id')
+                ->whereNotNull('assets.harga_perolehan')
+                ->where('assets.harga_perolehan', '>', 0)
+                ->whereNotNull('asset_categories.umur_ekonomis')
+                ->where('asset_categories.umur_ekonomis', '>', 0)
+                ->whereNotNull('assets.year_purchased')
+                ->select(\Illuminate\Support\Facades\DB::raw('
+                    SUM(
+                        LEAST(
+                            GREATEST(CAST(EXTRACT(YEAR FROM CURRENT_DATE) AS INTEGER) - CAST(assets.year_purchased AS INTEGER), 0) * ((assets.harga_perolehan - 1) / asset_categories.umur_ekonomis),
+                            assets.harga_perolehan - 1
+                        )
+                    ) as total_depreciation
+                '))
+                ->first();
+            $totalDepreciation = $stats->total_depreciation ?? 0;
+        } catch (\Exception $e) {
+            $totalDepreciation = 0;
+            \Illuminate\Support\Facades\Log::error("Depreciation Calc Error: " . $e->getMessage());
+        }
 
-        $totalDepreciation = $stats->total_depreciation ?? 0;
         $totalBookValue = $totalPurchaseValue - $totalDepreciation;
 
         $assetStats = [

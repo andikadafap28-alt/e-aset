@@ -49,9 +49,17 @@ putenv('APP_EVENTS_CACHE=' . $_ENV['APP_EVENTS_CACHE']);
 try {
     $response = $app->handleRequest(Request::capture());
     $response->send();
-    $app->terminate();
+    
+    // Terminate app safely
+    try {
+        $app->terminate();
+    } catch (\Throwable $e) {
+        \Illuminate\Support\Facades\Log::error("Termination Error: " . $e->getMessage());
+    }
 } catch (\Throwable $e) {
-    http_response_code(500);
+    if (!headers_sent()) {
+        http_response_code(500);
+    }
     echo "<h1>Raw Exception on Vercel:</h1>";
     echo "<pre>";
     echo "Message: " . $e->getMessage() . "\n";
