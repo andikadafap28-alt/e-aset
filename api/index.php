@@ -47,15 +47,7 @@ putenv('APP_EVENTS_CACHE=' . $_ENV['APP_EVENTS_CACHE']);
 
 // Handle the Request
 try {
-    $response = $app->handleRequest(Request::capture());
-    $response->send();
-    
-    // Terminate app safely
-    try {
-        $app->terminate();
-    } catch (\Throwable $e) {
-        \Illuminate\Support\Facades\Log::error("Termination Error: " . $e->getMessage());
-    }
+    $app->handleRequest(Request::capture());
 } catch (\Throwable $e) {
     if (!headers_sent()) {
         http_response_code(500);
