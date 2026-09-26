@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <title>Dokumen Persiapan Pengadaan</title>
     <style>
+        @page {
+            margin: 1cm 2.54cm 0.45cm 2.54cm; /* Top Right Bottom Left */
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Times New Roman", Times, serif;
             font-size: 11pt;
             line-height: 1.5;
             margin: 0;
@@ -56,6 +59,11 @@
             border-collapse: collapse;
             margin-top: 10px;
             margin-bottom: 10px;
+            page-break-inside: auto;
+        }
+        .table-data tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
         }
         .table-data th, .table-data td {
             border: 1px solid black;
@@ -65,6 +73,7 @@
         .ttd {
             width: 100%;
             margin-top: 30px;
+            page-break-inside: avoid;
         }
         .ttd-box {
             float: right;
@@ -80,12 +89,17 @@
 </head>
 <body>
     @php
+        $hariIndo = ['Sunday' => 'Minggu', 'Monday' => 'Senin', 'Tuesday' => 'Selasa', 'Wednesday' => 'Rabu', 'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu'];
+        $bulanIndo = ['January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret', 'April' => 'April', 'May' => 'Mei', 'June' => 'Juni', 'July' => 'Juli', 'August' => 'Agustus', 'September' => 'September', 'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember'];
+        
         $hasGd = extension_loaded('gd');
         $logoLamonganPath = public_path('img/logo-lamongan.png');
         $logoHusadaPath = public_path('img/logo-husada.png');
+        $ttdPath = public_path('images/ttd_kapus.png');
         
         $logoLamonganBase64 = ($hasGd && file_exists($logoLamonganPath)) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoLamonganPath)) : '';
         $logoHusadaBase64 = ($hasGd && file_exists($logoHusadaPath)) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoHusadaPath)) : '';
+        $ttdBase64 = ($hasGd && file_exists($ttdPath)) ? 'data:image/png;base64,' . base64_encode(file_get_contents($ttdPath)) : '';
     @endphp
     <div class="kop-surat">
         <table>
@@ -132,7 +146,12 @@
         </table>
         
         <p>
-            Pada hari ini {{ \Carbon\Carbon::parse($dpp->tanggal_dpp)->translatedFormat('l') }} tanggal {{ \Carbon\Carbon::parse($dpp->tanggal_dpp)->translatedFormat('d') }} bulan {{ \Carbon\Carbon::parse($dpp->tanggal_dpp)->translatedFormat('F') }} tahun {{ \Carbon\Carbon::parse($dpp->tanggal_dpp)->translatedFormat('Y') }} menetapkan Dokumen Persiapan Pengadaan (DPP) sebagai berikut:
+            @php
+                $tgl = \Carbon\Carbon::parse($dpp->tanggal_dpp);
+                $hari = $hariIndo[$tgl->format('l')] ?? $tgl->format('l');
+                $bulan = $bulanIndo[$tgl->format('F')] ?? $tgl->format('F');
+            @endphp
+            Pada hari ini {{ $hari }} tanggal {{ $tgl->format('d') }} bulan {{ $bulan }} tahun {{ $tgl->format('Y') }} menetapkan Dokumen Persiapan Pengadaan (DPP) sebagai berikut:
         </p>
 
         <table style="width: 100%; margin-bottom: 10px;">
@@ -172,8 +191,14 @@
                 </tr>
                 <tr>
                     <td colspan="5">
+                        @php
+                            $mulai = \Carbon\Carbon::parse($dpp->tanggal_mulai);
+                            $selesai = \Carbon\Carbon::parse($dpp->tanggal_selesai);
+                            $tglMulai = $mulai->format('j') . ' ' . ($bulanIndo[$mulai->format('F')] ?? $mulai->format('F')) . ' ' . $mulai->format('Y');
+                            $tglSelesai = $selesai->format('j') . ' ' . ($bulanIndo[$selesai->format('F')] ?? $selesai->format('F')) . ' ' . $selesai->format('Y');
+                        @endphp
                         <u>Spesifikasi Waktu:</u><br>
-                        Pelaksanaan pekerjaan mulai tanggal {{ \Carbon\Carbon::parse($dpp->tanggal_mulai)->translatedFormat('j F Y') }} s.d. {{ \Carbon\Carbon::parse($dpp->tanggal_selesai)->translatedFormat('j F Y') }},
+                        Pelaksanaan pekerjaan mulai tanggal {{ $tglMulai }} s.d. {{ $tglSelesai }},
                         spesifikasi jumlah yang tertuang bersifat perkiraan, jumlah pesanan sesuai yang tertuang
                         di Surat Undangan/pemberitahuan tertulis yang akan disampaikan kepada Penyedia
                         Barang/Jasa. Penyedia Barang/Jasa melakukan pengiriman barang/jasa setelah menerima
@@ -213,7 +238,13 @@
                 Menetapkan,<br>
                 Pejabat Pembuat Komitmen pada<br>
                 Puskesmas Mantup<br>
-                <br><br><br><br>
+                
+                @if($hasGd && $ttdBase64)
+                    <img src="{{ $ttdBase64 }}" style="width: 140px; margin: -20px auto -30px auto; display: block; position: relative; z-index: -1;">
+                @else
+                    <br><br><br><br>
+                @endif
+                
                 <b><u>dr. MUHAMAD SUNARYADI</u></b><br>
                 NIP. 19690313 200212 1 007
             </div>
