@@ -279,6 +279,11 @@ class ChatbotService
                     }
                     $data['nomor_surat'] = $val;
                 } elseif (preg_match('/kode\s*rup\s*:\s*(.+)/i', $line, $matches) || preg_match('/kode\s*rup\s*(.+)/i', $line, $matches)) {
+                    // Prevent "Pilihan Kode RUP:" from overwriting actual parsed data
+                    if (str_contains(strtolower($line), 'pilihan')) {
+                        continue;
+                    }
+
                     $inputRup = strtolower(trim($matches[1]));
                     // Extract just the number if they type "1", "1.", etc.
                     $inputRupNumber = preg_replace('/[^0-9]/', '', $inputRup);
@@ -298,7 +303,10 @@ class ChatbotService
                         $data['harga_satuan'] = 100000000.00;
                         $data['pagu_anggaran'] = 100000000.00;
                     } else {
-                        $data['kode_rup'] = trim($matches[1]); // Fallback
+                        // Only fallback if we haven't found a valid code yet
+                        if (!isset($data['kode_rup'])) {
+                            $data['kode_rup'] = trim($matches[1]); 
+                        }
                     }
                 } elseif (preg_match('/tanggal\s*pesanan\s*:\s*(.+)/i', $line, $matches)) {
                     $rawDate = trim($matches[1]);
@@ -337,7 +345,8 @@ class ChatbotService
                 $folderPath = 'PENGADAAN_' . $year . '/DPP';
                 $fullPath = $folderPath . '/' . $filename;
                 \Illuminate\Support\Facades\Storage::disk('google')->put($fullPath, $pdfContent);
-                $driveMsg = "✅ Tersimpan di Google Drive ({$folderPath})";
+                $escapedFolder = str_replace('_', '\_', $folderPath);
+                $driveMsg = "✅ Tersimpan di Google Drive ({$escapedFolder})";
             } catch (\Exception $ex) {
                 $driveMsg = "⚠️ Gagal menyimpan ke Google Drive (Pastikan konfigurasi drive benar).";
                 \Illuminate\Support\Facades\Log::error('Drive Upload Error: ' . $ex->getMessage());
