@@ -24,31 +24,47 @@ class ChatbotService
             return $this->generateLaporan();
         }
 
-        if ($cleanMessage === '1') {
-            Cache::put($modeKey, 'persediaan', 86400); // 24 hours
-            return "✅ *Mode Persediaan* diaktifkan.\nSilakan tanyakan seputar kuantitas/jumlah stok dan harga barang/obat.";
-        } elseif ($cleanMessage === '2') {
-            Cache::put($modeKey, 'aset', 86400);
-            return "✅ *Mode Aset* diaktifkan.\nSilakan tanyakan seputar daftar, kondisi, nomor kode, atau lokasi penempatan alat kesehatan.";
-        } elseif ($cleanMessage === '3') {
-            Cache::put($modeKey, 'pengadaan', 86400);
-            return "✅ *Mode Pengadaan* diaktifkan.\nSilakan cari riwayat transaksi masuk/keluar atau minta dokumen pengadaan (Surat Pesanan, dll) dari Google Drive.";
-        } elseif ($cleanMessage === '4') {
-            Cache::put($modeKey, 'dpp', 86400);
-            return "✅ *Mode Manajemen DPP* diaktifkan.\n\nUntuk membuat DPP baru, silakan copy template di bawah ini, isi datanya, lalu kirimkan kembali ke sini:\n\n*Format Buat DPP:*\nNomor Surat: \nKode RUP (Obat/BMHP/Jasa/dll): \nTanggal Pesanan (DD/MM/YYYY): \nRencana Tiba (DD/MM/YYYY): \n\nAtau Anda dapat bertanya seputar data DPP yang sudah ada.";
-        } elseif (in_array($cleanMessage, ['menu', 'batal', 'kembali', 'exit', 'quit'])) {
+        if (in_array($cleanMessage, ['menu', 'batal', 'kembali', 'exit', 'quit'])) {
             Cache::forget($modeKey);
             return "Sesi direset.\nSilakan pilih kategori yang ingin Anda akses:\n1️⃣ Persediaan\n2️⃣ Aset\n3️⃣ Pengadaan\n4️⃣ Manajemen DPP\n\nKetik angka 1, 2, 3, atau 4.";
         }
 
         if (!$mode) {
+            if ($cleanMessage === '1') {
+                Cache::put($modeKey, 'persediaan', 86400); // 24 hours
+                return "✅ *Mode Persediaan* diaktifkan.\nSilakan tanyakan seputar kuantitas/jumlah stok dan harga barang/obat.\n\nKetik 'menu' kapan saja untuk kembali.";
+            } elseif ($cleanMessage === '2') {
+                Cache::put($modeKey, 'aset', 86400);
+                return "✅ *Mode Aset* diaktifkan.\nSilakan tanyakan seputar daftar, kondisi, nomor kode, atau lokasi penempatan alat kesehatan.\n\nKetik 'menu' kapan saja untuk kembali.";
+            } elseif ($cleanMessage === '3') {
+                Cache::put($modeKey, 'pengadaan', 86400);
+                return "✅ *Mode Pengadaan* diaktifkan.\nSilakan cari riwayat transaksi masuk/keluar atau minta dokumen pengadaan (Surat Pesanan, dll) dari Google Drive.\n\nKetik 'menu' kapan saja untuk kembali.";
+            } elseif ($cleanMessage === '4') {
+                Cache::put($modeKey, 'dpp', 86400);
+                return "✅ *Mode Manajemen DPP* diaktifkan.\n\nSilakan pilih menu (ketik angka):\n1️⃣ Tampilkan Format Pembuatan DPP\n2️⃣ Lihat Daftar DPP (Nomor Surat)\n\nKetik 'menu' kapan saja untuk kembali.";
+            }
             return "Halo! Saya RAKSA AI.\n\nSilakan pilih kategori yang ingin ditanyakan terlebih dahulu:\n1️⃣ Persediaan\n2️⃣ Aset\n3️⃣ Pengadaan\n4️⃣ Manajemen DPP\n\nKetik angka 1, 2, 3, atau 4.";
         }
 
-        // Intercept DPP Creation if in DPP mode
-        if ($mode === 'dpp' && (str_contains($cleanMessage, 'nomor surat:') || str_contains($cleanMessage, 'nomor surat :') || preg_match('/nomor\s+surat/i', $cleanMessage))) {
-            return $this->handleDppCreation($message);
+        // Intercept DPP Sub-menus & Creation
+        if ($mode === 'dpp') {
+            if ($cleanMessage === '1') {
+                return "Format Pembuatan DPP:\nNomor Surat: \nKode RUP: [Isi dengan angka 1 atau 2]\nTanggal Pesanan: DD/MM/YYYY\nTanggal Tiba: DD/MM/YYYY\n\nPilihan Kode RUP:\n1 = Belanja Obat-obatan (JKN)\n2 = Belanja Bahan-bahan lainnya (JKN)\n\n*(Silakan salin template di atas, isi datanya, dan kirimkan ke saya)*";
+            } elseif ($cleanMessage === '2') {
+                $dpps = \App\Models\Dpp::orderBy('created_at', 'desc')->limit(15)->get();
+                if ($dpps->isEmpty()) return "Belum ada data DPP di dalam sistem.";
+                
+                $list = "📋 *Daftar 15 DPP Terakhir:*\n\n";
+                foreach ($dpps as $idx => $dpp) {
+                    $list .= ($idx+1) . ". No Surat: `{$dpp->nomor_surat}`\n   RUP: {$dpp->kode_rup} | Dibuat: " . \Carbon\Carbon::parse($dpp->tanggal_dpp)->format('d/m/Y') . "\n";
+                }
+                $list .= "\nKetik '1' untuk memunculkan format pembuatan DPP.";
+                return $list;
+            } elseif (str_contains($cleanMessage, 'nomor surat:') || str_contains($cleanMessage, 'nomor surat :') || preg_match('/nomor\s+surat/i', $cleanMessage)) {
+                return $this->handleDppCreation($message);
+            }
         }
+
 
         return $this->callGeminiApi($phoneOrChatId, $normalizedMessage, $mode, $platform);
     }
