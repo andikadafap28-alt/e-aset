@@ -402,7 +402,7 @@ class InventoryController extends Controller
             ->whereHas('item', function($q) use ($kategori_besar) {
                 $q->where('kategori_besar', $kategori_besar);
             })
-            ->where('status_hutang', true)
+            ->where('status_hutang', 'true')
             ->where('jenis_transaksi', 'masuk')
             ->orderBy('tanggal_transaksi', 'desc')
             ->get();

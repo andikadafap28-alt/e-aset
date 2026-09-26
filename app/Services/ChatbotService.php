@@ -226,8 +226,8 @@ class ChatbotService
 
     private function generateLaporan()
     {
-        $totalAset = \App\Models\Asset::where('status_aktif', true)->count();
-        $totalRusak = \App\Models\Asset::where('status_aktif', true)->whereIn('condition', ['Rusak Ringan', 'Rusak Berat'])->count();
+        $totalAset = \App\Models\Asset::where('status_aktif', 'true')->count();
+        $totalRusak = \App\Models\Asset::where('status_aktif', 'true')->whereIn('condition', ['Rusak Ringan', 'Rusak Berat'])->count();
         $totalPersediaan = \App\Models\Item::sum('stok_sekarang');
         
         $nilaiAset = \App\Models\Asset::sum('harga_perolehan');

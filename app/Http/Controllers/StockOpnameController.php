@@ -130,7 +130,7 @@ class StockOpnameController extends Controller
 
         DB::transaction(function () use ($stockOpname) {
             // 1. Dapatkan daftar ID aset yang seharusnya ada di lokasi ini
-            $expectedAssetsQuery = Asset::where('status_aktif', true);
+            $expectedAssetsQuery = Asset::where('status_aktif', 'true');
             
             if ($stockOpname->location && $stockOpname->location !== 'all') {
                 $expectedAssetsQuery->where('location', $stockOpname->location);

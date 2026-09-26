@@ -517,7 +517,7 @@ class AssetController extends Controller
 
     public function createMutasi()
     {
-        $assets = Asset::where('status_aktif', true)->get(['id', 'name', 'asset_code', 'location', 'penanggung_jawab']);
+        $assets = Asset::where('status_aktif', 'true')->get(['id', 'name', 'asset_code', 'location', 'penanggung_jawab']);
         return view('aset.mutasi_create', compact('assets'));
     }
 

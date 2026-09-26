@@ -50,7 +50,7 @@ class SendTelegramAlerts extends Command
         }
 
         // 2. Check Calibration Expiry (30 days from now)
-        $calibrationItems = \App\Models\Asset::where('status_aktif', true)
+        $calibrationItems = \App\Models\Asset::where('status_aktif', 'true')
             ->whereNotNull('next_calibration')
             ->where('next_calibration', '<=', now()->addDays(30))
             ->where('next_calibration', '>=', now())

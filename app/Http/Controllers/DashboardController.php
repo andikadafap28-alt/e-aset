@@ -269,8 +269,8 @@ class DashboardController extends Controller
 
         $assetStats = [
             'total' => \App\Models\Asset::count(),
-            'aktif' => \App\Models\Asset::where('status_aktif', true)->count(),
-            'disposed' => \App\Models\Asset::where('status_aktif', false)->count(),
+            'aktif' => \App\Models\Asset::where('status_aktif', 'true')->count(),
+            'disposed' => \App\Models\Asset::where('status_aktif', 'false')->count(),
             'baik' => \App\Models\Asset::where('condition', 'Baik')->count(),
             'rusak' => \App\Models\Asset::whereIn('condition', ['Rusak Ringan', 'Rusak Berat'])->count(),
             'perlu_kalibrasi' => \App\Models\Asset::whereNotNull('last_calibration')
@@ -295,13 +295,13 @@ class DashboardController extends Controller
             ->pluck('count', 'kat_name');
 
         // 9. Reminders System
-        $calibrationReminders = \App\Models\Asset::where('status_aktif', true)
+        $calibrationReminders = \App\Models\Asset::where('status_aktif', 'true')
             ->whereNotNull('next_calibration')
             ->where('next_calibration', '<=', now()->addDays(30))
             ->orderBy('next_calibration', 'asc')
             ->take(5)->get();
 
-        $serviceReminders = \App\Models\Asset::where('status_aktif', true)
+        $serviceReminders = \App\Models\Asset::where('status_aktif', 'true')
             ->whereNotNull('next_service')
             ->where('next_service', '<=', now()->addDays(30))
             ->orderBy('next_service', 'asc')
@@ -317,7 +317,7 @@ class DashboardController extends Controller
 
         // Peringatan Sensus Fisik (Opname) - Poin 5 Permendagri
         // Aset Tetap (5 Tahun)
-        $opnameAssetReminders = \App\Models\Asset::where('status_aktif', true)
+        $opnameAssetReminders = \App\Models\Asset::where('status_aktif', 'true')
             ->where('created_at', '<=', now()->subYears(5))
             ->take(5)
             ->get();

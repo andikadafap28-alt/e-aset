@@ -24,7 +24,7 @@ class ReportController extends Controller
         $categories = AssetCategory::orderBy('nama_kategori', 'asc')->get();
         $categoryId = $request->query('category_id');
 
-        $query = Asset::with('category')->where('status_aktif', true);
+        $query = Asset::with('category')->where('status_aktif', 'true');
         if ($categoryId && $categoryId !== 'all') {
             $query->where('category_id', $categoryId);
         }
@@ -63,7 +63,7 @@ class ReportController extends Controller
         if ($type == 'disposal') {
             $query = AssetDisposal::with(['asset', 'asset.category']);
         } else {
-            $query = Asset::with('category')->where('status_aktif', true);
+            $query = Asset::with('category')->where('status_aktif', 'true');
         }
 
         // Apply Filters
@@ -154,7 +154,7 @@ class ReportController extends Controller
         $yearEnd = $request->query('year_end');
         $groupBy = $request->query('group_by', 'category'); // 'category' or 'location'
 
-        $query = Asset::with('category')->where('status_aktif', true);
+        $query = Asset::with('category')->where('status_aktif', 'true');
 
         if ($categoryId && $categoryId !== 'all') {
             $query->where('category_id', $categoryId);
@@ -209,7 +209,7 @@ class ReportController extends Controller
     {
         $categories = AssetCategory::orderBy('nama_kategori', 'asc')->get();
         // Get distinct locations for filter
-        $locations = Asset::where('status_aktif', true)->whereNotNull('location')->where('location', '!=', '')->distinct()->pluck('location');
+        $locations = Asset::where('status_aktif', 'true')->whereNotNull('location')->where('location', '!=', '')->distinct()->pluck('location');
         
         $rekapResult = [];
         $groupBy = 'category';
@@ -352,7 +352,7 @@ class ReportController extends Controller
         $categories = AssetCategory::orderBy('nama_kategori', 'asc')->get();
         $categoryId = $request->query('category_id');
 
-        $query = Asset::with('category')->where('status_aktif', true);
+        $query = Asset::with('category')->where('status_aktif', 'true');
         if ($categoryId && $categoryId !== 'all') {
             $query->where('category_id', $categoryId);
         }
@@ -370,7 +370,7 @@ class ReportController extends Controller
     {
         $categoryId = $request->input('category_id');
 
-        $query = Asset::with('category')->where('status_aktif', true);
+        $query = Asset::with('category')->where('status_aktif', 'true');
         if ($categoryId && $categoryId !== 'all') {
             $query->where('category_id', $categoryId);
         }

@@ -13,7 +13,7 @@ class AssetLoanController extends Controller
     public function index()
     {
         $loans = AssetLoan::with('asset')->orderBy('created_at', 'desc')->get();
-        $assets = Asset::where('status_aktif', true)->get(['id', 'name', 'asset_code']);
+        $assets = Asset::where('status_aktif', 'true')->get(['id', 'name', 'asset_code']);
         return view('aset.peminjaman', compact('loans', 'assets'));
     }
 

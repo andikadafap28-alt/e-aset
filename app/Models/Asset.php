@@ -11,6 +11,11 @@ class Asset extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'status_aktif' => 'boolean',
+        'is_in_print_queue' => 'boolean',
+    ];
+
     public function maintenances()
     {
         return $this->hasMany(AssetMaintenance::class);
