@@ -168,7 +168,6 @@ class ChatbotService
                     $dataContext .= "No. Surat: {$dpp->nomor_surat} | RUP: {$dpp->kode_rup} | Tgl Pesan: {$dpp->tanggal_dpp} | Tgl Tiba: {$dpp->tanggal_selesai}\n";
                 }
             }
-            }
             $systemInstructions = "Kamu sedang berada di Mode Manajemen DPP. Jawab berdasarkan data DPP di atas. Jika user bertanya cara membuat DPP atau meminta template, berikan template berikut persis seperti ini agar mudah disalin:\n\nFormat Pembuatan DPP:\nNomor Surat: ...\nKode RUP: [Isi dengan angka 1 atau 2]\nTanggal Pesanan: DD/MM/YYYY\nTanggal Tiba: DD/MM/YYYY\n\nPilihan Kode RUP:\n1 = Belanja Obat-obatan (JKN)\n2 = Belanja Bahan-bahan lainnya (JKN)\n\n*(Silakan salin template di atas, isi datanya, dan kirimkan ke saya)*";
         }
 
