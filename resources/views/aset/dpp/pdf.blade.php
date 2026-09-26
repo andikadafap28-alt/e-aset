@@ -263,7 +263,7 @@
                 Puskesmas Mantup<br>
                 
                 @if($hasGd && $ttdBase64)
-                    <img src="{{ $ttdBase64 }}" style="width: 240px; position: absolute; top: 30px; left: -5px; z-index: -1;">
+                    <img src="{{ $ttdBase64 }}" style="width: 240px; position: absolute; top: 15px; left: -5px; z-index: -1;">
                 @endif
                 <br><br><br><br>
                 

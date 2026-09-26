@@ -24,7 +24,7 @@
             <div class="grid grid-cols-2 gap-y-4 gap-x-8 text-sm">
                 <div>
                     <p class="text-slate-500 mb-1">Tanggal Pembuatan</p>
-                    <p class="font-semibold text-slate-800">{{ \Carbon\Carbon::parse($dpp->tanggal_dpp)->translatedFormat('d F Y') }}</p>
+                    <p class="font-semibold text-slate-800">{{ \Carbon\Carbon::parse($dpp->tanggal_dpp)->locale('id')->translatedFormat('d F Y') }}</p>
                 </div>
                 <div>
                     <p class="text-slate-500 mb-1">Kode RUP</p>
@@ -44,7 +44,7 @@
                 </div>
                 <div>
                     <p class="text-slate-500 mb-1">Pelaksanaan Pekerjaan</p>
-                    <p class="font-semibold text-slate-800">{{ \Carbon\Carbon::parse($dpp->tanggal_mulai)->translatedFormat('d F Y') }} s.d. {{ \Carbon\Carbon::parse($dpp->tanggal_selesai)->translatedFormat('d F Y') }}</p>
+                    <p class="font-semibold text-slate-800">{{ \Carbon\Carbon::parse($dpp->tanggal_mulai)->locale('id')->translatedFormat('d F Y') }} s.d. {{ \Carbon\Carbon::parse($dpp->tanggal_selesai)->locale('id')->translatedFormat('d F Y') }}</p>
                 </div>
                 <div>
                     <p class="text-slate-500 mb-1">Harga Satuan</p>
