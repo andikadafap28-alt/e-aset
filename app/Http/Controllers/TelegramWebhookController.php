@@ -49,8 +49,10 @@ class TelegramWebhookController extends Controller
                     return response('OK', 200);
                 }
 
+                $chatIdStr = (string)$chatId;
+
                 BotConversation::create([
-                    'phone_number' => $chatId,
+                    'phone_number' => $chatIdStr,
                     'sender' => 'user',
                     'message' => $textMessage,
                     'platform' => 'telegram'
@@ -59,22 +61,22 @@ class TelegramWebhookController extends Controller
                 // Call ChatbotService
                 $botService = new \App\Services\ChatbotService();
                 try {
-                    $botReply = $botService->processMessage($chatId, $textMessage, 'telegram');
+                    $botReply = $botService->processMessage($chatIdStr, $textMessage, 'telegram');
                 } catch (\Throwable $e) {
                     $botReply = "⚠️ Sistem mengalami error: " . $e->getMessage() . " di baris " . $e->getLine();
                 }
 
                 if (is_array($botReply) && isset($botReply['type']) && $botReply['type'] === 'document') {
                     BotConversation::create([
-                        'phone_number' => $chatId,
+                        'phone_number' => $chatIdStr,
                         'sender' => 'bot',
                         'message' => $botReply['text'],
                         'platform' => 'telegram'
                     ]);
-                    $this->sendTelegramDocument($chatId, $botReply['document'], $botReply['filename'], $botReply['text']);
+                    $this->sendTelegramDocument($chatIdStr, $botReply['document'], $botReply['filename'], $botReply['text']);
                 } else {
                     BotConversation::create([
-                        'phone_number' => $chatId,
+                        'phone_number' => $chatIdStr,
                         'sender' => 'bot',
                         'message' => $botReply,
                         'platform' => 'telegram'

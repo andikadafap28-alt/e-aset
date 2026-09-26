@@ -188,7 +188,7 @@ class ChatbotService
         }
 
         // Ambil riwayat chat
-        $history = BotConversation::where('phone_number', $phoneOrChatId)
+        $history = BotConversation::where('phone_number', (string)$phoneOrChatId)
                     ->where('platform', $platform)
                     ->orderBy('created_at', 'desc')
                     ->take(8)
