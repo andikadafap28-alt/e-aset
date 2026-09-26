@@ -31,7 +31,7 @@
                 @forelse($dpps as $dpp)
                 <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                     <td class="py-3 px-4">
-                        <p class="text-sm font-semibold text-slate-800">000.3.1/{{ $dpp->nomor_surat }}/PPBJ/413.102.5.18/2026</p>
+                        <p class="text-sm font-semibold text-slate-800">{{ str_contains($dpp->nomor_surat, 'PPBJ') ? $dpp->nomor_surat : '000.3.1/' . $dpp->nomor_surat . '/PPBJ/413.102.5.18/' . date('Y') }}</p>
                         <p class="text-xs text-slate-500">{{ $dpp->nama_paket ?? '-' }}</p>
                     </td>
                     <td class="py-3 px-4 text-sm text-slate-600">{{ $dpp->kode_rup }}</td>

@@ -101,7 +101,7 @@
 
     <div class="judul-surat">
         DOKUMEN PERSIAPAN PENGADAAN (DPP)<br>
-        Nomor: 000.3.1/{{ $dpp->nomor_surat }}/PPBJ/413.102.5.18/2026
+        Nomor: {{ str_contains($dpp->nomor_surat, 'PPBJ') ? $dpp->nomor_surat : '000.3.1/' . $dpp->nomor_surat . '/PPBJ/413.102.5.18/' . date('Y') }}
     </div>
 
     <div class="isi-surat">

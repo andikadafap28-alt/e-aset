@@ -324,7 +324,25 @@ class ChatbotService
                 \Illuminate\Support\Facades\Log::error('Drive Upload Error: ' . $ex->getMessage());
             }
 
-            $caption = "✅ *Berhasil!* DPP dengan Nomor Surat *{$data['nomor_surat']}* telah berhasil dibuat dan disimpan ke database.\n\n{$driveMsg}\n\nBerikut adalah lampiran dokumen DPP Anda siap diunduh.";
+            $tglPesanFmt = date('d/m/Y', strtotime($data['tanggal_dpp']));
+            $tglTibaFmt = date('d/m/Y', strtotime($data['tanggal_selesai']));
+            $nominalFmt = 'Rp ' . number_format($data['pagu_anggaran'] ?? 0, 0, ',', '.');
+
+            $caption = "🎉 *DPP BERHASIL DIBUAT!*\n"
+                     . "━━━━━━━━━━━━━━━━━━━━━\n"
+                     . "📋 *Detail Pengadaan:*\n"
+                     . "• *No. Surat:* `{$data['nomor_surat']}`\n"
+                     . "• *Kode RUP:* `{$data['kode_rup']}`\n"
+                     . "• *Paket:* {$data['nama_paket']}\n"
+                     . "• *Pagu Anggaran:* {$nominalFmt}\n"
+                     . "• *Tgl Pesanan:* {$tglPesanFmt}\n"
+                     . "• *Rencana Tiba:* {$tglTibaFmt}\n"
+                     . "━━━━━━━━━━━━━━━━━━━━━\n"
+                     . "💾 *Status Penyimpanan:*\n"
+                     . "• Database: ✅ Tersimpan (ID: #{$dpp->id})\n"
+                     . "• Google Drive: {$driveMsg}\n"
+                     . "━━━━━━━━━━━━━━━━━━━━━\n"
+                     . "📄 *File PDF DPP siap diunduh di atas.*";
 
             return [
                 'type' => 'document',

@@ -8,7 +8,7 @@
             <div class="flex justify-between items-start mb-6 border-b border-slate-100 pb-4">
                 <div>
                     <h3 class="text-xl font-bold text-slate-800">Dokumen Persiapan Pengadaan (DPP)</h3>
-                    <p class="text-sm font-medium text-slate-500 mt-1">Nomor: 000.3.1/{{ $dpp->nomor_surat }}/PPBJ/413.102.5.18/2026</p>
+                    <p class="text-sm font-medium text-slate-500 mt-1">Nomor: {{ str_contains($dpp->nomor_surat, 'PPBJ') ? $dpp->nomor_surat : '000.3.1/' . $dpp->nomor_surat . '/PPBJ/413.102.5.18/' . date('Y') }}</p>
                 </div>
                 <a href="{{ route('dpp.pdf', $dpp->id) }}" target="_blank" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-4 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-lg">print</span> Cetak PDF
