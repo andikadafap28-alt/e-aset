@@ -1,6 +1,12 @@
 @extends('layouts.app')
 @section('header_title', 'Detail DPP')
 @section('content')
+<div class="mb-4">
+    <a href="{{ route('dpp.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors">
+        <span class="material-symbols-outlined text-sm">arrow_back</span>
+        Kembali ke Daftar DPP
+    </a>
+</div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Kolom Kiri: Detail DPP -->
     <div class="md:col-span-2 space-y-6">

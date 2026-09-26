@@ -5,13 +5,17 @@
     <title>Dokumen Persiapan Pengadaan</title>
     <style>
         @page {
-            margin: 1cm 2.54cm 0.45cm 2.54cm; /* Top Right Bottom Left */
+            margin: 3cm 3cm 3cm 4cm; /* Top Right Bottom Left */
         }
         body {
             font-family: "Times New Roman", Times, serif;
             font-size: 11pt;
-            line-height: 1.15;
+            line-height: 1.5;
             margin: 0;
+            padding: 0;
+        }
+        p {
+            margin: 2px 0;
             padding: 0;
         }
         .kop-surat {
@@ -42,16 +46,19 @@
             padding: 0;
             font-weight: bold;
             font-size: 14pt;
+            line-height: 1.15;
         }
         .kop-teks h2 {
             margin: 0;
             padding: 0;
             font-weight: normal;
             font-size: 14pt;
+            line-height: 1.15;
         }
         .kop-teks p {
             margin: 0;
             font-size: 10pt;
+            line-height: 1.15;
         }
         .judul-surat {
             text-align: center;
@@ -103,7 +110,7 @@
         $hasGd = extension_loaded('gd');
         $logoLamonganPath = public_path('img/logo-lamongan.png');
         $logoHusadaPath = public_path('img/logo-husada.png');
-        $ttdPath = public_path('images/ttd_kapus.png');
+        $ttdPath = public_path('images/ttd_baru.png');
         
         $logoLamonganBase64 = ($hasGd && file_exists($logoLamonganPath)) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoLamonganPath)) : '';
         $logoHusadaBase64 = ($hasGd && file_exists($logoHusadaPath)) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoHusadaPath)) : '';
@@ -243,9 +250,18 @@
 
         <div class="ttd clearfix">
             <div class="ttd-box">
+                Menetapkan,<br>
+                Pejabat Pembuat Komitmen pada<br>
+                Puskesmas Mantup<br>
+                
                 @if($hasGd && $ttdBase64)
-                    <img src="{{ $ttdBase64 }}" style="width: 300px; max-width: 100%; display: block;">
+                    <img src="{{ $ttdBase64 }}" style="width: 160px; margin: -20px auto -40px auto; display: block; position: relative; z-index: -1;">
+                @else
+                    <br><br><br><br>
                 @endif
+                
+                <b><u>dr. MUHAMAD SUNARYADI</u></b><br>
+                NIP. 19690313 200212 1 007
             </div>
         </div>
     </div>
