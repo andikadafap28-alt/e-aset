@@ -168,7 +168,8 @@ class ChatbotService
                     $dataContext .= "No. Surat: {$dpp->nomor_surat} | RUP: {$dpp->kode_rup} | Tgl Pesan: {$dpp->tanggal_dpp} | Tgl Tiba: {$dpp->tanggal_selesai}\n";
                 }
             }
-            $systemInstructions = "Kamu sedang berada di Mode Manajemen DPP. Jawab berdasarkan data DPP di atas. Jika user bertanya cara membuat DPP, beri tahu mereka untuk membalas dengan format:\nNomor Surat: ...\nKode RUP: ...\nTanggal Pesanan: DD/MM/YYYY\nTanggal Tiba: DD/MM/YYYY";
+            }
+            $systemInstructions = "Kamu sedang berada di Mode Manajemen DPP. Jawab berdasarkan data DPP di atas. Jika user bertanya cara membuat DPP atau meminta template, berikan template berikut persis seperti ini agar mudah disalin:\n\nFormat Pembuatan DPP:\nNomor Surat: ...\nKode RUP: [Isi dengan angka 1 atau 2]\nTanggal Pesanan: DD/MM/YYYY\nTanggal Tiba: DD/MM/YYYY\n\nPilihan Kode RUP:\n1 = Belanja Obat-obatan (JKN)\n2 = Belanja Bahan-bahan lainnya (JKN)\n\n*(Silakan salin template di atas, isi datanya, dan kirimkan ke saya)*";
         }
 
         // Ambil riwayat chat
@@ -264,14 +265,17 @@ class ChatbotService
                     $data['nomor_surat'] = $val;
                 } elseif (preg_match('/kode\s*rup\s*:\s*(.+)/i', $line, $matches) || preg_match('/kode\s*rup\s*(.+)/i', $line, $matches)) {
                     $inputRup = strtolower(trim($matches[1]));
-                    if (str_contains($inputRup, 'obat')) {
+                    // Extract just the number if they type "1", "1.", etc.
+                    $inputRupNumber = preg_replace('/[^0-9]/', '', $inputRup);
+                    
+                    if (str_contains($inputRup, 'obat') || $inputRupNumber === '1' || str_contains($inputRup, '67261766')) {
                         $data['kode_rup'] = '67261766';
                         $data['nama_paket'] = 'Belanja Barang dan Jasa (Belanja Bahan Obat-obatan(JKN))';
                         $data['spesifikasi_teknis'] = 'Belanja Obat-obatan';
                         $data['jumlah'] = '1 Paket';
                         $data['harga_satuan'] = 144000000.00;
                         $data['pagu_anggaran'] = 144000000.00;
-                    } elseif (str_contains($inputRup, 'bmhp') || str_contains($inputRup, 'bahan')) {
+                    } elseif (str_contains($inputRup, 'bmhp') || str_contains($inputRup, 'bahan') || $inputRupNumber === '2' || str_contains($inputRup, '67261750')) {
                         $data['kode_rup'] = '67261750';
                         $data['nama_paket'] = 'Belanja Barang dan Jasa (Belanja Bahan-bahan lainnya (JKN))';
                         $data['spesifikasi_teknis'] = 'Belanja Bahan-Bahan Lainnya';

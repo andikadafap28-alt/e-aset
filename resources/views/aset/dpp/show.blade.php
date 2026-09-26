@@ -48,11 +48,11 @@
                 </div>
                 <div>
                     <p class="text-slate-500 mb-1">Harga Satuan</p>
-                    <p class="font-semibold text-slate-800">Rp. {{ number_format($dpp->harga_satuan, 2, ',', '.') }}</p>
+                    <p class="font-semibold text-slate-800">Rp. {{ number_format((float)$dpp->harga_satuan, 2, ',', '.') }}</p>
                 </div>
                 <div>
                     <p class="text-slate-500 mb-1">Pagu Anggaran</p>
-                    <p class="font-semibold text-slate-800">Rp. {{ number_format($dpp->pagu_anggaran, 2, ',', '.') }}</p>
+                    <p class="font-semibold text-slate-800">Rp. {{ number_format((float)$dpp->pagu_anggaran, 2, ',', '.') }}</p>
                 </div>
             </div>
         </div>

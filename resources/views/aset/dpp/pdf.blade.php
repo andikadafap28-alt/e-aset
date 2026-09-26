@@ -197,8 +197,8 @@
                     <td style="text-align: center;">1</td>
                     <td>{{ $dpp->spesifikasi_teknis }}</td>
                     <td style="text-align: center;">{{ $dpp->jumlah }}</td>
-                    <td style="text-align: right; white-space: nowrap;">Rp. {{ number_format($dpp->harga_satuan, 2, ',', '.') }}</td>
-                    <td style="text-align: right; white-space: nowrap;">Rp. {{ number_format($dpp->pagu_anggaran, 2, ',', '.') }}</td>
+                    <td style="text-align: right; white-space: nowrap;">Rp. {{ number_format((float)$dpp->harga_satuan, 2, ',', '.') }}</td>
+                    <td style="text-align: right; white-space: nowrap;">Rp. {{ number_format((float)$dpp->pagu_anggaran, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td colspan="5">
