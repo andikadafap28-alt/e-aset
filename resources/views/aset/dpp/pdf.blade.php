@@ -265,7 +265,7 @@
                 @if($hasGd && $ttdBase64)
                     <img src="{{ $ttdBase64 }}" style="width: 240px; position: absolute; top: 15px; left: -5px; z-index: -1;">
                 @endif
-                <br><br><br><br>
+                <br><br><br><br><br><br>
                 
                 <b><u>dr. MUHAMAD SUNARYADI</u></b><br>
                 NIP. 19690313 200212 1 007
