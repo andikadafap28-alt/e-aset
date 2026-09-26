@@ -79,11 +79,21 @@
     </style>
 </head>
 <body>
+    @php
+        $hasGd = extension_loaded('gd');
+        $logoLamonganPath = public_path('img/logo-lamongan.png');
+        $logoHusadaPath = public_path('img/logo-husada.png');
+        
+        $logoLamonganBase64 = ($hasGd && file_exists($logoLamonganPath)) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoLamonganPath)) : '';
+        $logoHusadaBase64 = ($hasGd && file_exists($logoHusadaPath)) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoHusadaPath)) : '';
+    @endphp
     <div class="kop-surat">
         <table>
             <tr>
                 <td class="logo-kiri">
-                    <img src="{{ public_path('img/logo-lamongan.png') }}" style="width: 70px;">
+                    @if($hasGd && $logoLamonganBase64)
+                        <img src="{{ $logoLamonganBase64 }}" style="width: 70px;">
+                    @endif
                 </td>
                 <td class="kop-teks">
                     <h2>PEMERINTAH KABUPATEN LAMONGAN</h2>
@@ -93,7 +103,9 @@
                     <p>Telp. (0322) 4670302 Email: puskesmasmantup98@gmail.com</p>
                 </td>
                 <td class="logo-kanan">
-                    <img src="{{ public_path('img/logo-husada.png') }}" style="width: 80px;">
+                    @if($hasGd && $logoHusadaBase64)
+                        <img src="{{ $logoHusadaBase64 }}" style="width: 80px;">
+                    @endif
                 </td>
             </tr>
         </table>
