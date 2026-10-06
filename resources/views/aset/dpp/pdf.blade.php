@@ -158,11 +158,35 @@
         
         <p>
             @php
+                $terbilang = function ($x) use (&$terbilang) {
+                    $x = abs((int)$x);
+                    $angka = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
+                    $temp = "";
+                    if ($x < 12) {
+                        $temp = " " . $angka[$x];
+                    } else if ($x < 20) {
+                        $temp = $terbilang($x - 10) . " Belas";
+                    } else if ($x < 100) {
+                        $temp = $terbilang((int)($x / 10)) . " Puluh" . $terbilang($x % 10);
+                    } else if ($x < 200) {
+                        $temp = " Seratus" . $terbilang($x - 100);
+                    } else if ($x < 1000) {
+                        $temp = $terbilang((int)($x / 100)) . " Ratus" . $terbilang($x % 100);
+                    } else if ($x < 2000) {
+                        $temp = " Seribu" . $terbilang($x - 1000);
+                    } else if ($x < 1000000) {
+                        $temp = $terbilang((int)($x / 1000)) . " Ribu" . $terbilang($x % 1000);
+                    }
+                    return $temp;
+                };
+
                 $tgl = \Carbon\Carbon::parse($dpp->tanggal_dpp);
                 $hari = $hariIndo[$tgl->format('l')] ?? $tgl->format('l');
                 $bulan = $bulanIndo[$tgl->format('F')] ?? $tgl->format('F');
+                $tanggalHuruf = trim($terbilang($tgl->format('d')));
+                $tahunHuruf = trim($terbilang($tgl->format('Y')));
             @endphp
-            Pada hari ini {{ $hari }} tanggal {{ $tgl->format('d') }} bulan {{ $bulan }} tahun {{ $tgl->format('Y') }} menetapkan Dokumen Persiapan Pengadaan (DPP) sebagai berikut:
+            Pada hari ini {{ $hari }} tanggal {{ $tanggalHuruf }} bulan {{ $bulan }} tahun {{ $tahunHuruf }} menetapkan Dokumen Persiapan Pengadaan (DPP) sebagai berikut:
         </p>
 
         <table style="width: 100%; margin-bottom: 10px;">
