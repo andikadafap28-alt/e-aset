@@ -7,7 +7,7 @@
     <style>
         @page {
             size: 210mm 330mm; /* Kertas F4: 21cm x 33cm */
-            margin: 7mm 12mm 7mm 12mm;
+            margin: 6mm 10mm 5mm 10mm;
         }
 
         * {
@@ -119,7 +119,7 @@
             width: 210mm;
             min-height: 330mm;
             height: 330mm;
-            padding: 8mm 12mm 6mm 12mm;
+            padding: 7mm 11mm 5mm 11mm;
             box-shadow: 0 4px 20px rgba(0,0,0,0.18);
             position: relative;
             display: flex;
@@ -127,13 +127,13 @@
             justify-content: space-between;
         }
 
-        /* Kop Surat Resmi Puskesmas Mantup (Bukan UPT) */
+        /* Kop Surat Resmi Puskesmas Mantup (Header Lebih Besar & Jelas) */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
-            border-bottom: 2.5px solid #000;
-            padding-bottom: 2px;
-            margin-bottom: 4px;
+            border-bottom: 3px double #000;
+            padding-bottom: 4px;
+            margin-bottom: 5px;
         }
         .kop-table td {
             vertical-align: middle;
@@ -141,77 +141,77 @@
             padding: 0;
         }
         .kop-logo {
-            width: 58px;
+            width: 72px;
             text-align: center;
         }
         .kop-logo img {
-            max-width: 52px;
-            max-height: 52px;
+            max-width: 65px;
+            max-height: 65px;
             object-fit: contain;
         }
         .kop-text {
             text-align: center;
-            line-height: 1.15;
-            padding: 0 6px;
+            line-height: 1.2;
+            padding: 0 8px;
         }
         .kop-text .line-1 {
-            font-size: 10pt;
+            font-size: 11.5pt;
             font-weight: bold;
             letter-spacing: 0.5px;
         }
         .kop-text .line-2 {
-            font-size: 9.5pt;
+            font-size: 11pt;
             font-weight: bold;
         }
         .kop-text .line-3 {
-            font-size: 13pt;
+            font-size: 15.5pt;
             font-weight: 900;
-            letter-spacing: 1px;
-            margin: 1px 0;
+            letter-spacing: 1.5px;
+            margin: 2px 0;
         }
         .kop-text .line-4 {
-            font-size: 7.5pt;
+            font-size: 8.5pt;
             color: #111;
         }
 
-        /* Judul Dokumen */
+        /* Judul Dokumen (Lebih Besar & Tegas) */
         .doc-title {
             text-align: center;
-            margin: 3px 0 5px;
+            margin: 4px 0 6px;
         }
         .doc-title h2 {
             margin: 0;
-            font-size: 11pt;
+            font-size: 13pt;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             text-decoration: underline;
         }
         .doc-title p {
-            margin: 1px 0 0;
-            font-size: 8pt;
+            margin: 2px 0 0;
+            font-size: 8.5pt;
             font-style: italic;
             color: #333;
         }
 
-        /* Info Ruangan */
+        /* Info Ruangan (Lebih Terbaca Jelas) */
         .info-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 4px;
-            font-size: 8.5pt;
+            margin-bottom: 5px;
+            font-size: 9pt;
         }
         .info-table td {
-            padding: 1px 3px;
+            padding: 1.5px 4px;
             vertical-align: top;
             border: none;
         }
         .info-label {
-            width: 150px;
+            width: 155px;
             font-weight: bold;
         }
         .info-sep {
-            width: 10px;
+            width: 12px;
             font-weight: bold;
         }
         .info-value {
@@ -227,22 +227,22 @@
         }
         .main-table th, .main-table td {
             border: 1px solid #000;
-            padding: 2.5px 5px;
+            padding: 2px 5px;
         }
         .main-table th {
             background-color: #f1f5f9;
             text-align: center;
             font-weight: bold;
-            font-size: 8pt;
-            height: 24px;
+            font-size: 8.5pt;
+            height: 26px;
             vertical-align: middle;
         }
         .main-table td {
-            height: 22.5px;
+            height: 20px;
             vertical-align: middle;
         }
         .main-table tr.blank-row td {
-            height: 23px; /* Tinggi baris proporsional tulisan tangan */
+            height: 20.5px; /* Tinggi baris proporsional untuk 30 item */
         }
         .text-center {
             text-align: center;
@@ -253,7 +253,7 @@
             width: 100%;
             display: flex;
             justify-content: space-between;
-            margin-top: 4px;
+            margin-top: 5px;
             page-break-inside: avoid;
         }
         .ttd-box {
@@ -268,7 +268,7 @@
             margin-top: 1px;
         }
         .ttd-space {
-            height: 65px; /* Spasi tanda tangan diperlebar */
+            height: 58px; /* Spasi tanda tangan lega dan luas */
         }
         .ttd-nama {
             font-weight: bold;
@@ -306,9 +306,9 @@
             }
             .page-sheet {
                 width: 210mm !important;
-                height: 316mm !important;
-                min-height: 316mm !important;
-                max-height: 316mm !important;
+                height: 319mm !important;
+                min-height: 319mm !important;
+                max-height: 319mm !important;
                 padding: 0 !important;
                 box-shadow: none !important;
                 page-break-after: always;
@@ -335,8 +335,8 @@
         $yearFormatted = $carbonDate->year;
         $initialFormattedDate = $dayFormatted . ' ' . $monthFormatted . ' ' . $yearFormatted;
 
-        // Target baris tabel (default: 26 baris untuk mem-press tabel hingga menyisakan area TTD)
-        $defaultTargetRows = $targetRows ?? 26;
+        // Target baris tabel (default: 30 baris sesuai permintaan pengguna)
+        $defaultTargetRows = $targetRows ?? 30;
     @endphp
 
     <!-- Toolbar Atas Interaktif (Hanya tampil di layar) -->
@@ -357,15 +357,14 @@
                 <input type="date" id="datePicker" value="{{ $defaultDateInput }}" onchange="changeDocDate(this.value)" title="Ubah tanggal tanda tangan lembar pemeliharaan">
             </div>
 
-            <!-- Pengatur Jumlah Baris (Press Tabel) -->
+            <!-- Pengatur Jumlah Baris (Termasuk Opsi 30 Item) -->
             <div style="display: flex; align-items: center; gap: 6px;">
                 <label for="rowSelector">Jumlah Baris:</label>
                 <select id="rowSelector" onchange="changeRowCount(this.value)">
                     <option value="24" {{ $defaultTargetRows == 24 ? 'selected' : '' }}>24 Baris</option>
-                    <option value="25" {{ $defaultTargetRows == 25 ? 'selected' : '' }}>25 Baris</option>
-                    <option value="26" {{ $defaultTargetRows == 26 ? 'selected' : '' }}>26 Baris (Rekomendasi Presisi)</option>
-                    <option value="27" {{ $defaultTargetRows == 27 ? 'selected' : '' }}>27 Baris (Padat Maksimal)</option>
+                    <option value="26" {{ $defaultTargetRows == 26 ? 'selected' : '' }}>26 Baris</option>
                     <option value="28" {{ $defaultTargetRows == 28 ? 'selected' : '' }}>28 Baris</option>
+                    <option value="30" {{ $defaultTargetRows == 30 ? 'selected' : '' }}>30 Baris (Kapasitas Maksimal 30 Item)</option>
                 </select>
             </div>
 
@@ -403,7 +402,7 @@
 
         <div class="page-sheet" id="sheet-{{ $currentRoom->id }}">
             <div>
-                <!-- Kop Surat Resmi Puskesmas Mantup (Bukan UPT) -->
+                <!-- Kop Surat Resmi Puskesmas Mantup (Header Diperbesar) -->
                 <table class="kop-table">
                     <tr>
                         <td class="kop-logo">
@@ -422,7 +421,7 @@
                     </tr>
                 </table>
 
-                <!-- Judul Dokumen -->
+                <!-- Judul Dokumen (Diperbesar) -->
                 <div class="doc-title">
                     <h2>LEMBAR PEMELIHARAAN RUANGAN</h2>
                     <p>(Lembar kontrol fisik sarana, prasarana, dan alat yang ditempel di setiap ruangan)</p>
@@ -433,7 +432,7 @@
                     <tr>
                         <td class="info-label">RUANGAN</td>
                         <td class="info-sep">:</td>
-                        <td class="info-value">{{ strtoupper($currentRoom->name) }}</td>
+                        <td class="info-value" style="font-size: 10pt;">{{ strtoupper($currentRoom->name) }}</td>
                         <td class="info-label" style="width: 140px;">TAHUN / PERIODE</td>
                         <td class="info-sep">:</td>
                         <td class="info-value"><span class="doc-year-display">{{ $yearFormatted }}</span></td>
@@ -448,7 +447,7 @@
                     </tr>
                 </table>
 
-                <!-- Tabel Utama Pemeliharaan Ruangan (Dipress mengisi halaman) -->
+                <!-- Tabel Utama Pemeliharaan Ruangan (Opsi hingga 30 item) -->
                 <table class="main-table" data-existing="{{ $existingCount }}">
                     <thead>
                         <tr>

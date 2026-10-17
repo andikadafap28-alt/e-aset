@@ -168,7 +168,7 @@ class RoomController extends Controller
         }]);
         $rooms = collect([$room]);
         $docDate = $request->input('date', '2026-01-02');
-        $targetRows = (int) $request->input('rows', 26);
+        $targetRows = (int) $request->input('rows', 30);
 
         return view('rooms.print_pemeliharaan_ruangan', compact('rooms', 'docDate', 'targetRows'));
     }
@@ -206,7 +206,7 @@ class RoomController extends Controller
         }
 
         $docDate = $request->input('date', '2026-01-02');
-        $targetRows = (int) $request->input('rows', 26);
+        $targetRows = (int) $request->input('rows', 30);
 
         return view('rooms.print_pemeliharaan_ruangan', compact('rooms', 'docDate', 'targetRows'));
     }

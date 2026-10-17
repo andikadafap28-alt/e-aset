@@ -7,7 +7,7 @@
     selected: [],
     allIds: {{ json_encode($rooms->pluck('id')->toArray()) }},
     docDate: '{{ $defaultDate ?? '2026-01-02' }}',
-    targetRows: 26,
+    targetRows: 30,
     toggleAll() {
         if (this.selected.length === this.allIds.length) {
             this.selected = [];
@@ -71,10 +71,9 @@
                 <label class="text-xs font-bold text-slate-600">Kepadatan Tabel:</label>
                 <select x-model="targetRows" class="text-xs font-bold px-2 py-1 bg-white border border-slate-300 rounded shadow-sm focus:ring-1 focus:ring-blue-500">
                     <option value="24">24 Baris</option>
-                    <option value="25">25 Baris</option>
-                    <option value="26">26 Baris (Rekomendasi Presisi)</option>
-                    <option value="27">27 Baris (Padat Maksimal)</option>
+                    <option value="26">26 Baris</option>
                     <option value="28">28 Baris</option>
+                    <option value="30">30 Baris (Kapasitas Maksimal 30 Item)</option>
                 </select>
             </div>
         </div>
