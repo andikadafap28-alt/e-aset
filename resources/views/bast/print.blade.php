@@ -123,7 +123,7 @@
             <h3>DINAS KESEHATAN</h3>
             <h2>PUSKESMAS MANTUP</h2>
             <p>Jln. Raya Mantup No. 55 Mantup Lamongan</p>
-            <p>Telp. (0322) 4670302 Email : puskesmasmantup@yahoo.co.id</p>
+            <p>Telp. (0322) 4670302 Email : puskesmasmantup98@gmail.com</p>
         </div>
         <img src="{{ asset('img/logo-husada.png') }}" alt="Logo Husada" onerror="this.src='https://via.placeholder.com/80?text=Bakti+Husada'">
     </div>

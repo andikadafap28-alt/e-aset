@@ -414,7 +414,7 @@
                             <div class="line-2">DINAS KESEHATAN</div>
                             <div class="line-3">PUSKESMAS MANTUP</div>
                             <div class="line-4">Jl. Raya Mantup No. 55 Mantup, Kab. Lamongan, Jawa Timur 62283</div>
-                            <div class="line-4">Telp. (0322) 4670302 &bull; Email: puskesmasmantup@yahoo.co.id</div>
+                            <div class="line-4">Telp. (0322) 4670302 &bull; Email: puskesmasmantup98@gmail.com</div>
                         </td>
                         <td class="kop-logo">
                             <img src="{{ asset('img/logo-husada.png') }}" alt="Logo Husada" onerror="this.style.display='none'">
