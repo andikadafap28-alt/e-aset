@@ -163,6 +163,44 @@ class RoomController extends Controller
 
     public function printPemeliharaanRuangan(\App\Models\Room $room)
     {
-        return view('rooms.print_pemeliharaan_ruangan', compact('room'));
+        $room->load(['assets.maintenances' => function($query) {
+            $query->latest('tanggal_jadwal');
+        }]);
+        $rooms = collect([$room]);
+        return view('rooms.print_pemeliharaan_ruangan', compact('rooms'));
+    }
+
+    public function lembarPemeliharaanIndex(Request $request)
+    {
+        $search = $request->input('search');
+        $query = \App\Models\Room::withCount('assets');
+        
+        if ($search) {
+            $query->where('name', 'ILIKE', "%{$search}%");
+        }
+        
+        $rooms = $query->orderBy('name')->get();
+        return view('rooms.lembar_pemeliharaan_index', compact('rooms', 'search'));
+    }
+
+    public function printBatchPemeliharaanRuangan(Request $request)
+    {
+        $ids = $request->input('ids');
+        $query = \App\Models\Room::with(['assets.maintenances' => function($q) {
+            $q->latest('tanggal_jadwal');
+        }]);
+
+        if ($ids) {
+            $idArray = is_array($ids) ? $ids : explode(',', $ids);
+            $query->whereIn('id', $idArray);
+        }
+
+        $rooms = $query->orderBy('name')->get();
+
+        if ($rooms->isEmpty()) {
+            return redirect()->route('rooms.lembar_pemeliharaan')->with('error', 'Tidak ada ruangan yang dipilih.');
+        }
+
+        return view('rooms.print_pemeliharaan_ruangan', compact('rooms'));
     }
 }

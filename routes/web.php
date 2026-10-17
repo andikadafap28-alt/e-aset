@@ -87,6 +87,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/rooms/import', [\App\Http\Controllers\RoomController::class, 'importExcel'])->name('rooms.import');
     Route::get('/rooms/template', [\App\Http\Controllers\RoomController::class, 'downloadTemplate'])->name('rooms.template');
+    Route::get('/rooms/lembar-pemeliharaan', [\App\Http\Controllers\RoomController::class, 'lembarPemeliharaanIndex'])->name('rooms.lembar_pemeliharaan');
+    Route::get('/rooms/lembar-pemeliharaan/cetak-batch', [\App\Http\Controllers\RoomController::class, 'printBatchPemeliharaanRuangan'])->name('rooms.print_batch_pemeliharaan_ruangan');
     Route::get('/rooms/{room}/kir', [\App\Http\Controllers\RoomController::class, 'printKir'])->name('rooms.print_kir');
     Route::get('/rooms/{room}/pemeliharaan-alat', [\App\Http\Controllers\RoomController::class, 'printPemeliharaanAlat'])->name('rooms.print_pemeliharaan_alat');
     Route::get('/rooms/{room}/pemeliharaan-ruangan', [\App\Http\Controllers\RoomController::class, 'printPemeliharaanRuangan'])->name('rooms.print_pemeliharaan_ruangan');

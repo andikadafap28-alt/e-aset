@@ -8,10 +8,16 @@
         <h2 class="text-2xl font-bold text-slate-800">Jadwal Pemeliharaan Aset</h2>
         <p class="text-slate-500 text-sm mt-1">Jadwalkan kalibrasi, servis berkala, dan perbaikan aset tetap</p>
     </div>
-    <button onclick="document.getElementById('modalTambahPemeliharaan').classList.remove('hidden')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm font-medium transition-colors flex items-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-        Jadwalkan Pemeliharaan
-    </button>
+    <div class="flex items-center gap-3">
+        <a href="{{ route('rooms.lembar_pemeliharaan') }}" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-sm font-medium transition-colors flex items-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Lembar Pemeliharaan Ruangan (F4)
+        </a>
+        <button onclick="document.getElementById('modalTambahPemeliharaan').classList.remove('hidden')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm font-medium transition-colors flex items-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            Jadwalkan Pemeliharaan
+        </button>
+    </div>
 </div>
 
 <!-- Modal Tambah Pemeliharaan -->
