@@ -161,13 +161,16 @@ class RoomController extends Controller
         return view('rooms.print_pemeliharaan_alat', compact('room'));
     }
 
-    public function printPemeliharaanRuangan(\App\Models\Room $room)
+    public function printPemeliharaanRuangan(Request $request, \App\Models\Room $room)
     {
         $room->load(['assets.maintenances' => function($query) {
             $query->latest('tanggal_jadwal');
         }]);
         $rooms = collect([$room]);
-        return view('rooms.print_pemeliharaan_ruangan', compact('rooms'));
+        $docDate = $request->input('date', '2026-01-02');
+        $targetRows = (int) $request->input('rows', 26);
+
+        return view('rooms.print_pemeliharaan_ruangan', compact('rooms', 'docDate', 'targetRows'));
     }
 
     public function lembarPemeliharaanIndex(Request $request)
@@ -180,7 +183,8 @@ class RoomController extends Controller
         }
         
         $rooms = $query->orderBy('name')->get();
-        return view('rooms.lembar_pemeliharaan_index', compact('rooms', 'search'));
+        $defaultDate = '2026-01-02';
+        return view('rooms.lembar_pemeliharaan_index', compact('rooms', 'search', 'defaultDate'));
     }
 
     public function printBatchPemeliharaanRuangan(Request $request)
@@ -201,6 +205,9 @@ class RoomController extends Controller
             return redirect()->route('rooms.lembar_pemeliharaan')->with('error', 'Tidak ada ruangan yang dipilih.');
         }
 
-        return view('rooms.print_pemeliharaan_ruangan', compact('rooms'));
+        $docDate = $request->input('date', '2026-01-02');
+        $targetRows = (int) $request->input('rows', 26);
+
+        return view('rooms.print_pemeliharaan_ruangan', compact('rooms', 'docDate', 'targetRows'));
     }
 }

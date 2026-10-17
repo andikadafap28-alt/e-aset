@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lembar Pemeliharaan Ruangan - F4</title>
+    <title>Lembar Pemeliharaan Ruangan - F4 (21cm x 33cm)</title>
     <style>
         @page {
-            size: 215mm 330mm; /* Folio / F4 */
-            margin: 10mm 15mm 10mm 15mm;
+            size: 210mm 330mm; /* Kertas F4: 21cm x 33cm */
+            margin: 7mm 12mm 7mm 12mm;
         }
 
         * {
@@ -18,33 +18,65 @@
 
         body {
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 9.5pt;
+            font-size: 9pt;
             color: #000;
             background-color: #f1f5f9;
             margin: 0;
             padding: 0;
         }
 
-        /* Toolbar Screen */
+        /* Toolbar Layar (Tidak Tercetak) */
         .toolbar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: #1e293b;
+            background: #0f172a;
             color: white;
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 9999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .toolbar input[type="date"],
+        .toolbar select {
+            background: #1e293b;
+            color: #ffffff;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 13px;
+            font-weight: bold;
+            outline: none;
+        }
+
+        .toolbar input[type="date"]:focus,
+        .toolbar select:focus {
+            border-color: #3b82f6;
         }
 
         .toolbar .btn {
-            padding: 8px 16px;
+            padding: 7px 16px;
             border-radius: 6px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 13px;
             cursor: pointer;
             border: none;
@@ -58,21 +90,22 @@
         .btn-print {
             background: #2563eb;
             color: white;
+            box-shadow: 0 2px 6px rgba(37,99,235,0.4);
         }
         .btn-print:hover {
             background: #1d4ed8;
         }
 
         .btn-back {
-            background: #475569;
+            background: #334155;
             color: white;
         }
         .btn-back:hover {
-            background: #334155;
+            background: #475569;
         }
 
         .preview-wrapper {
-            margin-top: 60px;
+            margin-top: 65px;
             padding: 20px 10px 40px;
             display: flex;
             flex-direction: column;
@@ -80,26 +113,27 @@
             gap: 25px;
         }
 
-        /* Halaman Kertas F4 */
+        /* Lembar Kertas F4 (21cm x 33cm) */
         .page-sheet {
             background: white;
-            width: 215mm;
+            width: 210mm;
             min-height: 330mm;
-            padding: 12mm 15mm;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            height: 330mm;
+            padding: 8mm 12mm 6mm 12mm;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.18);
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        /* Kop Surat */
+        /* Kop Surat Resmi Puskesmas Mantup (Bukan UPT) */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
-            border-bottom: 3px double #000;
-            padding-bottom: 4px;
-            margin-bottom: 8px;
+            border-bottom: 2.5px solid #000;
+            padding-bottom: 2px;
+            margin-bottom: 4px;
         }
         .kop-table td {
             vertical-align: middle;
@@ -107,55 +141,55 @@
             padding: 0;
         }
         .kop-logo {
-            width: 65px;
+            width: 58px;
             text-align: center;
         }
         .kop-logo img {
-            max-width: 60px;
-            max-height: 60px;
+            max-width: 52px;
+            max-height: 52px;
             object-fit: contain;
         }
         .kop-text {
             text-align: center;
-            line-height: 1.25;
-            padding: 0 8px;
+            line-height: 1.15;
+            padding: 0 6px;
         }
         .kop-text .line-1 {
-            font-size: 11pt;
+            font-size: 10pt;
             font-weight: bold;
             letter-spacing: 0.5px;
         }
         .kop-text .line-2 {
-            font-size: 10pt;
+            font-size: 9.5pt;
             font-weight: bold;
         }
         .kop-text .line-3 {
             font-size: 13pt;
             font-weight: 900;
             letter-spacing: 1px;
-            margin: 2px 0;
+            margin: 1px 0;
         }
         .kop-text .line-4 {
-            font-size: 8pt;
+            font-size: 7.5pt;
             color: #111;
         }
 
         /* Judul Dokumen */
         .doc-title {
             text-align: center;
-            margin: 6px 0 10px;
+            margin: 3px 0 5px;
         }
         .doc-title h2 {
             margin: 0;
-            font-size: 11.5pt;
+            font-size: 11pt;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             text-decoration: underline;
         }
         .doc-title p {
-            margin: 2px 0 0;
-            font-size: 8.5pt;
+            margin: 1px 0 0;
+            font-size: 8pt;
             font-style: italic;
             color: #333;
         }
@@ -164,93 +198,95 @@
         .info-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 8px;
-            font-size: 9pt;
+            margin-bottom: 4px;
+            font-size: 8.5pt;
         }
         .info-table td {
-            padding: 2px 4px;
+            padding: 1px 3px;
             vertical-align: top;
             border: none;
         }
         .info-label {
-            width: 160px;
+            width: 150px;
             font-weight: bold;
         }
         .info-sep {
-            width: 12px;
+            width: 10px;
             font-weight: bold;
         }
         .info-value {
             font-weight: bold;
         }
 
-        /* Tabel Pemeliharaan */
+        /* Tabel Utama Pemeliharaan Ruangan */
         .main-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 8.5pt;
-            margin-bottom: 12px;
+            font-size: 8pt;
+            margin-bottom: 4px;
         }
         .main-table th, .main-table td {
             border: 1px solid #000;
-            padding: 4px 6px;
+            padding: 2.5px 5px;
         }
         .main-table th {
             background-color: #f1f5f9;
             text-align: center;
             font-weight: bold;
-            font-size: 8.5pt;
-            height: 28px;
-            vertical-align: middle;
-        }
-        .main-table td {
+            font-size: 8pt;
             height: 24px;
             vertical-align: middle;
         }
+        .main-table td {
+            height: 22.5px;
+            vertical-align: middle;
+        }
         .main-table tr.blank-row td {
-            height: 25px; /* Tinggi baris ideal untuk tulisan tangan */
+            height: 23px; /* Tinggi baris proporsional tulisan tangan */
         }
         .text-center {
             text-align: center;
         }
 
-        /* Tanda Tangan */
+        /* Tanda Tangan - Lebar & Lega */
         .ttd-wrapper {
             width: 100%;
             display: flex;
             justify-content: space-between;
-            margin-top: 6px;
+            margin-top: 4px;
             page-break-inside: avoid;
         }
         .ttd-box {
-            width: 44%;
+            width: 47%;
             text-align: center;
-            font-size: 9pt;
-            line-height: 1.3;
+            font-size: 8.5pt;
+            line-height: 1.25;
         }
         .ttd-box .ttd-jabatan {
             font-weight: bold;
+            display: inline-block;
+            margin-top: 1px;
         }
         .ttd-space {
-            height: 52px;
+            height: 65px; /* Spasi tanda tangan diperlebar */
         }
         .ttd-nama {
             font-weight: bold;
             text-decoration: underline;
-            font-size: 9.5pt;
+            font-size: 9pt;
         }
         .ttd-nip {
-            font-size: 8.5pt;
+            font-size: 8pt;
             margin-top: 1px;
         }
 
         /* Catatan Kaki */
         .footer-note {
-            margin-top: 8px;
-            padding-top: 4px;
-            border-top: 1px dashed #94a3b8;
-            font-size: 7pt;
-            color: #64748b;
+            margin-top: 4px;
+            padding-top: 2px;
+            border-top: 1px dashed #cbd5e1;
+            font-size: 6.8pt;
+            color: #475569;
             display: flex;
             justify-content: space-between;
         }
@@ -269,13 +305,15 @@
                 display: block !important;
             }
             .page-sheet {
-                width: 100% !important;
-                min-height: 0 !important;
-                height: 310mm !important;
+                width: 210mm !important;
+                height: 316mm !important;
+                min-height: 316mm !important;
+                max-height: 316mm !important;
                 padding: 0 !important;
                 box-shadow: none !important;
                 page-break-after: always;
                 break-after: page;
+                overflow: hidden;
             }
             .page-sheet:last-child {
                 page-break-after: avoid;
@@ -288,22 +326,53 @@
 
     @php
         $roomList = isset($rooms) ? $rooms : collect([$room]);
+        $defaultDateInput = $docDate ?? '2026-01-02';
+        
+        // Format tanggal Indonesia default "02 Januari 2026"
+        $carbonDate = \Carbon\Carbon::parse($defaultDateInput)->locale('id');
+        $dayFormatted = sprintf('%02d', $carbonDate->day);
+        $monthFormatted = $carbonDate->isoFormat('MMMM');
+        $yearFormatted = $carbonDate->year;
+        $initialFormattedDate = $dayFormatted . ' ' . $monthFormatted . ' ' . $yearFormatted;
+
+        // Target baris tabel (default: 26 baris untuk mem-press tabel hingga menyisakan area TTD)
+        $defaultTargetRows = $targetRows ?? 26;
     @endphp
 
-    <!-- Toolbar Atas (Hanya tampil di layar) -->
+    <!-- Toolbar Atas Interaktif (Hanya tampil di layar) -->
     <div class="toolbar">
-        <div style="display: flex; align-items: center; gap: 15px;">
+        <div class="toolbar-group">
             <a href="{{ route('rooms.lembar_pemeliharaan') }}" class="btn btn-back">
-                &larr; Kembali ke Menu
+                &larr; Kembali
             </a>
-            <span style="font-size: 14px; font-weight: 500;">
-                Format Ukuran Kertas: <strong>F4 (Folio 215 x 330 mm)</strong> &bull; Total: <strong>{{ $roomList->count() }} Ruangan</strong>
+            <span style="font-size: 13px; font-weight: bold; color: #38bdf8;">
+                Kertas: F4 (21 x 33 cm) &bull; {{ $roomList->count() }} Ruangan
             </span>
         </div>
-        <div style="display: flex; gap: 10px;">
+
+        <div class="toolbar-group">
+            <!-- Pengatur Tanggal Interaktif -->
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <label for="datePicker">Tanggal Lembar:</label>
+                <input type="date" id="datePicker" value="{{ $defaultDateInput }}" onchange="changeDocDate(this.value)" title="Ubah tanggal tanda tangan lembar pemeliharaan">
+            </div>
+
+            <!-- Pengatur Jumlah Baris (Press Tabel) -->
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <label for="rowSelector">Jumlah Baris:</label>
+                <select id="rowSelector" onchange="changeRowCount(this.value)">
+                    <option value="24" {{ $defaultTargetRows == 24 ? 'selected' : '' }}>24 Baris</option>
+                    <option value="25" {{ $defaultTargetRows == 25 ? 'selected' : '' }}>25 Baris</option>
+                    <option value="26" {{ $defaultTargetRows == 26 ? 'selected' : '' }}>26 Baris (Rekomendasi Presisi)</option>
+                    <option value="27" {{ $defaultTargetRows == 27 ? 'selected' : '' }}>27 Baris (Padat Maksimal)</option>
+                    <option value="28" {{ $defaultTargetRows == 28 ? 'selected' : '' }}>28 Baris</option>
+                </select>
+            </div>
+
+            <!-- Tombol Cetak -->
             <button onclick="window.print()" class="btn btn-print">
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                Cetak Lembar Pemeliharaan (F4)
+                Cetak Lembar F4
             </button>
         </div>
     </div>
@@ -328,15 +397,13 @@
                 }
             }
 
-            // Jumlah total baris yang pas di kertas F4 = 18 baris
-            $totalTargetRows = 18;
             $existingCount = $maintenances->count();
-            $blankRowsToRender = max(0, $totalTargetRows - $existingCount);
+            $blankRowsToRender = max(0, $defaultTargetRows - $existingCount);
         @endphp
 
-        <div class="page-sheet">
+        <div class="page-sheet" id="sheet-{{ $currentRoom->id }}">
             <div>
-                <!-- Kop Surat Resmi -->
+                <!-- Kop Surat Resmi Puskesmas Mantup (Bukan UPT) -->
                 <table class="kop-table">
                     <tr>
                         <td class="kop-logo">
@@ -345,7 +412,7 @@
                         <td class="kop-text">
                             <div class="line-1">PEMERINTAH KABUPATEN LAMONGAN</div>
                             <div class="line-2">DINAS KESEHATAN</div>
-                            <div class="line-3">UPT PUSKESMAS MANTUP</div>
+                            <div class="line-3">PUSKESMAS MANTUP</div>
                             <div class="line-4">Jl. Raya Mantup No. 55 Mantup, Kab. Lamongan, Jawa Timur 62283</div>
                             <div class="line-4">Telp. (0322) 4670302 &bull; Email: puskesmasmantup@yahoo.co.id</div>
                         </td>
@@ -355,7 +422,7 @@
                     </tr>
                 </table>
 
-                <!-- Judul -->
+                <!-- Judul Dokumen -->
                 <div class="doc-title">
                     <h2>LEMBAR PEMELIHARAAN RUANGAN</h2>
                     <p>(Lembar kontrol fisik sarana, prasarana, dan alat yang ditempel di setiap ruangan)</p>
@@ -367,37 +434,37 @@
                         <td class="info-label">RUANGAN</td>
                         <td class="info-sep">:</td>
                         <td class="info-value">{{ strtoupper($currentRoom->name) }}</td>
-                        <td class="info-label" style="width: 130px;">TAHUN / PERIODE</td>
+                        <td class="info-label" style="width: 140px;">TAHUN / PERIODE</td>
                         <td class="info-sep">:</td>
-                        <td class="info-value">{{ date('Y') }}</td>
+                        <td class="info-value"><span class="doc-year-display">{{ $yearFormatted }}</span></td>
                     </tr>
                     <tr>
-                        <td class="info-label">UNIT / SATUAN KERJA</td>
+                        <td class="info-label">SATUAN KERJA</td>
                         <td class="info-sep">:</td>
-                        <td>UPT PUSKESMAS MANTUP</td>
+                        <td>PUSKESMAS MANTUP</td>
                         <td class="info-label">PENANGGUNG JAWAB</td>
                         <td class="info-sep">:</td>
                         <td>{{ $currentRoom->penanggung_jawab ?: '..........................................' }}</td>
                     </tr>
                 </table>
 
-                <!-- Tabel Utama Pemeliharaan Ruangan -->
-                <table class="main-table">
+                <!-- Tabel Utama Pemeliharaan Ruangan (Dipress mengisi halaman) -->
+                <table class="main-table" data-existing="{{ $existingCount }}">
                     <thead>
                         <tr>
                             <th style="width: 4%;">NO</th>
                             <th style="width: 12%;">TANGGAL</th>
-                            <th style="width: 32%;">NAMA ALAT / BAGIAN YANG DILAKUKAN PEMELIHARAAN</th>
-                            <th style="width: 38%;">KETERANGAN / TINDAKAN PEMELIHARAAN</th>
+                            <th style="width: 33%;">NAMA ALAT / BAGIAN YANG DILAKUKAN PEMELIHARAAN</th>
+                            <th style="width: 37%;">KETERANGAN / TINDAKAN PEMELIHARAAN</th>
                             <th style="width: 14%;">TANDA TANGAN</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php $rowNo = 1; @endphp
 
-                        {{-- Tampilkan data yang sudah tercatat di sistem bila ada --}}
+                        {{-- Tampilkan data yang sudah tercatat bila ada --}}
                         @foreach($maintenances as $item)
-                        <tr>
+                        <tr class="data-row">
                             <td class="text-center">{{ $rowNo++ }}</td>
                             <td class="text-center">{{ $item->tanggal }}</td>
                             <td>{{ $item->nama_alat }}</td>
@@ -421,7 +488,7 @@
             </div>
 
             <div>
-                <!-- Kolom Tanda Tangan -->
+                <!-- Kolom Tanda Tangan Luas & Lega -->
                 <div class="ttd-wrapper">
                     <div class="ttd-box">
                         Mengetahui,<br>
@@ -431,7 +498,7 @@
                         <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
                     </div>
                     <div class="ttd-box">
-                        Mantup, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}<br>
+                        Mantup, <span class="doc-date-display">{{ $initialFormattedDate }}</span><br>
                         <span class="ttd-jabatan">Pengurus Barang Pembantu</span>
                         <div class="ttd-space"></div>
                         <div class="ttd-nama">ANDIKA DAFA PENTA P.</div>
@@ -440,13 +507,72 @@
                 </div>
 
                 <div class="footer-note">
-                    <span>* Catatan: Lembar ini wajib diisi dan ditandatangani setiap kali dilakukan pemeliharaan pada fasilitas ruangan ini.</span>
-                    <span>Ruangan: {{ $currentRoom->name }} | e-Aset Puskesmas Mantup</span>
+                    <span>* Lembar ini wajib diisi dan ditandatangani petugas setiap kali pemeliharaan dilakukan.</span>
+                    <span>Ruangan: {{ $currentRoom->name }} | Puskesmas Mantup</span>
                 </div>
             </div>
         </div>
         @endforeach
     </div>
 
+    <!-- Script Pengatur Tanggal & Jumlah Baris Dinamis -->
+    <script>
+        function formatIndonesianDate(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            if (parts.length !== 3) return dateStr;
+            const year = parts[0];
+            const monthIdx = parseInt(parts[1], 10) - 1;
+            const day = String(parts[2]).padStart(2, '0');
+            const months = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+            const monthName = months[monthIdx] || parts[1];
+            return `${day} ${monthName} ${year}`;
+        }
+
+        function changeDocDate(val) {
+            if (!val) return;
+            const formatted = formatIndonesianDate(val);
+            const year = val.split('-')[0];
+
+            document.querySelectorAll('.doc-date-display').forEach(el => {
+                el.textContent = formatted;
+            });
+            document.querySelectorAll('.doc-year-display').forEach(el => {
+                el.textContent = year;
+            });
+        }
+
+        function changeRowCount(targetCount) {
+            const count = parseInt(targetCount, 10);
+            document.querySelectorAll('.page-sheet').forEach(sheet => {
+                const table = sheet.querySelector('.main-table');
+                const tbody = table.querySelector('tbody');
+                const dataRows = tbody.querySelectorAll('tr.data-row');
+                const existingDataCount = dataRows.length;
+
+                // Hapus semua baris kosong lama
+                tbody.querySelectorAll('tr.blank-row').forEach(row => row.remove());
+
+                // Tambahkan baris kosong baru sesuai target
+                const neededBlank = Math.max(0, count - existingDataCount);
+                for (let i = 0; i < neededBlank; i++) {
+                    const rowNumber = existingDataCount + i + 1;
+                    const tr = document.createElement('tr');
+                    tr.className = 'blank-row';
+                    tr.innerHTML = `
+                        <td class="text-center" style="color: #64748b;">${rowNumber}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
