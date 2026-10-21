@@ -7,7 +7,7 @@
     selected: [],
     allIds: {{ json_encode($rooms->pluck('id')->toArray()) }},
     docDate: '{{ $defaultDate ?? '2026-01-02' }}',
-    targetRows: 30,
+    targetRows: 24,
     toggleAll() {
         if (this.selected.length === this.allIds.length) {
             this.selected = [];
@@ -36,11 +36,11 @@
             <div>
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-xs font-semibold tracking-wide backdrop-blur-md mb-2">
                     <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Standar Kertas F4 (21 cm x 33 cm) &bull; Puskesmas Mantup
+                    Standar Kertas A4 (21 cm x 29.7 cm) &bull; Puskesmas Mantup
                 </div>
                 <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Lembar Pemeliharaan Ruangan</h1>
                 <p class="text-blue-100/90 text-sm mt-1 max-w-2xl">
-                    Cetak lembar kontrol fisik sarana, prasarana, dan alat untuk ditempel di setiap ruangan. Tabel dipress padat dan dilengkapi kolom tanda tangan Kepala Puskesmas serta Pengurus Barang Pembantu.
+                    Cetak lembar kontrol fisik sarana, prasarana, dan alat untuk ditempel di setiap ruangan. Tabel dipress rapi dan dilengkapi kolom tanda tangan Kepala Puskesmas serta Pengurus Barang Pembantu.
                 </p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
@@ -70,10 +70,11 @@
             <div class="flex items-center gap-2">
                 <label class="text-xs font-bold text-slate-600">Kepadatan Tabel:</label>
                 <select x-model="targetRows" class="text-xs font-bold px-2 py-1 bg-white border border-slate-300 rounded shadow-sm focus:ring-1 focus:ring-blue-500">
-                    <option value="24">24 Baris</option>
-                    <option value="26">26 Baris</option>
-                    <option value="28">28 Baris</option>
-                    <option value="30">30 Baris (Kapasitas Maksimal 30 Item)</option>
+                    <option value="18">18 Baris (Longgar)</option>
+                    <option value="20">20 Baris (Standar)</option>
+                    <option value="22">22 Baris (Proporsional)</option>
+                    <option value="24">24 Baris (Rekomendasi A4)</option>
+                    <option value="26">26 Baris (Padat A4)</option>
                 </select>
             </div>
         </div>
@@ -128,7 +129,7 @@
                                 {{ $r->assets_count }} Aset
                             </span>
                             <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
-                                F4 (21 x 33 cm)
+                                A4 (21 x 29.7 cm)
                             </span>
                         </div>
                     </div>
@@ -137,7 +138,7 @@
                 <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
                     <button type="button" @click="printSingle({{ $r->id }})" class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white text-xs font-bold rounded-lg transition-colors cursor-pointer">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                        Cetak Lembar F4
+                        Cetak Lembar A4
                     </button>
                 </div>
             </div>
