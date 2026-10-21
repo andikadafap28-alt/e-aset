@@ -76,6 +76,10 @@
                     <option value="24">24 Baris (Rekomendasi A4)</option>
                     <option value="26">26 Baris (Padat A4)</option>
                 </select>
+                <div class="flex items-center gap-1">
+                    <input type="number" min="1" max="45" x-model.number="targetRows" class="w-14 text-xs font-bold px-2 py-1 bg-white border border-slate-300 rounded shadow-sm focus:ring-1 focus:ring-blue-500 text-center" title="Atau ketik angka manual">
+                    <span class="text-xs text-slate-500 font-medium">baris</span>
+                </div>
             </div>
         </div>
     </div>

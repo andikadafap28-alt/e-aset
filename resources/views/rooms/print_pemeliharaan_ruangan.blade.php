@@ -33,51 +33,54 @@
             right: 0;
             background: #0f172a;
             color: white;
-            padding: 10px 20px;
+            padding: 10px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 9999;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.35);
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
         }
 
         .toolbar-group {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
         .toolbar label {
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: 600;
             color: #cbd5e1;
         }
 
         .toolbar input[type="date"],
+        .toolbar input[type="number"],
         .toolbar select {
             background: #1e293b;
             color: #ffffff;
             border: 1px solid #475569;
             border-radius: 6px;
-            padding: 6px 10px;
-            font-size: 13px;
+            padding: 5px 8px;
+            font-size: 12.5px;
             font-weight: bold;
             outline: none;
         }
 
         .toolbar input[type="date"]:focus,
+        .toolbar input[type="number"]:focus,
         .toolbar select:focus {
-            border-color: #3b82f6;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 1px #38bdf8;
         }
 
         .toolbar .btn {
-            padding: 7px 16px;
+            padding: 6px 14px;
             border-radius: 6px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12.5px;
             cursor: pointer;
             border: none;
             display: inline-flex;
@@ -104,13 +107,149 @@
             background: #475569;
         }
 
+        .btn-tool-action {
+            background: #0284c7;
+            color: white;
+            padding: 5px 10px !important;
+            font-size: 11.5px !important;
+        }
+        .btn-tool-action:hover {
+            background: #0369a1;
+        }
+
         .preview-wrapper {
             margin-top: 65px;
             padding: 20px 10px 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 25px;
+            gap: 28px;
+        }
+
+        /* Pembungkus per Lembar Ruangan (Layar) */
+        .sheet-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        /* Banner Pengatur Baris Khusus per Lembar (Layar) */
+        .sheet-control-banner {
+            width: 210mm;
+            background: #1e293b;
+            color: #f8fafc;
+            border-radius: 8px;
+            padding: 6px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border: 1px solid #334155;
+            box-sizing: border-box;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .sheet-control-banner .sheet-title-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sheet-control-banner .sheet-num {
+            background: #3b82f6;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .sheet-control-banner .sheet-name {
+            font-weight: 700;
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+        .sheet-control-banner .sheet-action-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sheet-control-banner label {
+            font-size: 11.5px;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        .stepper-box {
+            display: inline-flex;
+            align-items: center;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .btn-step {
+            background: #334155;
+            color: white;
+            border: none;
+            width: 26px;
+            height: 28px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+        .btn-step:hover {
+            background: #475569;
+        }
+
+        .sheet-row-input {
+            width: 44px;
+            height: 28px;
+            background: #0f172a;
+            color: #ffffff;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+            font-size: 12px;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+        .sheet-row-input::-webkit-outer-spin-button,
+        .sheet-row-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .sheet-quick-select {
+            background: #0f172a;
+            color: #ffffff;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 4px 6px;
+            font-size: 12px;
+            font-weight: bold;
+            outline: none;
+        }
+
+        .sheet-status-badge {
+            background: #065f46;
+            color: #a7f3d0;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid #059669;
         }
 
         /* Lembar Kertas A4 (21cm x 29.7cm) di Layar */
@@ -306,7 +445,7 @@
             body {
                 background: white !important;
             }
-            .toolbar {
+            .toolbar, .sheet-control-banner {
                 display: none !important;
             }
             .preview-wrapper {
@@ -314,6 +453,13 @@
                 padding: 0 !important;
                 display: block !important;
                 width: 100% !important;
+            }
+            .sheet-wrapper {
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                gap: 0 !important;
             }
             .page-sheet {
                 width: 100% !important;
@@ -334,6 +480,7 @@
                 justify-content: space-between !important;
                 overflow: visible !important;
             }
+            .sheet-wrapper:last-child .page-sheet,
             .page-sheet:last-child {
                 page-break-after: avoid !important;
                 break-after: avoid !important;
@@ -376,16 +523,41 @@
                 <input type="date" id="datePicker" value="{{ $defaultDateInput }}" onchange="changeDocDate(this.value)" title="Ubah tanggal tanda tangan lembar pemeliharaan">
             </div>
 
-            <!-- Pengatur Jumlah Baris Optimal untuk A4 -->
+            <!-- Target Ruangan yang Diatur Toolbar -->
             <div style="display: flex; align-items: center; gap: 6px;">
-                <label for="rowSelector">Jumlah Baris:</label>
-                <select id="rowSelector" onchange="changeRowCount(this.value)">
-                    <option value="18" {{ $defaultTargetRows == 18 ? 'selected' : '' }}>18 Baris (Longgar)</option>
-                    <option value="20" {{ $defaultTargetRows == 20 ? 'selected' : '' }}>20 Baris (Standar)</option>
-                    <option value="22" {{ $defaultTargetRows == 22 ? 'selected' : '' }}>22 Baris (Proporsional)</option>
-                    <option value="24" {{ $defaultTargetRows == 24 ? 'selected' : '' }}>24 Baris (Rekomendasi A4)</option>
-                    <option value="26" {{ $defaultTargetRows == 26 ? 'selected' : '' }}>26 Baris (Padat A4)</option>
+                <label for="targetRoomSelect">Target Lembar:</label>
+                <select id="targetRoomSelect" onchange="onTargetRoomChange(this.value)" style="max-width: 190px;" title="Pilih apakah ingin mengubah semua ruangan atau ruangan spesifik">
+                    <option value="all">🌐 Semua Ruangan ({{ $roomList->count() }})</option>
+                    @foreach($roomList as $idx => $r)
+                        <option value="{{ $r->id }}">#{{ $idx + 1 }} {{ $r->name }}</option>
+                    @endforeach
                 </select>
+            </div>
+
+            <!-- Pengatur Jumlah Baris (Dropdown & Input Manual) -->
+            <div style="display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15);">
+                <label for="presetRowSelect">Baris:</label>
+                
+                <!-- Pilihan Cepat Dropdown -->
+                <select id="presetRowSelect" onchange="onPresetChange(this.value)" title="Pilih preset jumlah baris">
+                    <option value="18" {{ $defaultTargetRows == 18 ? 'selected' : '' }}>18 Baris</option>
+                    <option value="20" {{ $defaultTargetRows == 20 ? 'selected' : '' }}>20 Baris</option>
+                    <option value="22" {{ $defaultTargetRows == 22 ? 'selected' : '' }}>22 Baris</option>
+                    <option value="24" {{ $defaultTargetRows == 24 ? 'selected' : '' }}>24 Baris (A4)</option>
+                    <option value="26" {{ $defaultTargetRows == 26 ? 'selected' : '' }}>26 Baris</option>
+                    <option value="custom">Kustom...</option>
+                </select>
+
+                <!-- Input Manual Angka -->
+                <div style="display: inline-flex; align-items: center; gap: 4px;">
+                    <input type="number" id="manualRowInput" min="1" max="45" value="{{ $defaultTargetRows }}" oninput="onManualRowInput(this.value)" style="width: 52px; text-align: center;" title="Ketik angka manual jumlah baris yang diinginkan">
+                    <span style="font-size: 11px; color: #cbd5e1;">baris</span>
+                </div>
+
+                <!-- Tombol Terapkan ke Semua -->
+                <button type="button" onclick="applyRowsToAllFromToolbar()" class="btn btn-tool-action" title="Terapkan jumlah baris ini ke semua ruangan sekaligus">
+                    Set Semua
+                </button>
             </div>
 
             <!-- Tombol Cetak -->
@@ -423,131 +595,181 @@
             $blankRowsToRender = max(0, $defaultTargetRows - $existingCount);
         @endphp
 
-        <div class="page-sheet" id="sheet-{{ $currentRoom->id }}">
-            <div>
-                <!-- Kop Surat Resmi Puskesmas Mantup -->
-                <table class="kop-table">
-                    <tr>
-                        <td class="kop-logo">
-                            <img src="{{ asset('img/logo-lamongan.png') }}" alt="Logo Lamongan" onerror="this.style.display='none'">
-                        </td>
-                        <td class="kop-text">
-                            <div class="line-1">PEMERINTAH KABUPATEN LAMONGAN</div>
-                            <div class="line-2">DINAS KESEHATAN</div>
-                            <div class="line-3">PUSKESMAS MANTUP</div>
-                            <div class="line-4">Jl. Raya Mantup No. 55 Mantup, Kab. Lamongan, Jawa Timur 62283</div>
-                            <div class="line-4">Telp. (0322) 4670302 &bull; Email: puskesmasmantup98@gmail.com</div>
-                        </td>
-                        <td class="kop-logo">
-                            <img src="{{ asset('img/logo-husada.png') }}" alt="Logo Husada" onerror="this.style.display='none'">
-                        </td>
-                    </tr>
-                </table>
-
-                <!-- Judul Dokumen -->
-                <div class="doc-title">
-                    <h2>LEMBAR PEMELIHARAAN RUANGAN</h2>
-                    <p>(Lembar kontrol fisik sarana, prasarana, dan alat yang ditempel di setiap ruangan)</p>
+        <!-- Kontainer Lembar Ruangan -->
+        <div class="sheet-wrapper" id="wrapper-{{ $currentRoom->id }}">
+            
+            <!-- Banner Pengatur Baris Individual untuk Ruangan Ini (Hanya Muncul di Layar) -->
+            <div class="sheet-control-banner">
+                <div class="sheet-title-info">
+                    <span class="sheet-num">Lembar #{{ $index + 1 }}</span>
+                    <span class="sheet-name">{{ $currentRoom->name }}</span>
+                    @if($existingCount > 0)
+                        <span style="font-size: 11px; color: #94a3b8;">({{ $existingCount }} data tercatat)</span>
+                    @endif
                 </div>
+                
+                <div class="sheet-action-group">
+                    <label>Baris Lembar Ini:</label>
+                    <div class="stepper-box">
+                        <button type="button" class="btn-step" onclick="stepSheetRow('{{ $currentRoom->id }}', -1)" title="Kurangi 1 baris">&minus;</button>
+                        <input type="number" id="sheet-input-{{ $currentRoom->id }}" min="1" max="45" value="{{ $defaultTargetRows }}" class="sheet-row-input" oninput="applySingleSheetInput('{{ $currentRoom->id }}', this.value)" title="Ketik angka manual untuk lembar ini">
+                        <button type="button" class="btn-step" onclick="stepSheetRow('{{ $currentRoom->id }}', 1)" title="Tambah 1 baris">&plus;</button>
+                    </div>
 
-                <!-- Info Ruangan -->
-                <table class="info-table">
-                    <tr>
-                        <td class="info-label">RUANGAN</td>
-                        <td class="info-sep">:</td>
-                        <td class="info-value" style="font-size: 9.5pt;">{{ strtoupper($currentRoom->name) }}</td>
-                        <td class="info-label" style="width: 135px;">TAHUN / PERIODE</td>
-                        <td class="info-sep">:</td>
-                        <td class="info-value"><span class="doc-year-display">{{ $yearFormatted }}</span></td>
-                    </tr>
-                    <tr>
-                        <td class="info-label">SATUAN KERJA</td>
-                        <td class="info-sep">:</td>
-                        <td>PUSKESMAS MANTUP</td>
-                        <td class="info-label">PENANGGUNG JAWAB</td>
-                        <td class="info-sep">:</td>
-                        <td>{{ $currentRoom->penanggung_jawab ?: '..........................................' }}</td>
-                    </tr>
-                </table>
+                    <!-- Dropdown Cepat per Lembar -->
+                    <select id="sheet-select-{{ $currentRoom->id }}" class="sheet-quick-select" onchange="applySingleSheetInput('{{ $currentRoom->id }}', this.value)" title="Pilih baris preset">
+                        <option value="18" {{ $defaultTargetRows == 18 ? 'selected' : '' }}>18</option>
+                        <option value="20" {{ $defaultTargetRows == 20 ? 'selected' : '' }}>20</option>
+                        <option value="22" {{ $defaultTargetRows == 22 ? 'selected' : '' }}>22</option>
+                        <option value="24" {{ $defaultTargetRows == 24 ? 'selected' : '' }}>24 (A4)</option>
+                        <option value="26" {{ $defaultTargetRows == 26 ? 'selected' : '' }}>26</option>
+                        <option value="custom">Kustom</option>
+                    </select>
 
-                <!-- Tabel Utama Pemeliharaan Ruangan (A4 Pas Tanpa Terpotong) -->
-                <table class="main-table" data-existing="{{ $existingCount }}">
-                    <thead>
-                        <tr>
-                            <th style="width: 4%;">NO</th>
-                            <th style="width: 11%;">TANGGAL</th>
-                            <th style="width: 24%;">NAMA BARANG</th>
-                            <th style="width: 7%;">VOLUME</th>
-                            <th style="width: 7%;">SATUAN</th>
-                            <th style="width: 19%;">NAMA PIHAK PEMELIHARA</th>
-                            <th style="width: 19%;">KETERANGAN</th>
-                            <th style="width: 9%;">PARAF</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $rowNo = 1; @endphp
-
-                        {{-- Tampilkan data yang sudah tercatat bila ada --}}
-                        @foreach($maintenances as $item)
-                        <tr class="data-row">
-                            <td class="text-center">{{ $rowNo++ }}</td>
-                            <td class="text-center">{{ $item->tanggal }}</td>
-                            <td>{{ $item->nama_barang }}</td>
-                            <td class="text-center">{{ $item->volume }}</td>
-                            <td class="text-center">{{ $item->satuan }}</td>
-                            <td>{{ $item->pihak_pemelihara }}</td>
-                            <td>{{ $item->keterangan }}</td>
-                            <td class="text-center"></td>
-                        </tr>
-                        @endforeach
-
-                        {{-- Baris kosong bergaris untuk pengisian manual tulisan tangan saat tertempel di ruangan --}}
-                        @for($i = 0; $i < $blankRowsToRender; $i++)
-                        <tr class="blank-row">
-                            <td class="text-center" style="color: #64748b;">{{ $rowNo++ }}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        @endfor
-                    </tbody>
-                </table>
+                    <span class="sheet-status-badge" id="sheet-badge-{{ $currentRoom->id }}">{{ $defaultTargetRows }} baris</span>
+                </div>
             </div>
 
-            <div>
-                <!-- Kolom Tanda Tangan Luas & Lega -->
-                <div class="ttd-wrapper">
-                    <div class="ttd-box">
-                        Mengetahui,<br>
-                        <span class="ttd-jabatan">Kepala Puskesmas Mantup</span>
-                        <div class="ttd-space"></div>
-                        <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
-                        <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
+            <!-- Halaman Cetak Kertas A4 -->
+            <div class="page-sheet" id="sheet-{{ $currentRoom->id }}" data-room-id="{{ $currentRoom->id }}">
+                <div>
+                    <!-- Kop Surat Resmi Puskesmas Mantup -->
+                    <table class="kop-table">
+                        <tr>
+                            <td class="kop-logo">
+                                <img src="{{ asset('img/logo-lamongan.png') }}" alt="Logo Lamongan" onerror="this.style.display='none'">
+                            </td>
+                            <td class="kop-text">
+                                <div class="line-1">PEMERINTAH KABUPATEN LAMONGAN</div>
+                                <div class="line-2">DINAS KESEHATAN</div>
+                                <div class="line-3">PUSKESMAS MANTUP</div>
+                                <div class="line-4">Jl. Raya Mantup No. 55 Mantup, Kab. Lamongan, Jawa Timur 62283</div>
+                                <div class="line-4">Telp. (0322) 4670302 &bull; Email: puskesmasmantup98@gmail.com</div>
+                            </td>
+                            <td class="kop-logo">
+                                <img src="{{ asset('img/logo-husada.png') }}" alt="Logo Husada" onerror="this.style.display='none'">
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Judul Dokumen -->
+                    <div class="doc-title">
+                        <h2>LEMBAR PEMELIHARAAN RUANGAN</h2>
+                        <p>(Lembar kontrol fisik sarana, prasarana, dan alat yang ditempel di setiap ruangan)</p>
                     </div>
-                    <div class="ttd-box">
-                        Mantup, <span class="doc-date-display">{{ $initialFormattedDate }}</span><br>
-                        <span class="ttd-jabatan">Pengurus Barang Pembantu</span>
-                        <div class="ttd-space"></div>
-                        <div class="ttd-nama">ANDIKA DAFA PENTA P.</div>
-                        <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
-                    </div>
+
+                    <!-- Info Ruangan -->
+                    <table class="info-table">
+                        <tr>
+                            <td class="info-label">RUANGAN</td>
+                            <td class="info-sep">:</td>
+                            <td class="info-value" style="font-size: 9.5pt;">{{ strtoupper($currentRoom->name) }}</td>
+                            <td class="info-label" style="width: 135px;">TAHUN / PERIODE</td>
+                            <td class="info-sep">:</td>
+                            <td class="info-value"><span class="doc-year-display">{{ $yearFormatted }}</span></td>
+                        </tr>
+                        <tr>
+                            <td class="info-label">SATUAN KERJA</td>
+                            <td class="info-sep">:</td>
+                            <td>PUSKESMAS MANTUP</td>
+                            <td class="info-label">PENANGGUNG JAWAB</td>
+                            <td class="info-sep">:</td>
+                            <td>{{ $currentRoom->penanggung_jawab ?: '..........................................' }}</td>
+                        </tr>
+                    </table>
+
+                    <!-- Tabel Utama Pemeliharaan Ruangan (A4 Pas Tanpa Terpotong) -->
+                    <table class="main-table" data-existing="{{ $existingCount }}">
+                        <thead>
+                            <tr>
+                                <th style="width: 4%;">NO</th>
+                                <th style="width: 11%;">TANGGAL</th>
+                                <th style="width: 24%;">NAMA BARANG</th>
+                                <th style="width: 7%;">VOLUME</th>
+                                <th style="width: 7%;">SATUAN</th>
+                                <th style="width: 19%;">NAMA PIHAK PEMELIHARA</th>
+                                <th style="width: 19%;">KETERANGAN</th>
+                                <th style="width: 9%;">PARAF</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $rowNo = 1; @endphp
+
+                            {{-- Tampilkan data yang sudah tercatat bila ada --}}
+                            @foreach($maintenances as $item)
+                            <tr class="data-row">
+                                <td class="text-center">{{ $rowNo++ }}</td>
+                                <td class="text-center">{{ $item->tanggal }}</td>
+                                <td>{{ $item->nama_barang }}</td>
+                                <td class="text-center">{{ $item->volume }}</td>
+                                <td class="text-center">{{ $item->satuan }}</td>
+                                <td>{{ $item->pihak_pemelihara }}</td>
+                                <td>{{ $item->keterangan }}</td>
+                                <td class="text-center"></td>
+                            </tr>
+                            @endforeach
+
+                            {{-- Baris kosong bergaris untuk pengisian manual tulisan tangan saat tertempel di ruangan --}}
+                            @for($i = 0; $i < $blankRowsToRender; $i++)
+                            <tr class="blank-row">
+                                <td class="text-center" style="color: #64748b;">{{ $rowNo++ }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            @endfor
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="footer-note">
-                    <span>* Lembar ini wajib diisi dan ditandatangani petugas setiap kali pemeliharaan dilakukan.</span>
-                    <span>Ruangan: {{ $currentRoom->name }} | Puskesmas Mantup</span>
+                <div>
+                    <!-- Kolom Tanda Tangan Luas & Lega -->
+                    <div class="ttd-wrapper">
+                        <div class="ttd-box">
+                            Mengetahui,<br>
+                            <span class="ttd-jabatan">Kepala Puskesmas Mantup</span>
+                            <div class="ttd-space"></div>
+                            <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
+                            <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
+                        </div>
+                        <div class="ttd-box">
+                            Mantup, <span class="doc-date-display">{{ $initialFormattedDate }}</span><br>
+                            <span class="ttd-jabatan">Pengurus Barang Pembantu</span>
+                            <div class="ttd-space"></div>
+                            <div class="ttd-nama">ANDIKA DAFA PENTA P.</div>
+                            <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
+                        </div>
+                    </div>
+
+                    <div class="footer-note">
+                        <span>* Lembar ini wajib diisi dan ditandatangani petugas setiap kali pemeliharaan dilakukan.</span>
+                        <span>Ruangan: {{ $currentRoom->name }} | Puskesmas Mantup</span>
+                    </div>
                 </div>
             </div>
         </div>
         @endforeach
     </div>
 
-    <!-- Script Pengatur Tanggal & Jumlah Baris Dinamis -->
+    <!-- Script Pengatur Tanggal, Dropdown Cepat & Input Manual Baris Dinamis -->
     <script>
+        const sheetRowCounts = {};
+        const defaultRows = {{ $defaultTargetRows }};
+
+        // Inisialisasi awal target baris untuk tiap sheet
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.page-sheet').forEach(sheet => {
+                const id = sheet.getAttribute('data-room-id');
+                if (id) {
+                    sheetRowCounts[id] = defaultRows;
+                }
+            });
+        });
+
         function formatIndonesianDate(dateStr) {
             if (!dateStr) return '';
             const parts = dateStr.split('-');
@@ -576,36 +798,175 @@
             });
         }
 
-        function changeRowCount(targetCount) {
-            const count = parseInt(targetCount, 10);
-            document.querySelectorAll('.page-sheet').forEach(sheet => {
-                const table = sheet.querySelector('.main-table');
-                const tbody = table.querySelector('tbody');
-                const dataRows = tbody.querySelectorAll('tr.data-row');
-                const existingDataCount = dataRows.length;
+        // Fungsi Inti: Menerapkan Jumlah Baris ke Elemen Sheet Spesifik
+        function applyRowsToSheet(sheetElement, count) {
+            const table = sheetElement.querySelector('.main-table');
+            if (!table) return;
+            const tbody = table.querySelector('tbody');
+            if (!tbody) return;
 
-                // Hapus semua baris kosong lama
-                tbody.querySelectorAll('tr.blank-row').forEach(row => row.remove());
+            const dataRows = tbody.querySelectorAll('tr.data-row');
+            const existingDataCount = dataRows.length;
+            const targetCount = Math.max(existingDataCount, Math.max(1, parseInt(count, 10) || defaultRows));
 
-                // Tambahkan baris kosong baru sesuai target 8 kolom
-                const neededBlank = Math.max(0, count - existingDataCount);
-                for (let i = 0; i < neededBlank; i++) {
-                    const rowNumber = existingDataCount + i + 1;
-                    const tr = document.createElement('tr');
-                    tr.className = 'blank-row';
-                    tr.innerHTML = `
-                        <td class="text-center" style="color: #64748b;">${rowNumber}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    `;
-                    tbody.appendChild(tr);
+            const roomId = sheetElement.getAttribute('data-room-id');
+            if (roomId) {
+                sheetRowCounts[roomId] = targetCount;
+
+                // Sinkronkan input pada banner per-sheet
+                const sheetInput = document.getElementById('sheet-input-' + roomId);
+                if (sheetInput && parseInt(sheetInput.value, 10) !== targetCount) {
+                    sheetInput.value = targetCount;
                 }
+                const sheetSelect = document.getElementById('sheet-select-' + roomId);
+                if (sheetSelect) {
+                    sheetSelect.value = ['18', '20', '22', '24', '26'].includes(String(targetCount)) ? String(targetCount) : 'custom';
+                }
+                const badge = document.getElementById('sheet-badge-' + roomId);
+                if (badge) {
+                    badge.textContent = targetCount + ' baris';
+                }
+            }
+
+            // Hapus baris kosong lama
+            tbody.querySelectorAll('tr.blank-row').forEach(row => row.remove());
+
+            // Tambahkan baris kosong baru sesuai target 8 kolom
+            const neededBlank = Math.max(0, targetCount - existingDataCount);
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < neededBlank; i++) {
+                const rowNumber = existingDataCount + i + 1;
+                const tr = document.createElement('tr');
+                tr.className = 'blank-row';
+                tr.innerHTML = `
+                    <td class="text-center" style="color: #64748b;">${rowNumber}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                `;
+                fragment.appendChild(tr);
+            }
+            tbody.appendChild(fragment);
+        }
+
+        // --- PENGATUR DI TOOLBAR ATAS ---
+
+        // Toolbar: Saat dropdown preset diubah
+        function onPresetChange(val) {
+            if (val === 'custom') {
+                const input = document.getElementById('manualRowInput');
+                input.focus();
+                input.select();
+                return;
+            }
+            const count = parseInt(val, 10);
+            if (!count) return;
+            document.getElementById('manualRowInput').value = count;
+            applyToolbarRowCount(count);
+        }
+
+        // Toolbar: Saat input angka manual diketik langsung
+        function onManualRowInput(val) {
+            const count = parseInt(val, 10);
+            if (!count || count < 1) return;
+
+            // Sinkronkan dropdown preset jika nilainya pas
+            const presetSel = document.getElementById('presetRowSelect');
+            if (['18', '20', '22', '24', '26'].includes(String(count))) {
+                presetSel.value = String(count);
+            } else {
+                presetSel.value = 'custom';
+            }
+
+            applyToolbarRowCount(count);
+        }
+
+        // Toolbar: Menerapkan jumlah baris ke Target (Semua Ruangan atau Ruangan Tertentu)
+        function applyToolbarRowCount(count) {
+            const target = document.getElementById('targetRoomSelect').value;
+            if (target === 'all') {
+                document.querySelectorAll('.page-sheet').forEach(sheet => {
+                    applyRowsToSheet(sheet, count);
+                });
+            } else {
+                const targetSheet = document.getElementById('sheet-' + target);
+                if (targetSheet) {
+                    applyRowsToSheet(targetSheet, count);
+                }
+            }
+        }
+
+        // Toolbar: Tombol "Set Semua"
+        function applyRowsToAllFromToolbar() {
+            const val = document.getElementById('manualRowInput').value;
+            const count = parseInt(val, 10) || defaultRows;
+            document.querySelectorAll('.page-sheet').forEach(sheet => {
+                applyRowsToSheet(sheet, count);
             });
+            document.getElementById('targetRoomSelect').value = 'all';
+        }
+
+        // Toolbar: Saat mengganti target lembar ruangan pada dropdown toolbar
+        function onTargetRoomChange(roomId) {
+            if (roomId === 'all') return;
+
+            // Baca nilai baris terkini ruangan tersebut
+            const currentCount = sheetRowCounts[roomId] || defaultRows;
+            document.getElementById('manualRowInput').value = currentCount;
+            const presetSel = document.getElementById('presetRowSelect');
+            if (['18', '20', '22', '24', '26'].includes(String(currentCount))) {
+                presetSel.value = String(currentCount);
+            } else {
+                presetSel.value = 'custom';
+            }
+
+            // Scroll otomatis menuju lembar ruangan yang dipilih
+            const targetWrapper = document.getElementById('wrapper-' + roomId);
+            if (targetWrapper) {
+                targetWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // --- PENGATUR BANNER PER-LEMBAR / PER-RUANGAN ---
+
+        function applySingleSheetInput(roomId, val) {
+            if (val === 'custom') {
+                const input = document.getElementById('sheet-input-' + roomId);
+                if (input) {
+                    input.focus();
+                    input.select();
+                }
+                return;
+            }
+            const count = parseInt(val, 10);
+            if (!count || count < 1) return;
+
+            const sheet = document.getElementById('sheet-' + roomId);
+            if (sheet) {
+                applyRowsToSheet(sheet, count);
+            }
+
+            // Jika toolbar saat ini sedang mengarah ke ruangan ini, sinkronkan nilai di toolbar
+            const currentToolbarTarget = document.getElementById('targetRoomSelect').value;
+            if (currentToolbarTarget === roomId) {
+                document.getElementById('manualRowInput').value = count;
+                const presetSel = document.getElementById('presetRowSelect');
+                if (['18', '20', '22', '24', '26'].includes(String(count))) {
+                    presetSel.value = String(count);
+                } else {
+                    presetSel.value = 'custom';
+                }
+            }
+        }
+
+        function stepSheetRow(roomId, delta) {
+            const current = sheetRowCounts[roomId] || defaultRows;
+            const nextCount = Math.max(1, Math.min(45, current + delta));
+            applySingleSheetInput(roomId, nextCount);
         }
     </script>
 </body>
