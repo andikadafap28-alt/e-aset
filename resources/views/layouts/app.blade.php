@@ -144,7 +144,7 @@
                             </button>
                             <div x-show="subPemeliharaan" class="pl-4 border-l border-slate-700 ml-2 mt-1 space-y-1">
                                 <a href="{{ route('aset.pemeliharaan.index') }}" class="{{ request()->routeIs('aset.pemeliharaan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-1.5 text-xs transition-colors">Pemeliharaan Alat</a>
-                                <a href="{{ route('rooms.lembar_pemeliharaan') }}" class="{{ request()->routeIs('rooms.lembar_pemeliharaan*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-1.5 text-xs transition-colors">Lembar Pemeliharaan Ruangan</a>
+                                <a href="{{ route('rooms.lembar_pemeliharaan') }}" class="{{ request()->routeIs('rooms.lembar_pemeliharaan*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-1.5 text-xs transition-colors">Lembar Pemeliharaan Alat</a>
                                 <a href="{{ route('rooms.index') }}" class="{{ request()->routeIs('rooms.index') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-1.5 text-xs transition-colors">Kartu Ruangan</a>
                             </div>
                         </div>

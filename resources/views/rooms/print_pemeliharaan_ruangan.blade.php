@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lembar Pemeliharaan Ruangan - A4 (21cm x 29.7cm)</title>
+    <title>Lembar Pemeliharaan Alat - A4 (21cm x 29.7cm)</title>
     <style>
         @page {
             size: A4 portrait; /* Standar Ukuran Kertas A4: 210mm x 297mm */
@@ -384,6 +384,8 @@
             height: 25px;
             vertical-align: middle;
             line-height: 1.15;
+            white-space: nowrap; /* Mencegah kata seperti VOLUME terpotong menjadi VOLUM dan E */
+            padding: 3px 2px;
         }
         .main-table td {
             height: 20px;
@@ -520,7 +522,7 @@
             <!-- Pengatur Tanggal Interaktif -->
             <div style="display: flex; align-items: center; gap: 6px;">
                 <label for="datePicker">Tanggal Lembar:</label>
-                <input type="date" id="datePicker" value="{{ $defaultDateInput }}" onchange="changeDocDate(this.value)" title="Ubah tanggal tanda tangan lembar pemeliharaan">
+                <input type="date" id="datePicker" value="{{ $defaultDateInput }}" onchange="changeDocDate(this.value)" title="Ubah tanggal tanda tangan lembar pemeliharaan alat">
             </div>
 
             <!-- Target Ruangan yang Diatur Toolbar -->
@@ -654,7 +656,7 @@
 
                     <!-- Judul Dokumen -->
                     <div class="doc-title">
-                        <h2>LEMBAR PEMELIHARAAN RUANGAN</h2>
+                        <h2>LEMBAR PEMELIHARAAN ALAT</h2>
                         <p>(Lembar kontrol fisik sarana, prasarana, dan alat yang ditempel di setiap ruangan)</p>
                     </div>
 
@@ -684,12 +686,12 @@
                             <tr>
                                 <th style="width: 4%;">NO</th>
                                 <th style="width: 11%;">TANGGAL</th>
-                                <th style="width: 24%;">NAMA BARANG</th>
-                                <th style="width: 7%;">VOLUME</th>
-                                <th style="width: 7%;">SATUAN</th>
-                                <th style="width: 19%;">NAMA PIHAK PEMELIHARA</th>
-                                <th style="width: 19%;">KETERANGAN</th>
-                                <th style="width: 9%;">PARAF</th>
+                                <th style="width: 23%;">NAMA BARANG</th>
+                                <th style="width: 9%;">VOLUME</th>
+                                <th style="width: 8.5%;">SATUAN</th>
+                                <th style="width: 18%;">NAMA PIHAK PEMELIHARA</th>
+                                <th style="width: 18%;">KETERANGAN</th>
+                                <th style="width: 8.5%;">PARAF</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -746,7 +748,7 @@
                     </div>
 
                     <div class="footer-note">
-                        <span>* Lembar ini wajib diisi dan ditandatangani petugas setiap kali pemeliharaan dilakukan.</span>
+                        <span>* Lembar ini wajib diisi dan ditandatangani petugas setiap kali pemeliharaan alat dilakukan.</span>
                         <span>Ruangan: {{ $currentRoom->name }} | Puskesmas Mantup</span>
                     </div>
                 </div>
