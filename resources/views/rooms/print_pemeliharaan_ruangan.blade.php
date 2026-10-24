@@ -16,6 +16,10 @@
             print-color-adjust: exact;
         }
 
+        :root {
+            --ttd-shift-y: 0mm;
+        }
+
         body {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 8.5pt;
@@ -117,6 +121,14 @@
             background: #0369a1;
         }
 
+        .btn-emerald {
+            background: #059669;
+            color: white;
+        }
+        .btn-emerald:hover {
+            background: #047857;
+        }
+
         .preview-wrapper {
             margin-top: 65px;
             padding: 20px 10px 40px;
@@ -124,6 +136,21 @@
             flex-direction: column;
             align-items: center;
             gap: 28px;
+        }
+
+        /* Banner Informasi Mode Cetak Susulan TTD */
+        .banner-susulan {
+            width: 210mm;
+            max-width: 95vw;
+            background: #451a03;
+            border: 1.5px solid #f59e0b;
+            border-radius: 8px;
+            padding: 10px 16px;
+            color: #fef3c7;
+            font-size: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+            margin-bottom: -15px;
+            box-sizing: border-box;
         }
 
         /* Pembungkus per Lembar Ruangan (Layar) */
@@ -360,7 +387,7 @@
             font-weight: bold;
         }
 
-        /* Tabel Utama Pemeliharaan Ruangan */
+        /* Tabel Utama Pemeliharaan Alat */
         .main-table {
             width: 100%;
             border-collapse: collapse;
@@ -412,12 +439,15 @@
             margin-top: 4px;
             page-break-inside: avoid;
             break-inside: avoid;
+            transform: translateY(var(--ttd-shift-y, 0mm));
+            transition: transform 0.1s ease;
         }
         .ttd-box {
             width: 47%;
             text-align: center;
             font-size: 8.5pt;
             line-height: 1.25;
+            position: relative;
         }
         .ttd-box .ttd-jabatan {
             font-weight: bold;
@@ -426,6 +456,10 @@
         }
         .ttd-space {
             height: 48px; /* Spasi tanda tangan lega & pas untuk A4 */
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .ttd-nama {
             font-weight: bold;
@@ -435,6 +469,26 @@
         .ttd-nip {
             font-size: 7.8pt;
             margin-top: 1px;
+        }
+
+        /* Gambar Tanda Tangan Digital Presisi */
+        .ttd-img {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            pointer-events: none;
+            display: none;
+            object-fit: contain;
+        }
+        .ttd-img-kapus {
+            max-height: 52px;
+            max-width: 130px;
+        }
+        .ttd-img-pengurus {
+            max-height: 50px;
+            max-width: 125px;
         }
 
         /* Catatan Kaki */
@@ -448,12 +502,35 @@
             justify-content: space-between;
         }
 
+        /* ========================================================
+           MODE HANYA CETAK TTD (SUSULAN DI KERTAS JADI)
+           Tabel, Kop, dan info tetap memakan ruang (visibility: hidden)
+           sehingga posisi TTD di bawah 100% PERSIS sama!
+           ======================================================== */
+        body.mode-ttd-only .kop-table,
+        body.mode-ttd-only .doc-title,
+        body.mode-ttd-only .info-table,
+        body.mode-ttd-only .main-table,
+        body.mode-ttd-only .footer-note {
+            visibility: hidden !important;
+        }
+
+        /* Opsi sembunyikan teks nama/NIP jika di kertas fisik sudah tercetak teks namanya */
+        body.mode-ttd-only.hide-text-ttd .ttd-box .ttd-prefix,
+        body.mode-ttd-only.hide-text-ttd .ttd-box .doc-date-display,
+        body.mode-ttd-only.hide-text-ttd .ttd-box .ttd-jabatan,
+        body.mode-ttd-only.hide-text-ttd .ttd-box .ttd-nama,
+        body.mode-ttd-only.hide-text-ttd .ttd-box .ttd-nip,
+        body.mode-ttd-only.hide-text-ttd .ttd-box br {
+            visibility: hidden !important;
+        }
+
         /* Mode Print Presisi Tanpa Terpotong */
         @media print {
             body {
                 background: white !important;
             }
-            .toolbar, .sheet-control-banner {
+            .toolbar, .sheet-control-banner, .banner-susulan, .modal-backdrop {
                 display: none !important;
             }
             .preview-wrapper {
@@ -495,23 +572,23 @@
             }
         }
     </style>
+@php
+    $roomList = isset($rooms) ? $rooms : collect([$room]);
+    $defaultDateInput = $docDate ?? '2026-01-02';
+    
+    // Format tanggal Indonesia default "02 Januari 2026"
+    $carbonDate = \Carbon\Carbon::parse($defaultDateInput)->locale('id');
+    $dayFormatted = sprintf('%02d', $carbonDate->day);
+    $monthFormatted = $carbonDate->isoFormat('MMMM');
+    $yearFormatted = $carbonDate->year;
+    $initialFormattedDate = $dayFormatted . ' ' . $monthFormatted . ' ' . $yearFormatted;
+
+    // Target baris tabel (default: 24 baris optimal untuk kertas A4 1 halaman)
+    $defaultTargetRows = $targetRows ?? 24;
+    $initialPrintMode = $printMode ?? request('mode', 'full');
+@endphp
 </head>
-<body>
-
-    @php
-        $roomList = isset($rooms) ? $rooms : collect([$room]);
-        $defaultDateInput = $docDate ?? '2026-01-02';
-        
-        // Format tanggal Indonesia default "02 Januari 2026"
-        $carbonDate = \Carbon\Carbon::parse($defaultDateInput)->locale('id');
-        $dayFormatted = sprintf('%02d', $carbonDate->day);
-        $monthFormatted = $carbonDate->isoFormat('MMMM');
-        $yearFormatted = $carbonDate->year;
-        $initialFormattedDate = $dayFormatted . ' ' . $monthFormatted . ' ' . $yearFormatted;
-
-        // Target baris tabel (default: 24 baris optimal untuk kertas A4 1 halaman)
-        $defaultTargetRows = $targetRows ?? 24;
-    @endphp
+<body class="{{ $initialPrintMode === 'ttd_only' ? 'mode-ttd-only hide-text-ttd' : '' }}">
 
     <!-- Toolbar Atas Interaktif (Hanya tampil di layar) -->
     <div class="toolbar">
@@ -525,25 +602,40 @@
         </div>
 
         <div class="toolbar-group">
+            <!-- Mode Cetak: Dokumen Lengkap vs Hanya TTD Susulan -->
+            <div style="display: flex; align-items: center; gap: 5px; background: rgba(30, 41, 59, 0.9); padding: 3px 8px; border-radius: 6px; border: 1px solid #475569;">
+                <label for="printModeSelect" style="color: #facc15; font-weight: 700;">Mode Cetak:</label>
+                <select id="printModeSelect" onchange="changePrintMode(this.value)" style="border-color: #f59e0b; color: #fef08a;" title="Pilih apakah ingin mencetak dokumen lengkap atau hanya susulan TTD pada kertas yang sudah ada">
+                    <option value="full" {{ $initialPrintMode === 'full' ? 'selected' : '' }}>📄 Dokumen Lengkap</option>
+                    <option value="ttd_only" {{ $initialPrintMode === 'ttd_only' ? 'selected' : '' }}>✍️ Hanya TTD (Susulan di Kertas Jadi)</option>
+                </select>
+            </div>
+
+            <!-- Tombol Buka Panel TTD Digital & Stempel -->
+            <button type="button" onclick="openTtdModal()" class="btn btn-emerald" title="Atur Gambar Tanda Tangan & Cap Stempel">
+                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                Atur TTD & Cap
+            </button>
+
             <!-- Pengatur Tanggal Interaktif -->
             <div style="display: flex; align-items: center; gap: 6px;">
-                <label for="datePicker">Tanggal Lembar:</label>
+                <label for="datePicker">Tanggal:</label>
                 <input type="date" id="datePicker" value="{{ $defaultDateInput }}" onchange="changeDocDate(this.value)" title="Ubah tanggal tanda tangan lembar pemeliharaan alat">
             </div>
 
             <!-- Target Ruangan yang Diatur Toolbar -->
             <div style="display: flex; align-items: center; gap: 6px;">
-                <label for="targetRoomSelect">Target Lembar:</label>
-                <select id="targetRoomSelect" onchange="onTargetRoomChange(this.value)" style="max-width: 190px;" title="Pilih apakah ingin mengubah semua ruangan atau ruangan spesifik">
-                    <option value="all">🌐 Semua Ruangan ({{ $roomList->count() }})</option>
+                <label for="targetRoomSelect">Target:</label>
+                <select id="targetRoomSelect" onchange="onTargetRoomChange(this.value)" style="max-width: 170px;" title="Pilih apakah ingin mengubah semua ruangan atau ruangan spesifik">
+                    <option value="all">🌐 Semua Ruangan</option>
                     @foreach($roomList as $idx => $r)
                         <option value="{{ $r->id }}">#{{ $idx + 1 }} {{ $r->name }}</option>
                     @endforeach
                 </select>
             </div>
 
-            <!-- Pengatur Jumlah Baris (Dropdown & Input Manual) -->
-            <div style="display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15);">
+            <!-- Pengatur Jumlah Baris (Dropdown & Input Manual, termasuk opsi 30 & 35 baris) -->
+            <div style="display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15);">
                 <label for="presetRowSelect">Baris:</label>
                 
                 <!-- Pilihan Cepat Dropdown -->
@@ -553,12 +645,14 @@
                     <option value="22" {{ $defaultTargetRows == 22 ? 'selected' : '' }}>22 Baris</option>
                     <option value="24" {{ $defaultTargetRows == 24 ? 'selected' : '' }}>24 Baris (A4)</option>
                     <option value="26" {{ $defaultTargetRows == 26 ? 'selected' : '' }}>26 Baris</option>
+                    <option value="30" {{ $defaultTargetRows == 30 ? 'selected' : '' }}>30 Baris</option>
+                    <option value="35" {{ $defaultTargetRows == 35 ? 'selected' : '' }}>35 Baris (Maksimal)</option>
                     <option value="custom">Kustom...</option>
                 </select>
 
                 <!-- Input Manual Angka -->
-                <div style="display: inline-flex; align-items: center; gap: 4px;">
-                    <input type="number" id="manualRowInput" min="1" max="45" value="{{ $defaultTargetRows }}" oninput="onManualRowInput(this.value)" style="width: 52px; text-align: center;" title="Ketik angka manual jumlah baris yang diinginkan">
+                <div style="display: inline-flex; align-items: center; gap: 3px;">
+                    <input type="number" id="manualRowInput" min="1" max="50" value="{{ $defaultTargetRows }}" oninput="onManualRowInput(this.value)" style="width: 48px; text-align: center;" title="Ketik angka manual jumlah baris yang diinginkan">
                     <span style="font-size: 11px; color: #cbd5e1;">baris</span>
                 </div>
 
@@ -569,14 +663,44 @@
             </div>
 
             <!-- Tombol Cetak -->
-            <button onclick="window.print()" class="btn btn-print">
+            <button id="btnPrintMain" onclick="window.print()" class="btn btn-print" style="{{ $initialPrintMode === 'ttd_only' ? 'background: #059669;' : '' }}">
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                Cetak Lembar A4
+                <span id="btnPrintText">{{ $initialPrintMode === 'ttd_only' ? 'Cetak TTD Saja' : 'Cetak Lembar A4' }}</span>
             </button>
         </div>
     </div>
 
     <div class="preview-wrapper">
+        <!-- Banner Peringatan & Pengaturan Mode Susulan TTD (Hanya Tampil di Layar Saat Mode Susulan Aktif) -->
+        <div id="banner-susulan-info" class="banner-susulan" style="display: {{ $initialPrintMode === 'ttd_only' ? 'block' : 'none' }};">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                    <span style="font-size: 20px; line-height: 1;">✍️</span>
+                    <div>
+                        <strong style="color: #fef08a; font-size: 13px;">MODE SUSULAN TTD DIAKTIFKAN:</strong>
+                        <p style="margin: 3px 0 0; line-height: 1.4; color: #fde68a;">
+                            Tabel, Kop, dan info ruangan <strong>disembunyikan transparan</strong> agar tata letak tetap presisi (tinggi & posisi sama persis). Masukkan kembali kertas A4 yang sudah tercetak tabelnya ke dalam printer, lalu klik <strong>Cetak TTD Saja</strong>.
+                        </p>
+                        <div style="display: flex; align-items: center; gap: 16px; margin-top: 8px; flex-wrap: wrap;">
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: bold; color: #ffffff;">
+                                <input type="checkbox" id="chkHideTextTtd" onchange="toggleHideTtdText(this.checked)" {{ $initialPrintMode === 'ttd_only' ? 'checked' : '' }}>
+                                Sembunyikan teks nama & NIP (Jika di kertas fisik sudah tercetak teks namanya)
+                            </label>
+
+                            <!-- Geser Halus Vertikal (Fine Tuning Printer) -->
+                            <div style="display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 4px;">
+                                <span style="font-size: 11px; color: #cbd5e1;">Geser Posisi TTD:</span>
+                                <button type="button" onclick="adjustTtdShift(-1)" style="padding: 2px 6px; background: #78350f; color: white; border: 1px solid #b45309; border-radius: 3px; cursor: pointer; font-weight: bold;">&minus;</button>
+                                <span id="txtTtdShift" style="font-weight: bold; color: #fef08a; min-width: 38px; text-align: center;">0 mm</span>
+                                <button type="button" onclick="adjustTtdShift(1)" style="padding: 2px 6px; background: #78350f; color: white; border: 1px solid #b45309; border-radius: 3px; cursor: pointer; font-weight: bold;">&plus;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" onclick="changePrintMode('full')" style="background: none; border: none; color: #fde68a; cursor: pointer; font-size: 18px; font-weight: bold;">&times;</button>
+            </div>
+        </div>
+
         @foreach($roomList as $index => $currentRoom)
         @php
             // Ambil riwayat pemeliharaan jika ada aset di ruangan ini
@@ -620,7 +744,7 @@
                     <label>Baris Lembar Ini:</label>
                     <div class="stepper-box">
                         <button type="button" class="btn-step" onclick="stepSheetRow('{{ $currentRoom->id }}', -1)" title="Kurangi 1 baris">&minus;</button>
-                        <input type="number" id="sheet-input-{{ $currentRoom->id }}" min="1" max="45" value="{{ $defaultTargetRows }}" class="sheet-row-input" oninput="applySingleSheetInput('{{ $currentRoom->id }}', this.value)" title="Ketik angka manual untuk lembar ini">
+                        <input type="number" id="sheet-input-{{ $currentRoom->id }}" min="1" max="50" value="{{ $defaultTargetRows }}" class="sheet-row-input" oninput="applySingleSheetInput('{{ $currentRoom->id }}', this.value)" title="Ketik angka manual untuk lembar ini">
                         <button type="button" class="btn-step" onclick="stepSheetRow('{{ $currentRoom->id }}', 1)" title="Tambah 1 baris">&plus;</button>
                     </div>
 
@@ -631,6 +755,8 @@
                         <option value="22" {{ $defaultTargetRows == 22 ? 'selected' : '' }}>22</option>
                         <option value="24" {{ $defaultTargetRows == 24 ? 'selected' : '' }}>24 (A4)</option>
                         <option value="26" {{ $defaultTargetRows == 26 ? 'selected' : '' }}>26</option>
+                        <option value="30" {{ $defaultTargetRows == 30 ? 'selected' : '' }}>30</option>
+                        <option value="35" {{ $defaultTargetRows == 35 ? 'selected' : '' }}>35</option>
                         <option value="custom">Kustom</option>
                     </select>
 
@@ -686,7 +812,7 @@
                         </tr>
                     </table>
 
-                    <!-- Tabel Utama Pemeliharaan Ruangan (A4 Pas Tanpa Terpotong) -->
+                    <!-- Tabel Utama Pemeliharaan Alat (A4 Pas Tanpa Terpotong) -->
                     <table class="main-table" data-existing="{{ $existingCount }}">
                         <thead>
                             <tr>
@@ -735,19 +861,30 @@
                 </div>
 
                 <div>
-                    <!-- Kolom Tanda Tangan Luas & Lega -->
+                    <!-- Kolom Tanda Tangan Luas & Lega (Dapat Dilengkapi Gambar TTD & Cap Digital) -->
                     <div class="ttd-wrapper">
                         <div class="ttd-box">
-                            Mengetahui,<br>
+                            <span class="ttd-prefix">Mengetahui,</span><br>
                             <span class="ttd-jabatan">Kepala Puskesmas Mantup</span>
-                            <div class="ttd-space"></div>
+                            
+                            <!-- Area TTD dr. Sunaryadi (Asli Tanpa Stempel) -->
+                            <div class="ttd-space">
+                                <img src="{{ asset('images/ttd_kapus_nostamp.png') }}" class="ttd-img ttd-img-kapus" alt="TTD dr. Sunaryadi">
+                            </div>
+                            
                             <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
                             <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
                         </div>
+
                         <div class="ttd-box">
-                            Mantup, <span class="doc-date-display">{{ $initialFormattedDate }}</span><br>
+                            <span class="ttd-prefix">Mantup, </span><span class="doc-date-display">{{ $initialFormattedDate }}</span><br>
                             <span class="ttd-jabatan">Pengurus Barang Pembantu</span>
-                            <div class="ttd-space"></div>
+                            
+                            <!-- Area TTD Andika Dafa Penta P. (asd.png) -->
+                            <div class="ttd-space">
+                                <img src="{{ asset('images/ttd_andika.png') }}" class="ttd-img ttd-img-pengurus" alt="TTD Andika Dafa">
+                            </div>
+                            
                             <div class="ttd-nama">ANDIKA DAFA PENTA P.</div>
                             <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
                         </div>
@@ -763,10 +900,124 @@
         @endforeach
     </div>
 
-    <!-- Script Pengatur Tanggal, Dropdown Cepat & Input Manual Baris Dinamis -->
+    <!-- Modal Pengaturan TTD & Cap Stempel Digital -->
+    <div id="modalTtd" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div style="background: #1e293b; color: white; border-radius: 12px; width: 520px; max-width: 95vw; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #334155;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 12px; margin-bottom: 15px;">
+                <h3 style="margin: 0; font-size: 15px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 8px;">
+                    <span>✍️</span> Pengaturan Tanda Tangan & Cap Stempel
+                </h3>
+                <button type="button" onclick="closeTtdModal()" style="background: none; border: none; color: #94a3b8; font-size: 22px; cursor: pointer; line-height: 1;">&times;</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                <!-- TTD Kepala Puskesmas (dr. Muhamad Sunaryadi) -->
+                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #334155;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: #ffffff; font-size: 13px;">1. TTD dr. Muhamad Sunaryadi</strong>
+                            <div style="font-size: 11px; color: #94a3b8;">Kepala Puskesmas Mantup (Asli Tanpa Stempel)</div>
+                        </div>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; font-weight: bold;">
+                            <input type="checkbox" id="chkEnableKapusTtd" onchange="toggleKapusTtd(this.checked)" checked>
+                            <span style="color: #38bdf8;">Tampilkan</span>
+                        </label>
+                    </div>
+                    <div style="margin-top: 10px; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px;">
+                        <img id="preview-modal-kapus" src="{{ asset('images/ttd_kapus_nostamp.png') }}" style="max-height: 48px; max-width: 100px; background: white; padding: 2px; border-radius: 4px; object-fit: contain;" alt="TTD dr. Sunaryadi">
+                        <div style="font-size: 11.5px; color: #cbd5e1; flex: 1;">
+                            <div style="font-weight: bold; color: #f8fafc;">Tanda Tangan Tinta Biru dr. Sunaryadi</div>
+                            <div style="display: flex; gap: 12px; margin-top: 5px;">
+                                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 11px; color: #e2e8f0;">
+                                    <input type="radio" name="kapus_type" value="nostamp" checked onchange="changeKapusTtdType(this.value)">
+                                    Tanpa Stempel (Aktif)
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 11px; color: #94a3b8;">
+                                    <input type="radio" name="kapus_type" value="stamp" onchange="changeKapusTtdType(this.value)">
+                                    Dengan Cap Stempel
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TTD Pengurus Barang Pembantu (Andika Dafa Penta P.) -->
+                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #334155;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: #ffffff; font-size: 13px;">2. TTD Andika Dafa Penta P.</strong>
+                            <div style="font-size: 11px; color: #94a3b8;">Pengurus Barang Pembantu (asd.png)</div>
+                        </div>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; font-weight: bold;">
+                            <input type="checkbox" id="chkEnablePengurusTtd" onchange="togglePengurusTtd(this.checked)" checked>
+                            <span style="color: #38bdf8;">Tampilkan</span>
+                        </label>
+                    </div>
+
+                    <!-- Preview & Tombol Upload / Buat TTD -->
+                    <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div id="preview-ttd-pengurus-box" style="width: 100px; height: 48px; background: white; border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #475569;">
+                                <img id="modal-preview-pengurus" src="{{ asset('images/ttd_andika.png') }}" style="max-height: 45px; max-width: 95px; object-fit: contain;">
+                                <span id="modal-preview-placeholder" style="font-size: 10px; color: #64748b; font-style: italic; display: none;">Belum ada TTD</span>
+                            </div>
+                            <span id="txt-status-ttd-pengurus" style="font-size: 11.5px; color: #cbd5e1;"><span style="color: #4ade80; font-weight: bold;">✓ TTD Andika Siap Digunakan</span></span>
+                        </div>
+
+                        <div style="display: flex; gap: 6px;">
+                            <button type="button" onclick="document.getElementById('fileTtdPengurus').click()" class="btn" style="padding: 5px 10px; font-size: 11px; background: #3b82f6; color: white;">
+                                📁 Ganti Foto
+                            </button>
+                            <button type="button" onclick="openPadModal()" class="btn" style="padding: 5px 10px; font-size: 11px; background: #8b5cf6; color: white;">
+                                ✍️ Gambar Ulang
+                            </button>
+                            <button type="button" onclick="resetAndikaTtdToDefault()" class="btn" style="padding: 5px 10px; font-size: 11px; background: #334155; color: #cbd5e1;" title="Kembalikan ke TTD asli bawaan">
+                                ↺ Reset Asli
+                            </button>
+                        </div>
+                        <input type="file" id="fileTtdPengurus" accept="image/*" onchange="handlePengurusFileUpload(event)" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 18px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" onclick="closeTtdModal()" class="btn btn-emerald" style="padding: 7px 18px;">Simpan & Terapkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gambar Tanda Tangan di Layar (Canvas Pad) -->
+    <div id="modalPad" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10001; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div style="background: #1e293b; color: white; border-radius: 12px; width: 440px; max-width: 95vw; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #334155;">
+            <h3 style="margin: 0 0 8px; font-size: 15px; font-weight: bold; color: #a78bfa;">
+                ✍️ Gambar Tanda Tangan Anda (Andika Dafa)
+            </h3>
+            <p style="margin: 0 0 12px; font-size: 11.5px; color: #94a3b8;">
+                Tarik kursor mouse atau goreskan jari pada layar sentuh untuk menandatangani:
+            </p>
+            
+            <div style="background: white; border-radius: 8px; border: 2px dashed #64748b; overflow: hidden; display: flex; justify-content: center;">
+                <canvas id="sigCanvas" width="400" height="160" style="touch-action: none; cursor: crosshair;"></canvas>
+            </div>
+
+            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <button type="button" onclick="clearSignatureCanvas()" class="btn" style="background: #475569; color: white; padding: 6px 12px; font-size: 12px;">Hapus Ulang</button>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" onclick="closePadModal()" class="btn" style="background: #334155; color: white; padding: 6px 12px; font-size: 12px;">Batal</button>
+                    <button type="button" onclick="saveSignatureFromPad()" class="btn btn-emerald" style="padding: 6px 14px; font-size: 12px;">Gunakan TTD Ini</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Pengatur Tanggal, Dropdown Cepat, Input Manual Baris & Mode Susulan TTD -->
     <script>
         const sheetRowCounts = {};
         const defaultRows = {{ $defaultTargetRows }};
+        let currentTtdShift = 0; // dalam mm
+        const defaultKapusNoStamp = "{{ asset('images/ttd_kapus_nostamp.png') }}";
+        const defaultKapusStamp = "{{ asset('images/ttd_baru.png') }}";
+        const defaultAndikaTtd = "{{ asset('images/ttd_andika.png') }}";
 
         // Inisialisasi awal target baris untuk tiap sheet
         document.addEventListener('DOMContentLoaded', function() {
@@ -776,8 +1027,282 @@
                     sheetRowCounts[id] = defaultRows;
                 }
             });
+
+            // 1. Tampilkan TTD dr. Sunaryadi (Asli Tanpa Stempel) secara default
+            toggleKapusTtd(true);
+            const chkKapus = document.getElementById('chkEnableKapusTtd');
+            if (chkKapus) chkKapus.checked = true;
+
+            // 2. Tampilkan TTD Andika Dafa (asd.png) secara default (atau dari localStorage jika ada kustomisasi)
+            const savedTtdAndika = localStorage.getItem('e_aset_ttd_andika');
+            if (savedTtdAndika) {
+                applyPengurusSignatureSrc(savedTtdAndika);
+            } else {
+                applyPengurusSignatureSrc(defaultAndikaTtd);
+            }
+            togglePengurusTtd(true);
+            const chkPengurus = document.getElementById('chkEnablePengurusTtd');
+            if (chkPengurus) chkPengurus.checked = true;
+
+            initSignatureCanvas();
+
+            // Cek inisialisasi mode dari server / url query
+            const urlParams = new URLSearchParams(window.location.search);
+            const initMode = '{{ $initialPrintMode }}' || urlParams.get('mode') || 'full';
+            if (initMode === 'ttd_only') {
+                changePrintMode('ttd_only');
+            }
         });
 
+        function changeKapusTtdType(type) {
+            const src = (type === 'stamp') ? defaultKapusStamp : defaultKapusNoStamp;
+            document.querySelectorAll('.ttd-img-kapus').forEach(img => {
+                img.src = src;
+                if (type === 'stamp') {
+                    img.style.maxHeight = '64px';
+                    img.style.maxWidth = '135px';
+                } else {
+                    img.style.maxHeight = '52px';
+                    img.style.maxWidth = '130px';
+                }
+            });
+            const preview = document.getElementById('preview-modal-kapus');
+            if (preview) preview.src = src;
+        }
+
+        function resetAndikaTtdToDefault() {
+            localStorage.removeItem('e_aset_ttd_andika');
+            applyPengurusSignatureSrc(defaultAndikaTtd);
+        }
+
+        // ==========================================
+        // FITUR MODE CETAK & SUSULAN TTD DI KERTAS JADI
+        // ==========================================
+        function changePrintMode(mode) {
+            const body = document.body;
+            const banner = document.getElementById('banner-susulan-info');
+            const btnPrintText = document.getElementById('btnPrintText');
+            const btnPrintMain = document.getElementById('btnPrintMain');
+            const modeSelect = document.getElementById('printModeSelect');
+            const chkHide = document.getElementById('chkHideTextTtd');
+
+            if (modeSelect) modeSelect.value = mode;
+
+            if (mode === 'ttd_only') {
+                body.classList.add('mode-ttd-only');
+                if (banner) banner.style.display = 'block';
+                if (btnPrintText) btnPrintText.textContent = 'Cetak TTD Saja';
+                if (btnPrintMain) {
+                    btnPrintMain.style.background = '#059669';
+                    btnPrintMain.title = 'Mencetak hanya tanda tangan & cap ke atas kertas A4 yang sudah jadi';
+                }
+                if (chkHide) {
+                    chkHide.checked = true;
+                    toggleHideTtdText(true);
+                }
+                // Pastikan gambar TTD aktif
+                toggleKapusTtd(true);
+                const chkKapus = document.getElementById('chkEnableKapusTtd');
+                if (chkKapus) chkKapus.checked = true;
+
+                togglePengurusTtd(true);
+                const chkPengurus = document.getElementById('chkEnablePengurusTtd');
+                if (chkPengurus) chkPengurus.checked = true;
+            } else {
+                body.classList.remove('mode-ttd-only');
+                body.classList.remove('hide-text-ttd');
+                if (chkHide) chkHide.checked = false;
+                if (banner) banner.style.display = 'none';
+                if (btnPrintText) btnPrintText.textContent = 'Cetak Lembar A4';
+                if (btnPrintMain) {
+                    btnPrintMain.style.background = '#2563eb';
+                    btnPrintMain.title = 'Mencetak dokumen lengkap (Kop, Tabel, dan TTD)';
+                }
+            }
+        }
+
+        function toggleHideTtdText(hide) {
+            if (hide) {
+                document.body.classList.add('hide-text-ttd');
+            } else {
+                document.body.classList.remove('hide-text-ttd');
+            }
+        }
+
+        function adjustTtdShift(delta) {
+            currentTtdShift += delta;
+            document.documentElement.style.setProperty('--ttd-shift-y', currentTtdShift + 'mm');
+            const txt = document.getElementById('txtTtdShift');
+            if (txt) {
+                txt.textContent = (currentTtdShift > 0 ? '+' : '') + currentTtdShift + ' mm';
+            }
+        }
+
+        // ==========================================
+        // MODAL TTD & UPLOAD / GAMBAR TTD
+        // ==========================================
+        function openTtdModal() {
+            const modal = document.getElementById('modalTtd');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeTtdModal() {
+            const modal = document.getElementById('modalTtd');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function toggleKapusTtd(show) {
+            document.querySelectorAll('.ttd-img-kapus').forEach(img => {
+                img.style.display = show ? 'block' : 'none';
+            });
+        }
+
+        function togglePengurusTtd(show) {
+            document.querySelectorAll('.ttd-img-pengurus').forEach(img => {
+                if (show && img.getAttribute('src')) {
+                    img.style.display = 'block';
+                } else {
+                    img.style.display = 'none';
+                }
+            });
+        }
+
+        function handlePengurusFileUpload(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                savePengurusSignature(evt.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function savePengurusSignature(dataUrl) {
+            try {
+                localStorage.setItem('e_aset_ttd_andika', dataUrl);
+            } catch (err) {
+                console.warn('Storage quota exceeded', err);
+            }
+            applyPengurusSignatureSrc(dataUrl);
+            const chk = document.getElementById('chkEnablePengurusTtd');
+            if (chk) chk.checked = true;
+            togglePengurusTtd(true);
+        }
+
+        function applyPengurusSignatureSrc(src) {
+            document.querySelectorAll('.ttd-img-pengurus').forEach(img => {
+                img.src = src;
+            });
+            const preview = document.getElementById('modal-preview-pengurus');
+            const placeholder = document.getElementById('modal-preview-placeholder');
+            const statusText = document.getElementById('txt-status-ttd-pengurus');
+            if (preview && placeholder) {
+                if (src) {
+                    preview.src = src;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    if (statusText) statusText.innerHTML = '<span style="color: #4ade80; font-weight: bold;">✓ TTD Anda Siap Digunakan</span>';
+                } else {
+                    preview.style.display = 'none';
+                    placeholder.style.display = 'block';
+                    if (statusText) statusText.textContent = 'Upload foto TTD atau buat langsung.';
+                }
+            }
+        }
+
+        // ==========================================
+        // CANVAS SIGNATURE PAD (GAMBAR TTD DI LAYAR)
+        // ==========================================
+        let sigCanvas, sigCtx, isDrawing = false;
+
+        function openPadModal() {
+            const modal = document.getElementById('modalPad');
+            if (modal) modal.style.display = 'flex';
+            setTimeout(() => {
+                clearSignatureCanvas();
+            }, 50);
+        }
+
+        function closePadModal() {
+            const modal = document.getElementById('modalPad');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function initSignatureCanvas() {
+            sigCanvas = document.getElementById('sigCanvas');
+            if (!sigCanvas) return;
+            sigCtx = sigCanvas.getContext('2d');
+            sigCtx.lineWidth = 2.8;
+            sigCtx.lineCap = 'round';
+            sigCtx.lineJoin = 'round';
+            sigCtx.strokeStyle = '#000080'; // Biru tinta pena dinas
+
+            function getPos(e) {
+                const rect = sigCanvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: (clientX - rect.left) * (sigCanvas.width / rect.width),
+                    y: (clientY - rect.top) * (sigCanvas.height / rect.height)
+                };
+            }
+
+            function start(e) {
+                isDrawing = true;
+                const pos = getPos(e);
+                sigCtx.beginPath();
+                sigCtx.moveTo(pos.x, pos.y);
+                e.preventDefault();
+            }
+
+            function move(e) {
+                if (!isDrawing) return;
+                const pos = getPos(e);
+                sigCtx.lineTo(pos.x, pos.y);
+                sigCtx.stroke();
+                e.preventDefault();
+            }
+
+            function end() {
+                if (isDrawing) {
+                    isDrawing = false;
+                    sigCtx.closePath();
+                }
+            }
+
+            sigCanvas.addEventListener('mousedown', start);
+            sigCanvas.addEventListener('mousemove', move);
+            window.addEventListener('mouseup', end);
+
+            sigCanvas.addEventListener('touchstart', start, { passive: false });
+            sigCanvas.addEventListener('touchmove', move, { passive: false });
+            window.addEventListener('touchend', end);
+        }
+
+        function clearSignatureCanvas() {
+            if (!sigCanvas || !sigCtx) return;
+            sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+        }
+
+        function saveSignatureFromPad() {
+            if (!sigCanvas || !sigCtx) return;
+            const pixelBuffer = new Uint32Array(
+                sigCtx.getImageData(0, 0, sigCanvas.width, sigCanvas.height).data.buffer
+            );
+            const hasDrawn = pixelBuffer.some(color => color !== 0);
+            if (!hasDrawn) {
+                alert('Silakan goreskan tanda tangan Anda terlebih dahulu pada area kanvas.');
+                return;
+            }
+
+            const dataUrl = sigCanvas.toDataURL('image/png');
+            savePengurusSignature(dataUrl);
+            closePadModal();
+        }
+
+        // ==========================================
+        // FORMAT TANGGAL & ROW MANAGEMENT
+        // ==========================================
         function formatIndonesianDate(dateStr) {
             if (!dateStr) return '';
             const parts = dateStr.split('-');
@@ -828,7 +1353,7 @@
                 }
                 const sheetSelect = document.getElementById('sheet-select-' + roomId);
                 if (sheetSelect) {
-                    sheetSelect.value = ['18', '20', '22', '24', '26'].includes(String(targetCount)) ? String(targetCount) : 'custom';
+                    sheetSelect.value = ['18', '20', '22', '24', '26', '30', '35'].includes(String(targetCount)) ? String(targetCount) : 'custom';
                 }
                 const badge = document.getElementById('sheet-badge-' + roomId);
                 if (badge) {
@@ -884,7 +1409,7 @@
 
             // Sinkronkan dropdown preset jika nilainya pas
             const presetSel = document.getElementById('presetRowSelect');
-            if (['18', '20', '22', '24', '26'].includes(String(count))) {
+            if (['18', '20', '22', '24', '26', '30', '35'].includes(String(count))) {
                 presetSel.value = String(count);
             } else {
                 presetSel.value = 'custom';
@@ -922,17 +1447,15 @@
         function onTargetRoomChange(roomId) {
             if (roomId === 'all') return;
 
-            // Baca nilai baris terkini ruangan tersebut
             const currentCount = sheetRowCounts[roomId] || defaultRows;
             document.getElementById('manualRowInput').value = currentCount;
             const presetSel = document.getElementById('presetRowSelect');
-            if (['18', '20', '22', '24', '26'].includes(String(currentCount))) {
+            if (['18', '20', '22', '24', '26', '30', '35'].includes(String(currentCount))) {
                 presetSel.value = String(currentCount);
             } else {
                 presetSel.value = 'custom';
             }
 
-            // Scroll otomatis menuju lembar ruangan yang dipilih
             const targetWrapper = document.getElementById('wrapper-' + roomId);
             if (targetWrapper) {
                 targetWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -958,12 +1481,11 @@
                 applyRowsToSheet(sheet, count);
             }
 
-            // Jika toolbar saat ini sedang mengarah ke ruangan ini, sinkronkan nilai di toolbar
             const currentToolbarTarget = document.getElementById('targetRoomSelect').value;
             if (currentToolbarTarget === roomId) {
                 document.getElementById('manualRowInput').value = count;
                 const presetSel = document.getElementById('presetRowSelect');
-                if (['18', '20', '22', '24', '26'].includes(String(count))) {
+                if (['18', '20', '22', '24', '26', '30', '35'].includes(String(count))) {
                     presetSel.value = String(count);
                 } else {
                     presetSel.value = 'custom';
@@ -973,7 +1495,7 @@
 
         function stepSheetRow(roomId, delta) {
             const current = sheetRowCounts[roomId] || defaultRows;
-            const nextCount = Math.max(1, Math.min(45, current + delta));
+            const nextCount = Math.max(1, Math.min(50, current + delta));
             applySingleSheetInput(roomId, nextCount);
         }
     </script>

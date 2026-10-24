@@ -169,8 +169,9 @@ class RoomController extends Controller
         $rooms = collect([$room]);
         $docDate = $request->input('date', '2026-01-02');
         $targetRows = (int) $request->input('rows', 24);
+        $printMode = $request->input('mode', 'full');
 
-        return view('rooms.print_pemeliharaan_ruangan', compact('rooms', 'docDate', 'targetRows'));
+        return view('rooms.print_pemeliharaan_ruangan', compact('rooms', 'docDate', 'targetRows', 'printMode'));
     }
 
     public function lembarPemeliharaanIndex(Request $request)
@@ -207,7 +208,8 @@ class RoomController extends Controller
 
         $docDate = $request->input('date', '2026-01-02');
         $targetRows = (int) $request->input('rows', 24);
+        $printMode = $request->input('mode', 'full');
 
-        return view('rooms.print_pemeliharaan_ruangan', compact('rooms', 'docDate', 'targetRows'));
+        return view('rooms.print_pemeliharaan_ruangan', compact('rooms', 'docDate', 'targetRows', 'printMode'));
     }
 }
