@@ -373,23 +373,24 @@
             border: 1px solid #000;
             padding: 2px 3px;
             box-sizing: border-box;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
         }
         .main-table th {
             background-color: #f1f5f9;
             text-align: center;
             font-weight: bold;
             font-size: 8pt;
-            height: 25px;
+            height: 28px;
             vertical-align: middle;
-            line-height: 1.15;
-            white-space: nowrap; /* Mencegah kata seperti VOLUME terpotong menjadi VOLUM dan E */
-            padding: 3px 2px;
+            line-height: 1.2;
+            padding: 2px 2px;
+            word-break: normal;
+            overflow-wrap: normal;
         }
         .main-table td {
             height: 20px;
             vertical-align: middle;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         .main-table tr.blank-row td {
             height: 20px; /* Tinggi baris pas & proporsional untuk kertas A4 */
@@ -687,11 +688,11 @@
                                 <th style="width: 4%;">NO</th>
                                 <th style="width: 11%;">TANGGAL</th>
                                 <th style="width: 23%;">NAMA BARANG</th>
-                                <th style="width: 9%;">VOLUME</th>
-                                <th style="width: 8.5%;">SATUAN</th>
-                                <th style="width: 18%;">NAMA PIHAK PEMELIHARA</th>
-                                <th style="width: 18%;">KETERANGAN</th>
-                                <th style="width: 8.5%;">PARAF</th>
+                                <th style="width: 8.5%; white-space: nowrap;">VOLUME</th>
+                                <th style="width: 8%; white-space: nowrap;">SATUAN</th>
+                                <th style="width: 18.5%;">NAMA PIHAK<br>PEMELIHARA</th>
+                                <th style="width: 18.5%;">KETERANGAN</th>
+                                <th style="width: 8.5%; white-space: nowrap;">PARAF</th>
                             </tr>
                         </thead>
                         <tbody>
