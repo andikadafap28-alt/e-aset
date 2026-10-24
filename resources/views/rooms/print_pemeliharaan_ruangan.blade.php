@@ -483,12 +483,12 @@
             object-fit: contain;
         }
         .ttd-img-kapus {
-            max-height: 52px;
-            max-width: 130px;
+            max-height: 62px;
+            max-width: 145px;
         }
         .ttd-img-pengurus {
-            max-height: 50px;
-            max-width: 125px;
+            max-height: 52px;
+            max-width: 130px;
         }
 
         /* Catatan Kaki */
@@ -867,9 +867,9 @@
                             <span class="ttd-prefix">Mengetahui,</span><br>
                             <span class="ttd-jabatan">Kepala Puskesmas Mantup</span>
                             
-                            <!-- Area TTD dr. Sunaryadi (Asli Tanpa Stempel) -->
+                            <!-- Area TTD dr. Sunaryadi (Asli Tanpa Stempel - Hitam Pekat) -->
                             <div class="ttd-space">
-                                <img src="{{ asset('images/ttd_kapus_nostamp.png') }}" class="ttd-img ttd-img-kapus" alt="TTD dr. Sunaryadi">
+                                <img src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" class="ttd-img ttd-img-kapus" alt="TTD dr. Sunaryadi">
                             </div>
                             
                             <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
@@ -882,7 +882,7 @@
                             
                             <!-- Area TTD Andika Dafa Penta P. (asd.png) -->
                             <div class="ttd-space">
-                                <img src="{{ asset('images/ttd_andika.png') }}" class="ttd-img ttd-img-pengurus" alt="TTD Andika Dafa">
+                                <img src="{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}" class="ttd-img ttd-img-pengurus" alt="TTD Andika Dafa">
                             </div>
                             
                             <div class="ttd-nama">ANDIKA DAFA PENTA P.</div>
@@ -924,9 +924,10 @@
                         </label>
                     </div>
                     <div style="margin-top: 10px; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px;">
-                        <img id="preview-modal-kapus" src="{{ asset('images/ttd_kapus_nostamp.png') }}" style="max-height: 48px; max-width: 100px; background: white; padding: 2px; border-radius: 4px; object-fit: contain;" alt="TTD dr. Sunaryadi">
+                        <img id="preview-modal-kapus" src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" style="max-height: 48px; max-width: 100px; background: white; padding: 2px; border-radius: 4px; object-fit: contain;" alt="TTD dr. Sunaryadi">
                         <div style="font-size: 11.5px; color: #cbd5e1; flex: 1;">
-                            <div style="font-weight: bold; color: #f8fafc;">Tanda Tangan Tinta Biru dr. Sunaryadi</div>
+                            <div style="font-weight: bold; color: #f8fafc;">Tanda Tangan Tinta Hitam Pekat dr. Sunaryadi</div>
+                            <div style="font-size: 10.5px; color: #94a3b8; margin-top: 2px;">Tinta hitam pekat agar kontras & jelas saat dicetak di kertas kuning/berwarna.</div>
                             <div style="display: flex; gap: 12px; margin-top: 5px;">
                                 <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 11px; color: #e2e8f0;">
                                     <input type="radio" name="kapus_type" value="nostamp" checked onchange="changeKapusTtdType(this.value)">
@@ -1015,9 +1016,9 @@
         const sheetRowCounts = {};
         const defaultRows = {{ $defaultTargetRows }};
         let currentTtdShift = 0; // dalam mm
-        const defaultKapusNoStamp = "{{ asset('images/ttd_kapus_nostamp.png') }}";
+        const defaultKapusNoStamp = "{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}";
         const defaultKapusStamp = "{{ asset('images/ttd_baru.png') }}";
-        const defaultAndikaTtd = "{{ asset('images/ttd_andika.png') }}";
+        const defaultAndikaTtd = "{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}";
 
         // Inisialisasi awal target baris untuk tiap sheet
         document.addEventListener('DOMContentLoaded', function() {
@@ -1059,11 +1060,11 @@
             document.querySelectorAll('.ttd-img-kapus').forEach(img => {
                 img.src = src;
                 if (type === 'stamp') {
-                    img.style.maxHeight = '64px';
-                    img.style.maxWidth = '135px';
+                    img.style.maxHeight = '68px';
+                    img.style.maxWidth = '145px';
                 } else {
-                    img.style.maxHeight = '52px';
-                    img.style.maxWidth = '130px';
+                    img.style.maxHeight = '62px';
+                    img.style.maxWidth = '145px';
                 }
             });
             const preview = document.getElementById('preview-modal-kapus');
