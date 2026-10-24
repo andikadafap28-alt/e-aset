@@ -395,6 +395,11 @@
         .main-table tr.blank-row td {
             height: 20px; /* Tinggi baris pas & proporsional untuk kertas A4 */
         }
+        .main-table td.col-no {
+            color: #000000 !important;
+            font-weight: bold;
+            text-align: center;
+        }
         .text-center {
             text-align: center;
         }
@@ -701,7 +706,7 @@
                             {{-- Tampilkan data yang sudah tercatat bila ada --}}
                             @foreach($maintenances as $item)
                             <tr class="data-row">
-                                <td class="text-center">{{ $rowNo++ }}</td>
+                                <td class="text-center col-no">{{ $rowNo++ }}</td>
                                 <td class="text-center">{{ $item->tanggal }}</td>
                                 <td>{{ $item->nama_barang }}</td>
                                 <td class="text-center">{{ $item->volume }}</td>
@@ -715,7 +720,7 @@
                             {{-- Baris kosong bergaris untuk pengisian manual tulisan tangan saat tertempel di ruangan --}}
                             @for($i = 0; $i < $blankRowsToRender; $i++)
                             <tr class="blank-row">
-                                <td class="text-center" style="color: #64748b;">{{ $rowNo++ }}</td>
+                                <td class="text-center col-no">{{ $rowNo++ }}</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -842,7 +847,7 @@
                 const tr = document.createElement('tr');
                 tr.className = 'blank-row';
                 tr.innerHTML = `
-                    <td class="text-center" style="color: #64748b;">${rowNumber}</td>
+                    <td class="text-center col-no">${rowNumber}</td>
                     <td></td>
                     <td></td>
                     <td></td>
