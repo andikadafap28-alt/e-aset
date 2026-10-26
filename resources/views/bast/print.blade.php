@@ -180,12 +180,6 @@
             margin: 0;
         }
 
-        .doc-number {
-            font-size: 10pt;
-            font-weight: 500;
-            margin-top: 3px;
-        }
-
         /* Paragraf Pembuka */
         .content-p {
             text-align: justify;
@@ -231,25 +225,23 @@
             width: 100%;
         }
 
-        .ttd-row-two {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
-        }
-
-        .ttd-box {
-            width: 44%;
+        .ttd-table {
+            width: 100%;
+            border: none !important;
+            border-collapse: collapse;
             text-align: center;
             font-size: 10.5pt;
             line-height: 1.35;
         }
 
-        .ttd-role {
-            font-weight: normal;
+        .ttd-table td {
+            border: none !important;
+            padding: 0 !important;
+            background: transparent !important;
         }
 
-        .ttd-space {
-            height: 65px;
+        .ttd-role {
+            font-weight: normal;
         }
 
         .ttd-name {
@@ -261,12 +253,6 @@
         .ttd-nip {
             font-size: 10pt;
             margin-top: 2px;
-        }
-
-        .ttd-row-one {
-            display: flex;
-            justify-content: center;
-            margin-top: 5px;
         }
 
         /* Lembar Lampiran */
@@ -447,15 +433,14 @@
             <img src="{{ asset('img/logo-husada.png') }}" class="kop-logo" alt="Logo Bakti Husada" onerror="this.style.display='none'">
         </div>
 
-        <!-- Judul Berita Acara -->
+        <!-- Judul Berita Acara (Tanpa Nomor) -->
         <div class="doc-title-container">
             <h1 class="doc-title">BUKTI SERAH TERIMA BARANG</h1>
-            <div class="doc-number">Nomor : 028 / {{ str_pad($bast->id, 3, '0', STR_PAD_LEFT) }} / BAST / 413.102.12 / 2026</div>
         </div>
 
         <!-- Pembuka -->
         <p class="content-p">
-            Pada hari ini <strong>{{ $namaHari }}</strong>, tanggal <strong>{{ $dateCarbon->translatedFormat('d F Y') }}</strong> bertempat di UPTD Puskesmas Mantup, kami yang bertanda tangan di bawah ini :
+            Pada hari ini <strong>{{ $namaHari }}</strong>, tanggal <strong>{{ $dateCarbon->translatedFormat('d F Y') }}</strong> bertempat di Puskesmas Mantup, kami yang bertanda tangan di bawah ini :
         </p>
 
         <!-- Pihak Kesatu & Kedua -->
@@ -532,39 +517,55 @@
             Demikian Bukti Serah Terima Barang ini dibuat dengan sebenarnya dalam rangkap secukupnya untuk dapat dipergunakan sebagaimana mestinya.
         </p>
 
-        <!-- Tanda Tangan Lembar 1 -->
+        <!-- Tanda Tangan Lembar 1 (Sejajar Sempurna Menggunakan Tabel) -->
         <div class="ttd-wrapper">
-            <div class="ttd-row-two">
-                <!-- Pihak Kesatu -->
-                <div class="ttd-box">
-                    Yang Menyerahkan,<br>
-                    <span class="ttd-role">Pengurus Barang Pembantu<br>Puskesmas Mantup</span>
-                    <div class="ttd-space"></div>
-                    <div class="ttd-name">Andika Dafa Penta Pratama</div>
-                    <div class="ttd-nip">NIP. 199907282025041003</div>
-                </div>
-
-                <!-- Pihak Kedua -->
-                <div class="ttd-box">
-                    Mantup, {{ $tglFormat }}<br>
-                    Yang Menerima,<br>
-                    <span class="ttd-role">{{ $empJabatan }}</span>
-                    <div class="ttd-space"></div>
-                    <div class="ttd-name">{{ $empName }}</div>
-                    <div class="ttd-nip">NIP. {{ $empNip }}</div>
-                </div>
-            </div>
+            <table class="ttd-table" style="margin-bottom: 25px;">
+                <tr style="vertical-align: top;">
+                    <td style="width: 50%;">
+                        <br>
+                        Yang Menyerahkan,<br>
+                        <span class="ttd-role">Pengurus Barang Pembantu<br>Puskesmas Mantup</span>
+                    </td>
+                    <td style="width: 50%;">
+                        Mantup, {{ $tglFormat }}<br>
+                        Yang Menerima,<br>
+                        <span class="ttd-role">{{ $empJabatan }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height: 65px;"></td>
+                    <td style="height: 65px;"></td>
+                </tr>
+                <tr style="vertical-align: top;">
+                    <td>
+                        <div class="ttd-name">Andika Dafa Penta Pratama</div>
+                        <div class="ttd-nip">NIP. 199907282025041003</div>
+                    </td>
+                    <td>
+                        <div class="ttd-name">{{ $empName }}</div>
+                        <div class="ttd-nip">NIP. {{ $empNip }}</div>
+                    </td>
+                </tr>
+            </table>
 
             <!-- Mengetahui Kepala Puskesmas -->
-            <div class="ttd-row-one">
-                <div class="ttd-box">
-                    Mengetahui,<br>
-                    <span class="ttd-role">Kepala UPTD Puskesmas Mantup</span>
-                    <div class="ttd-space"></div>
-                    <div class="ttd-name">dr. Muhamad Sunaryadi</div>
-                    <div class="ttd-nip">NIP. 196903132002121007</div>
-                </div>
-            </div>
+            <table class="ttd-table">
+                <tr style="vertical-align: top;">
+                    <td>
+                        Mengetahui,<br>
+                        <span class="ttd-role">Kepala Puskesmas Mantup</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height: 65px;"></td>
+                </tr>
+                <tr style="vertical-align: top;">
+                    <td>
+                        <div class="ttd-name">dr. Muhamad Sunaryadi</div>
+                        <div class="ttd-nip">NIP. 196903132002121007</div>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 
@@ -573,16 +574,12 @@
     <!-- Memuat Daftar Alat Lengkap / Spesifikasi    -->
     <!-- ========================================== -->
     <div class="page-sheet page-break">
-        <!-- Header Lampiran -->
+        <!-- Header Lampiran (Tanpa Nomor) -->
         <div class="lampiran-meta">
             <table>
                 <tr>
                     <td>Lampiran</td>
                     <td>: Bukti Serah Terima Barang</td>
-                </tr>
-                <tr>
-                    <td>Nomor</td>
-                    <td>: 028 / {{ str_pad($bast->id, 3, '0', STR_PAD_LEFT) }} / BAST / 413.102.12 / 2026</td>
                 </tr>
                 <tr>
                     <td>Tanggal</td>
@@ -601,24 +598,24 @@
 
         <div class="lampiran-title">
             <h3>DAFTAR RINCIAN ALAT KEDOKTERAN GIGI</h3>
-            <p>UPTD PUSKESMAS MANTUP TAHUN ANGGARAN 2026</p>
+            <p>PUSKESMAS MANTUP TAHUN 2026</p>
         </div>
 
         <!-- ========================================== -->
         <!-- MODE 1: RINGKASAN PER SPESIFIKASI (26 BARIS) -->
+        <!-- Kolom Sumber Ditiadakan Sesuai Permintaan  -->
         <!-- ========================================== -->
         <div id="viewGrouped">
             <table class="tabel-rincian">
                 <thead>
                     <tr>
-                        <th style="width: 25px;">NO</th>
-                        <th style="width: 110px;">KODE BARANG (108)</th>
-                        <th style="width: 70px;">NO. REG</th>
+                        <th style="width: 28px;">NO</th>
+                        <th style="width: 130px;">KODE BARANG (108)</th>
+                        <th style="width: 85px;">NO. REG</th>
                         <th>NAMA KELOMPOK BARANG</th>
                         <th>SPESIFIKASI / NAMA ALAT</th>
-                        <th style="width: 45px;">QTY</th>
-                        <th style="width: 55px;">KONDISI</th>
-                        <th style="width: 80px;">SUMBER</th>
+                        <th style="width: 50px;">QTY</th>
+                        <th style="width: 65px;">KONDISI</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -633,13 +630,12 @@
                             <td>{{ $item->asset->keterangan ?: ($item->asset->merk ?: '-') }}</td>
                             <td class="center font-bold">{{ $item->qty }} unit</td>
                             <td class="center">{{ $item->asset->condition ?: 'Baik' }}</td>
-                            <td class="center" style="font-size: 8pt;">{{ $item->asset->source ?: ($bast->sumber_dana ?: 'BMD') }}</td>
                         </tr>
                     @endforeach
                     <tr class="total-row">
                         <td colspan="5" style="text-align: right; padding-right: 12px; text-transform: uppercase;">Total Keseluruhan Barang Diserahkan :</td>
-                        <td class="center">{{ $sumQty }} unit</td>
-                        <td colspan="2" class="center">Lengkap (Baik)</td>
+                        <td class="center font-bold">{{ $sumQty }} unit</td>
+                        <td class="center">Lengkap (Baik)</td>
                     </tr>
                 </tbody>
             </table>
@@ -681,26 +677,36 @@
             </table>
         </div>
 
-        <!-- Tanda Tangan Lampiran (Verifikasi) -->
+        <!-- Tanda Tangan Lampiran (Sejajar Sempurna Antara Nama & NIP) -->
         <div class="ttd-wrapper" style="margin-top: 25px;">
-            <div class="ttd-row-two">
-                <div class="ttd-box">
-                    Yang Menyerahkan,<br>
-                    <span class="ttd-role">Pengurus Barang Pembantu</span>
-                    <div class="ttd-space" style="height: 55px;"></div>
-                    <div class="ttd-name">Andika Dafa Penta Pratama</div>
-                    <div class="ttd-nip">NIP. 199907282025041003</div>
-                </div>
-
-                <div class="ttd-box">
-                    Mantup, {{ $tglFormat }}<br>
-                    Yang Menerima,<br>
-                    <span class="ttd-role">{{ $empJabatan }}</span>
-                    <div class="ttd-space" style="height: 55px;"></div>
-                    <div class="ttd-name">{{ $empName }}</div>
-                    <div class="ttd-nip">NIP. {{ $empNip }}</div>
-                </div>
-            </div>
+            <table class="ttd-table">
+                <tr style="vertical-align: top;">
+                    <td style="width: 50%;">
+                        <br>
+                        Yang Menyerahkan,<br>
+                        <span class="ttd-role">Pengurus Barang Pembantu</span>
+                    </td>
+                    <td style="width: 50%;">
+                        Mantup, {{ $tglFormat }}<br>
+                        Yang Menerima,<br>
+                        <span class="ttd-role">{{ $empJabatan }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height: 60px;"></td>
+                    <td style="height: 60px;"></td>
+                </tr>
+                <tr style="vertical-align: top;">
+                    <td>
+                        <div class="ttd-name">Andika Dafa Penta Pratama</div>
+                        <div class="ttd-nip">NIP. 199907282025041003</div>
+                    </td>
+                    <td>
+                        <div class="ttd-name">{{ $empName }}</div>
+                        <div class="ttd-nip">NIP. {{ $empNip }}</div>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 
