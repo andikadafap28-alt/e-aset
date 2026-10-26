@@ -3,25 +3,54 @@
 @section('header_title', 'Master Data Lokasi / Ruangan')
 
 @section('content')
-<div class="max-w-7xl mx-auto" x-data="{ showModal: false, editMode: false, currentId: null, form: {name: '', type: 'Ruangan', penanggung_jawab: '', latitude: '', longitude: '', description: ''} }">
+<div class="max-w-7xl mx-auto" x-data="{ showModal: false, showKirUploadModal: false, uploadKirRoomId: '', editMode: false, currentId: null, form: {name: '', type: 'Ruangan', penanggung_jawab: '', latitude: '', longitude: '', description: ''} }">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
             <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Daftar Lokasi & Ruangan</h2>
-            <p class="text-sm font-medium text-slate-500 mt-1">Kelola data Pustu, Ponkesdes, dan Ruangan Puskesmas sebagai referensi lokasi aset.</p>
+            <p class="text-sm font-medium text-slate-500 mt-1">Kelola data Pustu, Ponkesdes, dan Ruangan Puskesmas serta cetak Kartu Inventaris Ruangan (KIR) F4.</p>
         </div>
         
-        <div class="flex items-center gap-2">
+        <div class="flex items-center flex-wrap gap-2">
+            <!-- Dropdown Menu KIR (Kertas F4) -->
+            <div x-data="{ openKirMenu: false }" class="relative inline-block text-left">
+                <button @click="openKirMenu = !openKirMenu" @click.away="openKirMenu = false" class="text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white px-3.5 py-2.5 rounded-lg shadow-sm flex items-center gap-2 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>KIR (Kertas F4)</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div x-show="openKirMenu" x-transition class="origin-top-right absolute right-0 mt-2 w-64 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 divide-y divide-slate-100 z-30" style="display: none;">
+                    <div class="py-2 px-3">
+                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Cetak Dokumen KIR (F4)</div>
+                        <a href="{{ route('rooms.print_batch_kir') }}" target="_blank" class="flex items-center gap-2 py-1.5 px-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors font-medium">
+                            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                            <span>Cetak Semua Ruangan</span>
+                        </a>
+                    </div>
+                    <div class="py-2 px-3">
+                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Format Excel Resmi</div>
+                        <a href="{{ route('rooms.kir.template') }}" class="flex items-center gap-2 py-1.5 px-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors">
+                            <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            <span>Download Template Excel</span>
+                        </a>
+                        <button type="button" @click="showKirUploadModal = true; uploadKirRoomId = ''; openKirMenu = false;" class="w-full text-left flex items-center gap-2 py-1.5 px-2 text-sm text-slate-700 hover:bg-purple-50 hover:text-purple-700 rounded-lg transition-colors">
+                            <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                            <span>Upload / Import Excel KIR</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <a href="{{ route('rooms.lembar_pemeliharaan') }}" class="text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2.5 rounded-lg shadow-sm flex items-center gap-2 transition-all" title="Lembar Pemeliharaan Alat (A4)">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span class="hidden md:inline">Lembar Pemeliharaan Alat (A4)</span>
+                <span class="hidden md:inline">Lembar Pemeliharaan (A4)</span>
             </a>
-            <a href="{{ route('rooms.template') }}" class="text-sm font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-3 py-2.5 rounded-lg shadow-sm flex items-center gap-2 transition-all" title="Download Template Excel">
+            <a href="{{ route('rooms.template') }}" class="text-sm font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-3 py-2.5 rounded-lg shadow-sm flex items-center gap-2 transition-all" title="Download Template Master Lokasi">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                <span class="hidden md:inline">Template</span>
+                <span class="hidden md:inline">Template Lokasi</span>
             </a>
-            <button @click="$refs.fileInput.click()" class="text-sm font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-3 py-2.5 rounded-lg shadow-sm flex items-center gap-2 transition-all" title="Import Excel">
+            <button @click="$refs.fileInput.click()" class="text-sm font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-3 py-2.5 rounded-lg shadow-sm flex items-center gap-2 transition-all" title="Import Excel Master Lokasi">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                <span class="hidden md:inline">Import</span>
+                <span class="hidden md:inline">Import Lokasi</span>
             </button>
             <form id="formImport" action="{{ route('rooms.import') }}" method="POST" enctype="multipart/form-data" class="hidden">
                 @csrf
@@ -94,14 +123,27 @@
                         <td class="p-4 text-right">
                             <div class="flex justify-end gap-2 items-center">
                                 <div x-data="{ openPrint: false }" class="relative inline-block text-left">
-                                    <button @click="openPrint = !openPrint" @click.away="openPrint = false" type="button" class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Cetak Kartu">
+                                    <button @click="openPrint = !openPrint" @click.away="openPrint = false" type="button" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Cetak Dokumen & KIR">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                                     </button>
-                                    <div x-show="openPrint" x-transition class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10" style="display: none;">
-                                        <div class="py-1" role="menu" aria-orientation="vertical">
-                                            <a href="{{ route('rooms.print_kir', $room->id) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">KIR (Kertas F4)</a>
-                                            <a href="{{ route('rooms.print_pemeliharaan_ruangan', $room->id) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Lembar Pemeliharaan Alat</a>
-                                            <a href="{{ route('rooms.print_pemeliharaan_alat', $room->id) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Kartu Pemeliharaan Alat</a>
+                                    <div x-show="openPrint" x-transition class="origin-top-right absolute right-0 mt-2 w-56 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 divide-y divide-slate-100 z-20" style="display: none;">
+                                        <div class="py-1">
+                                            <a href="{{ route('rooms.print_kir', $room->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 font-semibold" role="menuitem">
+                                                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                                <span>KIR (Kertas F4)</span>
+                                            </a>
+                                            <a href="{{ route('rooms.kir.template', ['room_id' => $room->id]) }}" class="flex items-center gap-2 px-4 py-1.5 text-xs text-slate-600 hover:bg-slate-50 hover:text-emerald-700" role="menuitem">
+                                                <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                                <span>Download Excel KIR</span>
+                                            </a>
+                                            <button type="button" @click="showKirUploadModal = true; uploadKirRoomId = '{{ $room->id }}'; openPrint = false;" class="w-full text-left flex items-center gap-2 px-4 py-1.5 text-xs text-slate-600 hover:bg-slate-50 hover:text-purple-700" role="menuitem">
+                                                <svg class="w-3.5 h-3.5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                                <span>Upload Excel KIR</span>
+                                            </button>
+                                        </div>
+                                        <div class="py-1">
+                                            <a href="{{ route('rooms.print_pemeliharaan_ruangan', $room->id) }}" target="_blank" class="block px-4 py-1.5 text-xs text-slate-600 hover:bg-slate-50" role="menuitem">Lembar Pemeliharaan Alat</a>
+                                            <a href="{{ route('rooms.print_pemeliharaan_alat', $room->id) }}" target="_blank" class="block px-4 py-1.5 text-xs text-slate-600 hover:bg-slate-50" role="menuitem">Kartu Pemeliharaan Alat</a>
                                         </div>
                                     </div>
                                 </div>
@@ -212,6 +254,96 @@
                         <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors flex items-center gap-2 shadow-sm shadow-indigo-600/20">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span x-text="editMode ? 'Simpan Perubahan' : 'Tambah Lokasi'"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Import Excel KIR -->
+    <div x-show="showKirUploadModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div x-show="showKirUploadModal" x-transition.opacity class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-slate-900 opacity-60 backdrop-blur-sm" @click="showKirUploadModal = false"></div>
+            </div>
+            
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            
+            <div x-show="showKirUploadModal" 
+                 x-transition:enter="ease-out duration-300" 
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                 x-transition:leave="ease-in duration-200" 
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                 class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+                
+                <form action="{{ route('rooms.kir.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    
+                    <div class="bg-white px-6 pt-6 pb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-900 tracking-tight">Upload File Excel KIR</h3>
+                            </div>
+                            <button type="button" @click="showKirUploadModal = false" class="text-slate-400 hover:text-slate-500">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                        
+                        <p class="text-xs text-slate-500 mb-5 leading-relaxed">
+                            Pilih file Excel yang telah diisi sesuai format KIR resmi. Sistem akan otomatis memasukkan data barang ke ruangan terkait dan siap langsung dicetak pada kertas F4.
+                        </p>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Target Ruangan</label>
+                                <select name="room_id" x-model="uploadKirRoomId" class="w-full rounded-xl border-slate-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm">
+                                    <option value="">-- Otomatis Sesuai Kolom 'Nama Ruangan' di File Excel --</option>
+                                    @foreach($rooms as $r)
+                                        <option value="{{ $r->id }}">{{ $r->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">File Excel KIR (.xlsx, .xls, .csv) <span class="text-rose-500">*</span></label>
+                                <input type="file" name="file" accept=".xlsx, .xls, .csv" required class="w-full text-sm text-slate-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 border border-slate-200 rounded-xl p-1 bg-slate-50">
+                            </div>
+                            
+                            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                                <label class="flex items-start gap-2.5 cursor-pointer">
+                                    <input type="checkbox" name="replace_existing" value="1" checked class="mt-0.5 rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+                                    <div>
+                                        <span class="text-xs font-bold text-slate-800">Perbarui Data Berkala (Timpa data sebelumnya)</span>
+                                        <p class="text-[11px] text-slate-500 mt-0.5 leading-normal">
+                                            Sangat dianjurkan dicentang saat update 6 bulan sekali agar daftar barang lama di ruangan diganti dengan kondisi terkini dari file Excel.
+                                        </p>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <div class="pt-2 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100">
+                                <span>Belum punya template?</span>
+                                <a :href="'/rooms/kir/template' + (uploadKirRoomId ? '?room_id=' + uploadKirRoomId : '')" class="text-purple-600 hover:text-purple-700 font-bold hover:underline flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                    Download Template Resmi
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3 rounded-b-2xl border-t border-slate-100">
+                        <button type="button" @click="showKirUploadModal = false" class="px-5 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-xl transition-colors flex items-center gap-2 shadow-sm shadow-purple-600/20">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                            <span>Unggah & Generate KIR</span>
                         </button>
                     </div>
                 </form>

@@ -108,40 +108,273 @@ class RoomController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    public function printKir(\App\Models\Room $room)
+    public function downloadKirTemplate(Request $request)
+    {
+        $roomId = $request->query('room_id');
+        $room = $roomId ? \App\Models\Room::find($roomId) : null;
+        $fileName = $room ? 'Template_KIR_' . \Illuminate\Support\Str::slug($room->name) . '.xlsx' : 'Template_KIR_Format_Resmi.xlsx';
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\TemplateKirExport($roomId), $fileName);
+    }
+
+    public function importKirExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:5120',
+            'room_id' => 'nullable|exists:rooms,id',
+            'replace_existing' => 'nullable'
+        ]);
+
+        try {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($request->file('file')->getPathname());
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray();
+
+            if (empty($rows) || count($rows) < 2) {
+                return back()->with('error', 'File Excel kosong atau format tidak sesuai.');
+            }
+
+            // Scan header row (dalam 5 baris pertama)
+            $headerRowIndex = 0;
+            $colMap = [];
+            foreach (array_slice($rows, 0, 5) as $rIdx => $row) {
+                $foundCount = 0;
+                foreach ($row as $cIdx => $cell) {
+                    $val = strtolower(trim((string)$cell));
+                    if (str_contains($val, 'ruang') || str_contains($val, 'lokasi')) { $colMap['room'] = $cIdx; $foundCount++; }
+                    if (str_contains($val, 'nama barang') || str_contains($val, 'jenis barang') || $val === 'uraian') { $colMap['name'] = $cIdx; $foundCount++; }
+                    if (str_contains($val, 'merek') || str_contains($val, 'merk') || str_contains($val, 'model')) { $colMap['merk'] = $cIdx; $foundCount++; }
+                    if (str_contains($val, 'bahan') || str_contains($val, 'material')) { $colMap['bahan'] = $cIdx; $foundCount++; }
+                    if (str_contains($val, 'jumlah') || str_contains($val, 'qty') || str_contains($val, 'total')) { $colMap['jumlah'] = $cIdx; $foundCount++; }
+                    if ($val === 'baik' || str_contains($val, 'keadaan baik')) { $colMap['baik'] = $cIdx; $foundCount++; }
+                    if (str_contains($val, 'kurang baik') || str_contains($val, 'rusak ringan') || $val === 'kb') { $colMap['kurang_baik'] = $cIdx; $foundCount++; }
+                    if (str_contains($val, 'rusak berat') || $val === 'rb') { $colMap['rusak_berat'] = $cIdx; $foundCount++; }
+                    if (str_contains($val, 'keterangan') || str_contains($val, 'mutasi')) { $colMap['keterangan'] = $cIdx; $foundCount++; }
+                }
+                if ($foundCount >= 3) {
+                    $headerRowIndex = $rIdx;
+                    break;
+                }
+            }
+
+            // Fallback default kolom jika tidak terdeteksi via keyword
+            if (!isset($colMap['name'])) {
+                $colMap = [
+                    'room' => 0,
+                    'name' => 2,
+                    'merk' => 3,
+                    'bahan' => 4,
+                    'jumlah' => 5,
+                    'baik' => 6,
+                    'kurang_baik' => 7,
+                    'rusak_berat' => 8,
+                    'keterangan' => 9
+                ];
+            }
+
+            $dataRows = array_slice($rows, $headerRowIndex + 1);
+            $defaultRoom = $request->room_id ? \App\Models\Room::find($request->room_id) : null;
+            $replaceExisting = $request->has('replace_existing') && ($request->input('replace_existing') == '1' || $request->input('replace_existing') === true || $request->input('replace_existing') === 'on');
+
+            $processedRooms = [];
+            $totalItems = 0;
+
+            \Illuminate\Support\Facades\DB::beginTransaction();
+
+            // Group rows by room
+            $groupedByRoom = [];
+            foreach ($dataRows as $row) {
+                $namaBarang = isset($colMap['name']) ? trim((string)($row[$colMap['name']] ?? '')) : '';
+                if (empty($namaBarang) || strtolower($namaBarang) === 'jenis barang / nama barang') continue;
+
+                $roomName = isset($colMap['room']) ? trim((string)($row[$colMap['room']] ?? '')) : '';
+                if (empty($roomName) && $defaultRoom) {
+                    $roomName = $defaultRoom->name;
+                } elseif (empty($roomName)) {
+                    $roomName = 'Ruang Kepala Puskesmas';
+                }
+
+                $groupedByRoom[$roomName][] = $row;
+            }
+
+            foreach ($groupedByRoom as $roomName => $items) {
+                $room = \App\Models\Room::firstOrCreate(
+                    ['name' => $roomName],
+                    ['type' => 'Ruangan']
+                );
+
+                $processedRooms[$room->id] = $room;
+
+                if ($replaceExisting) {
+                    // Hapus data aset KIR sebelumnya pada ruangan ini untuk update berkala
+                    \App\Models\Asset::where('room_id', $room->id)->where('source', 'KIR')->delete();
+                }
+
+                $rowNo = 1;
+                foreach ($items as $row) {
+                    $nama = trim((string)($row[$colMap['name']] ?? ''));
+                    $merk = isset($colMap['merk']) ? trim((string)($row[$colMap['merk']] ?? '')) : '';
+                    if ($merk === '-' || empty($merk)) $merk = null;
+
+                    $bahan = isset($colMap['bahan']) ? trim((string)($row[$colMap['bahan']] ?? '')) : 'Campuran';
+                    if (empty($bahan) || $bahan === '-') $bahan = 'Campuran';
+
+                    $qty = isset($colMap['jumlah']) ? (int)preg_replace('/[^0-9]/', '', (string)($row[$colMap['jumlah']] ?? 1)) : 1;
+                    if ($qty < 1) $qty = 1;
+
+                    $baik = isset($colMap['baik']) ? (int)preg_replace('/[^0-9]/', '', (string)($row[$colMap['baik']] ?? 0)) : 0;
+                    $kb = isset($colMap['kurang_baik']) ? (int)preg_replace('/[^0-9]/', '', (string)($row[$colMap['kurang_baik']] ?? 0)) : 0;
+                    $rb = isset($colMap['rusak_berat']) ? (int)preg_replace('/[^0-9]/', '', (string)($row[$colMap['rusak_berat']] ?? 0)) : 0;
+
+                    if (($baik + $kb + $rb) === 0) {
+                        $baik = $qty;
+                    } elseif (($baik + $kb + $rb) < $qty) {
+                        $baik += ($qty - ($baik + $kb + $rb));
+                    }
+
+                    $ket = isset($colMap['keterangan']) ? trim((string)($row[$colMap['keterangan']] ?? '')) : '';
+                    if ($ket === '-') $ket = null;
+
+                    // Buat unit aset fisik sesuai jumlah & kondisinya
+                    for ($q = 1; $q <= $qty; $q++) {
+                        $cond = 'Baik';
+                        if ($rb > 0) {
+                            $cond = 'Rusak Berat';
+                            $rb--;
+                        } elseif ($kb > 0) {
+                            $cond = 'Kurang Baik';
+                            $kb--;
+                        } else {
+                            $cond = 'Baik';
+                            if ($baik > 0) $baik--;
+                        }
+
+                        $codeSuffix = $qty > 1 ? "-$q" : '';
+                        $assetCode = 'KIR-' . $room->id . '-' . str_pad($rowNo, 3, '0', STR_PAD_LEFT) . $codeSuffix;
+                        
+                        if (\App\Models\Asset::where('asset_code', $assetCode)->exists()) {
+                            $assetCode .= '-' . \Illuminate\Support\Str::random(3);
+                        }
+
+                        \App\Models\Asset::create([
+                            'room_id' => $room->id,
+                            'location' => $room->name,
+                            'name' => $nama,
+                            'category' => 'Peralatan dan Mesin',
+                            'merk' => $merk,
+                            'bahan' => $bahan,
+                            'condition' => $cond,
+                            'keterangan' => $ket,
+                            'source' => 'KIR',
+                            'asset_code' => $assetCode,
+                            'year_purchased' => date('Y'),
+                        ]);
+                        $totalItems++;
+                    }
+                    $rowNo++;
+                }
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+
+            $roomCount = count($processedRooms);
+            $firstRoom = reset($processedRooms);
+
+            if ($request->room_id && isset($processedRooms[$request->room_id])) {
+                return redirect()->route('rooms.print_kir', $request->room_id)
+                    ->with('success', "Berhasil mengimpor {$totalItems} barang KIR ke {$firstRoom->name}. KIR siap dicetak!");
+            }
+
+            return back()->with('success', "Berhasil mengimpor {$totalItems} barang KIR ke dalam {$roomCount} ruangan. KIR siap dicetak!");
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->with('error', 'Gagal memproses file KIR: ' . $e->getMessage());
+        }
+    }
+
+    public function printKir(Request $request, \App\Models\Room $room)
     {
         $room->load(['assets' => function($query) {
             $query->orderBy('name');
         }]);
         
+        $groupedItems = $this->getGroupedKirItems($room);
+        $allRooms = \App\Models\Room::orderBy('name')->get();
+        $docDate = $request->input('date', '2026-01-02');
+        $formattedDate = $this->formatIndoDate($docDate);
+
+        return view('rooms.print_kir', compact('room', 'groupedItems', 'allRooms', 'docDate', 'formattedDate'));
+    }
+
+    public function printBatchKir(Request $request)
+    {
+        $ids = $request->input('ids');
+        $query = \App\Models\Room::with(['assets' => function($q) {
+            $q->orderBy('name');
+        }]);
+
+        if ($ids) {
+            $idArray = is_array($ids) ? $ids : explode(',', $ids);
+            $query->whereIn('id', $idArray);
+        }
+
+        $rooms = $query->orderBy('name')->get();
+
+        if ($rooms->isEmpty()) {
+            return redirect()->route('rooms.index')->with('error', 'Tidak ada ruangan yang dipilih untuk cetak KIR.');
+        }
+
+        $allRooms = \App\Models\Room::orderBy('name')->get();
+        $docDate = $request->input('date', '2026-01-02');
+        $formattedDate = $this->formatIndoDate($docDate);
+
+        $groupedItemsMap = [];
+        foreach ($rooms as $r) {
+            $groupedItemsMap[$r->id] = $this->getGroupedKirItems($r);
+        }
+
+        return view('rooms.print_kir', [
+            'room' => $rooms->first(),
+            'rooms' => $rooms,
+            'groupedItemsMap' => $groupedItemsMap,
+            'allRooms' => $allRooms,
+            'docDate' => $docDate,
+            'formattedDate' => $formattedDate,
+            'isBatch' => true
+        ]);
+    }
+
+    protected function getGroupedKirItems(\App\Models\Room $room)
+    {
         $groupedItems = collect();
         if ($room->assets && $room->assets->count() > 0) {
             $grouped = $room->assets->groupBy(function($item) {
-                $name = $item->name ?? '-';
-                $merk = $item->merk ?? 'Tanpa Merk';
-                return $name . '|' . $merk;
+                $name = trim((string)($item->name ?? '-'));
+                $merk = trim((string)($item->merk ?? ''));
+                $bahan = trim((string)($item->bahan ?? 'Campuran'));
+                return strtolower($name) . '|' . strtolower($merk) . '|' . strtolower($bahan);
             });
-            
+
             $no = 1;
-            foreach($grouped as $key => $group) {
+            foreach ($grouped as $group) {
                 $first = $group->first();
-                
-                $baik = $group->where('kondisi', 'baik')->count() + $group->where('kondisi', 'Baik')->count() + $group->where('kondisi', 'B')->count();
-                $kurangBaik = $group->where('kondisi', 'kurang baik')->count() + $group->where('kondisi', 'Kurang Baik')->count() + $group->where('kondisi', 'KB')->count();
-                $rusakBerat = $group->where('kondisi', 'rusak berat')->count() + $group->where('kondisi', 'Rusak Berat')->count() + $group->where('kondisi', 'RB')->count();
-                
-                // fallback jika kondisi kosong atau tidak match, anggap baik
+
+                $baik = $group->filter(fn($i) => in_array(strtolower($i->condition ?? ''), ['baik', 'b']))->count();
+                $kurangBaik = $group->filter(fn($i) => in_array(strtolower($i->condition ?? ''), ['kurang baik', 'kb', 'rusak ringan', 'rr']))->count();
+                $rusakBerat = $group->filter(fn($i) => in_array(strtolower($i->condition ?? ''), ['rusak berat', 'rb']))->count();
+
+                $total = $group->count();
                 $totalKondisi = $baik + $kurangBaik + $rusakBerat;
-                if ($totalKondisi < $group->count()) {
-                    $baik += ($group->count() - $totalKondisi);
+                if ($totalKondisi < $total) {
+                    $baik += ($total - $totalKondisi);
                 }
-                
+
                 $groupedItems->push((object)[
                     'no' => $no++,
                     'name' => $first->name,
-                    'merk' => $first->merk,
-                    'bahan' => $first->bahan ?? '-',
-                    'total' => $group->count(),
+                    'merk' => $first->merk ?: '',
+                    'bahan' => $first->bahan ?: 'Campuran',
+                    'total' => $total,
                     'baik' => $baik,
                     'kurang_baik' => $kurangBaik,
                     'rusak_berat' => $rusakBerat,
@@ -149,8 +382,22 @@ class RoomController extends Controller
                 ]);
             }
         }
-        
-        return view('rooms.print_kir', compact('room', 'groupedItems'));
+        return $groupedItems;
+    }
+
+    protected function formatIndoDate($dateString)
+    {
+        try {
+            $carbon = \Carbon\Carbon::parse($dateString);
+            $months = [
+                1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+            ];
+            return sprintf('%02d %s %d', $carbon->day, $months[$carbon->month] ?? '', $carbon->year);
+        } catch (\Exception $e) {
+            return $dateString;
+        }
     }
 
     public function printPemeliharaanAlat(\App\Models\Room $room)
