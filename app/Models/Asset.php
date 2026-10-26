@@ -97,4 +97,52 @@ class Asset extends Model
         }
         return $this->harga_perolehan - $this->accumulated_depreciation;
     }
+
+    /**
+     * Mendapatkan Kode 108 lengkap (7 level)
+     * Jika kode terpotong 6 level di database, sistem mengambil sub-sub rincian dari NIBAR
+     */
+    public function getFullKode108Attribute()
+    {
+        $kode = trim((string)$this->kode_108);
+        if (empty($kode)) {
+            return '-';
+        }
+
+        // Jika kurang dari 7 level (titik kurang dari 6) dan NIBAR memiliki 45 digit
+        if (substr_count($kode, '.') < 6 && strlen($this->asset_code) >= 38) {
+            if (preg_match('/(20\d{2}|19\d{2})13\d{7}(\d{3})\d{7}/', $this->asset_code, $m)) {
+                $kode .= '.' . $m[2];
+            }
+        }
+
+        return $kode;
+    }
+
+    /**
+     * Format Kode Lengkap beserta Nomor Register (persis seperti pada stiker fisik)
+     * Contoh: 1.3.2.07.01.01.005 - 012
+     */
+    public function getKodeRegisterLengkapAttribute()
+    {
+        $kode = $this->full_kode_108;
+        if ($kode === '-') {
+            return '-';
+        }
+
+        if ($this->no_register) {
+            return $kode . ' - ' . str_pad($this->no_register, 3, '0', STR_PAD_LEFT);
+        }
+
+        return $kode;
+    }
+
+    /**
+     * Nama aset bersih tanpa akhiran strip/spasi
+     */
+    public function getCleanNameAttribute()
+    {
+        $clean = str_replace(' - ya', '', (string)$this->name);
+        return rtrim(trim($clean), " \t\n\r\0\x0B-");
+    }
 }

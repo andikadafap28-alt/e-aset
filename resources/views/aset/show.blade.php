@@ -7,7 +7,7 @@
 <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
     <div>
         <div class="flex items-center gap-3">
-            <h2 class="text-2xl font-bold text-slate-800">{{ $asset->name }}</h2>
+            <h2 class="text-2xl font-bold text-slate-800">{{ $asset->clean_name }}</h2>
             @if($asset->condition === 'Baik')
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200">Baik</span>
             @elseif($asset->condition === 'Rusak Ringan')
@@ -16,9 +16,10 @@
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800 border border-rose-200">Rusak Berat</span>
             @endif
         </div>
-        </div>
         <div class="flex items-center gap-2 mt-2">
-            <p class="text-slate-500 text-sm">Kode: <span class="font-semibold">{{ $asset->asset_code }}</span></p>
+            <p class="text-slate-500 text-sm">Kode Barang: <span class="font-bold font-mono text-slate-800">{{ $asset->kode_register_lengkap }}</span></p>
+            <span class="text-slate-300">|</span>
+            <p class="text-slate-500 text-sm">NIBAR: <span class="font-semibold font-mono">{{ $asset->asset_code }}</span></p>
             @if(!$asset->status_aktif)
                 <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-rose-600 text-white uppercase tracking-wider">Telah Dihapus / Disposed</span>
             @endif
@@ -83,6 +84,14 @@
             <div>
                 <h3 class="text-lg font-semibold text-slate-800 mb-4 border-b border-slate-100 pb-2">Spesifikasi Aset</h3>
                 <div class="space-y-4">
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Kode Barang (Permendagri 108)</p>
+                        <p class="text-sm font-bold font-mono text-slate-800 mt-1">{{ $asset->full_kode_108 }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Nomor Register</p>
+                        <p class="text-sm font-bold font-mono text-blue-600 mt-1">{{ $asset->no_register ? str_pad($asset->no_register, 3, '0', STR_PAD_LEFT) : '-' }}</p>
+                    </div>
                     <div>
                         <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Kategori Master</p>
                         <p class="text-sm font-medium text-slate-800 mt-1">{{ is_object($asset->category) ? $asset->category->nama_kategori : ($asset->getAttribute('category') ?: '-') }}</p>

@@ -65,10 +65,13 @@
                     </td>
                     <td class="py-3 px-5 text-sm text-slate-600">{{ $index + 1 }}</td>
                     <td class="py-3 px-5 text-sm font-medium text-slate-700">
-                        {{ $asset->kode_108 ?: '-' }}
+                        <div class="font-mono font-semibold text-slate-800">{{ $asset->full_kode_108 }}</div>
+                        @if($asset->no_register)
+                            <div class="text-[11px] text-blue-600 font-mono mt-0.5 font-medium">Reg: {{ str_pad($asset->no_register, 3, '0', STR_PAD_LEFT) }}</div>
+                        @endif
                     </td>
                     <td class="py-3 px-5 text-sm font-semibold text-slate-800">
-                        {{ $asset->name }}
+                        {{ $asset->clean_name }}
                         @if(!$asset->status_aktif)
                             <span class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 uppercase tracking-wider">Disposed</span>
                         @endif

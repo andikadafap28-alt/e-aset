@@ -256,6 +256,13 @@ class KibImport implements ToCollection
                 $kode108 = $mKode[0];
             }
 
+            // Jika kode 108 kurang dari 7 level tetapi NIBAR memiliki sub-sub rincian
+            if (substr_count($kode108, '.') < 6 && strlen($nibar) >= 38) {
+                if (preg_match('/(20\d{2}|19\d{2})13\d{7}(\d{3})\d{7}/', $nibar, $mNibarKode)) {
+                    $kode108 .= '.' . $mNibarKode[2];
+                }
+            }
+
             // Jangan import baris penomoran template (misal 1 . 3)
             if ($kode108 === '1.3' || $kode108 === '1' || $lowerName === 'lap top' && empty($nibar)) {
                 if (empty($nibar) && empty($priceRaw)) continue;
@@ -377,6 +384,7 @@ class KibImport implements ToCollection
             if (!empty($merkClean) && stripos($finalName, $merkClean) === false) {
                 $finalName .= ' - ' . $merkClean;
             }
+            $finalName = rtrim(trim($finalName), " \t\n\r\0\x0B-");
 
             // Lokasi & Pencocokan Room ID
             $loc = trim((string)$location) ?: 'Puskesmas';
