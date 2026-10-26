@@ -154,7 +154,25 @@
                         @endif
                         <a href="{{ route('bast.index') }}" class="{{ request()->routeIs('bast.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Cetak BAST</a>
                         @if(auth()->user()?->role !== 'arsiparis')
-                        <a href="{{ route('aset.bmd.index') }}" class="{{ request()->routeIs('aset.bmd.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">KIB BMD</a>
+                        <div x-data="{ bmdOpen: {{ request()->routeIs('aset.bmd.*') ? 'true' : 'false' }} }">
+                            <button @click="bmdOpen = !bmdOpen" class="w-full flex items-center justify-between py-2 text-sm {{ request()->routeIs('aset.bmd.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} transition-colors">
+                                <div class="flex items-center gap-2">
+                                    <span>Aset BMD (KIB)</span>
+                                </div>
+                                <span class="material-symbols-outlined text-xs transition-transform duration-200" :class="bmdOpen ? 'rotate-180' : ''">expand_more</span>
+                            </button>
+                            <div x-show="bmdOpen" class="pl-4 border-l border-slate-700 ml-2 mt-1 space-y-1">
+                                <a href="{{ route('aset.bmd.index') }}" class="{{ request()->routeIs('aset.bmd.index') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-1.5 text-xs transition-colors">Daftar Aset BMD</a>
+                                <a href="{{ route('aset.bmd.upload') }}" class="{{ request()->routeIs('aset.bmd.upload') ? 'text-emerald-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-1.5 text-xs transition-colors flex items-center justify-between">
+                                    <span>Upload Aset BMD</span>
+                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-mono">Upload</span>
+                                </a>
+                                <a href="{{ route('aset.bmd.templates') }}" class="{{ request()->routeIs('aset.bmd.templates') ? 'text-sky-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-1.5 text-xs transition-colors flex items-center justify-between">
+                                    <span>Template KIB</span>
+                                    <span class="text-[9px] bg-sky-500/20 text-sky-300 px-1.5 py-0.5 rounded font-mono">Excel</span>
+                                </a>
+                            </div>
+                        </div>
                         <a href="{{ route('aset.aspak.index') }}" class="{{ request()->routeIs('aset.aspak.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">ASPAK</a>
                         <a href="{{ route('aset.penyusutan.index') }}" class="{{ request()->routeIs('aset.penyusutan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Laporan Penyusutan</a>
                         @endif

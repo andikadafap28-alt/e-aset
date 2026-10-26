@@ -121,6 +121,8 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('aset')->name('aset.')->group(function () {
         Route::get('/data/items', [AssetController::class, 'index'])->name('data.items');
         Route::get('/bmd', [AssetController::class, 'bmdIndex'])->name('bmd.index');
+        Route::get('/bmd/upload', [AssetController::class, 'bmdUploadView'])->name('bmd.upload');
+        Route::get('/bmd/templates', [AssetController::class, 'bmdTemplatesView'])->name('bmd.templates');
         Route::get('/bmd/template', [AssetController::class, 'downloadTemplateKib'])->name('bmd.template');
         Route::post('/bmd/import', [AssetController::class, 'bmdImport'])->name('bmd.import');
         Route::get('/aspak', [AssetController::class, 'aspakIndex'])->name('aspak.index');

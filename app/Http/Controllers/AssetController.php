@@ -47,6 +47,26 @@ class AssetController extends Controller
         return view('aset.aspak', compact('assets'));
     }
 
+    public function bmdUploadView(Request $request)
+    {
+        $totalBmd = Asset::where('source', 'BMD')->orWhereNull('source')->count();
+        $totalKibA = Asset::where(function($q) { $q->where('source', 'BMD')->orWhereNull('source'); })->where('kode_108', 'like', '1.3.1%')->count();
+        $totalKibB = Asset::where(function($q) { $q->where('source', 'BMD')->orWhereNull('source'); })->where('kode_108', 'like', '1.3.2%')->count();
+        $totalKibC = Asset::where(function($q) { $q->where('source', 'BMD')->orWhereNull('source'); })->where('kode_108', 'like', '1.3.3%')->count();
+        $totalKibD = Asset::where(function($q) { $q->where('source', 'BMD')->orWhereNull('source'); })->where('kode_108', 'like', '1.3.4%')->count();
+        $totalKibE = Asset::where(function($q) { $q->where('source', 'BMD')->orWhereNull('source'); })->where('kode_108', 'like', '1.3.5%')->count();
+        $recentAssets = Asset::where('source', 'BMD')->orWhereNull('source')->latest('updated_at')->take(5)->get();
+
+        return view('aset.bmd_upload', compact(
+            'totalBmd', 'totalKibA', 'totalKibB', 'totalKibC', 'totalKibD', 'totalKibE', 'recentAssets'
+        ));
+    }
+
+    public function bmdTemplatesView(Request $request)
+    {
+        return view('aset.bmd_templates');
+    }
+
     public function bmdImport(Request $request)
     {
         $request->validate([
@@ -54,9 +74,13 @@ class AssetController extends Controller
         ]);
 
         $fileName = $request->file('file_excel')->getClientOriginalName();
-        Excel::import(new KibImport($request->input('source', 'BMD'), $fileName), $request->file('file_excel'));
+        $source = $request->input('source', 'BMD');
+        $import = new KibImport($source, $fileName);
+        Excel::import($import, $request->file('file_excel'));
 
-        return back()->with('success', 'Data KIB berhasil diimport.');
+        $count = $import->getImportedCount();
+
+        return redirect()->route('aset.bmd.index')->with('success', "Berhasil mengimport {$count} data aset BMD dari file: {$fileName}");
     }
 
     public function publicShow($asset_code)
@@ -243,9 +267,9 @@ class AssetController extends Controller
 
     public function downloadTemplateKib(Request $request)
     {
-        $kib = $request->query('kib', 'A');
-        $fileName = 'Template_KIB_' . strtoupper($kib) . '.xlsx';
-        return Excel::download(new \App\Exports\TemplateKibExport, $fileName);
+        $kib = $request->query('kib', 'B');
+        $fileName = 'Template_KIB_' . strtoupper($kib) . '_BMD.xlsx';
+        return Excel::download(new \App\Exports\TemplateKibExport($kib), $fileName);
     }
 
     public function createPengadaan(Request $request)
