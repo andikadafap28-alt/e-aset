@@ -22,4 +22,9 @@ class Room extends Model
     {
         return $this->hasMany(Asset::class);
     }
+
+    public function kirItems()
+    {
+        return $this->hasMany(KirItem::class)->orderBy('name');
+    }
 }

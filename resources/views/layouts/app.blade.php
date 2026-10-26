@@ -44,6 +44,7 @@
                 logistikMedisOpen: {{ in_array(request()->segment(1), ['obat', 'obat_apbd', 'obat_apbn', 'vaksin', 'bahan_lainnya']) ? 'true' : 'false' }},
                 logistikLainnyaOpen: {{ in_array(request()->segment(1), ['natura_pakan_lainnya', 'persediaan_lainnya']) ? 'true' : 'false' }},
                 asetOpen: {{ request()->is('aset/*') || request()->is('aset') || request()->is('bast/*') || request()->is('bast') || request()->is('dpp/*') || request()->is('dpp') ? 'true' : 'false' }},
+                kirOpen: {{ request()->is('kir*') ? 'true' : 'false' }},
                 laporanOpen: {{ request()->is('laporan/*') || request()->is('laporan') || request()->is('stock-opname/*') || request()->is('stock-opname') ? 'true' : 'false' }},
                 sistemOpen: {{ request()->is('employees/*') || request()->is('employees') || request()->is('rooms/*') || request()->is('rooms') || request()->is('settings/*') || request()->is('settings') || request()->is('asisten/*') ? 'true' : 'false' }} 
             }">
@@ -160,6 +161,29 @@
                     </div>
                 </div>
                 @endif
+
+                <!-- Section: Kartu Inventaris Ruangan (KIR) -->
+                <div>
+                    <p class="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Inventaris Ruangan</p>
+                    <button @click="kirOpen = !kirOpen" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors text-slate-300 {{ request()->is('kir*') ? 'bg-slate-800 text-white' : '' }}">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[20px] text-amber-400">table_restaurant</span>
+                            <span class="text-sm font-medium">Menu KIR</span>
+                        </div>
+                        <span class="material-symbols-outlined text-sm transition-transform duration-200" :class="kirOpen ? 'rotate-180' : ''">expand_more</span>
+                    </button>
+                    
+                    <div x-show="kirOpen" x-collapse class="pl-11 pr-4 mt-1 space-y-1 mb-2">
+                        <a href="{{ route('kir.index') }}" class="{{ request()->routeIs('kir.index') || request()->routeIs('kir.room_items') ? 'text-amber-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors flex items-center justify-between">
+                            <span>KIR Ruangan</span>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono">Ruangan</span>
+                        </a>
+                        <a href="{{ route('kir.rekap') }}" class="{{ request()->routeIs('kir.rekap*') ? 'text-amber-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors flex items-center justify-between">
+                            <span>Rekapitulasi KIR</span>
+                            <span class="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded font-mono">Total</span>
+                        </a>
+                    </div>
+                </div>
 
                 <!-- Section 4: Laporan -->
                 @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'kepala')

@@ -344,6 +344,52 @@ class RoomController extends Controller
         ]);
     }
 
+    public function addKirItem(Request $request, \App\Models\Room $room)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'merk' => 'nullable|string|max:255',
+            'bahan' => 'nullable|string|max:255',
+            'jumlah' => 'required|integer|min:1',
+            'condition' => 'required|in:Baik,Kurang Baik,Rusak Berat',
+            'keterangan' => 'nullable|string|max:255',
+        ]);
+
+        $jumlah = (int)$validated['jumlah'];
+        $lastNo = \App\Models\Asset::where('room_id', $room->id)->count() + 1;
+
+        for ($i = 1; $i <= $jumlah; $i++) {
+            $codeSuffix = $jumlah > 1 ? "-$i" : '';
+            $assetCode = 'KIR-' . $room->id . '-' . str_pad($lastNo, 3, '0', STR_PAD_LEFT) . $codeSuffix;
+            if (\App\Models\Asset::where('asset_code', $assetCode)->exists()) {
+                $assetCode .= '-' . \Illuminate\Support\Str::random(3);
+            }
+
+            \App\Models\Asset::create([
+                'room_id' => $room->id,
+                'location' => $room->name,
+                'name' => $validated['name'],
+                'category' => 'Peralatan dan Mesin',
+                'merk' => $validated['merk'] ?: null,
+                'bahan' => $validated['bahan'] ?: 'Campuran',
+                'condition' => $validated['condition'],
+                'keterangan' => $validated['keterangan'] ?: null,
+                'source' => 'KIR',
+                'asset_code' => $assetCode,
+                'year_purchased' => date('Y'),
+            ]);
+        }
+
+        return redirect()->route('rooms.print_kir', $room->id)
+            ->with('success', "Berhasil menambahkan {$jumlah} unit {$validated['name']} ke {$room->name}.");
+    }
+
+    public function clearRoomAssets(\App\Models\Room $room)
+    {
+        \App\Models\Asset::where('room_id', $room->id)->where('source', 'KIR')->delete();
+        return redirect()->route('rooms.print_kir', $room->id)->with('success', "Daftar barang KIR di {$room->name} berhasil dikosongkan.");
+    }
+
     protected function getGroupedKirItems(\App\Models\Room $room)
     {
         $groupedItems = collect();

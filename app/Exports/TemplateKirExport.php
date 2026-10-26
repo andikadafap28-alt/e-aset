@@ -44,44 +44,27 @@ class TemplateKirExport implements FromCollection, WithHeadings, WithStyles, Sho
     {
         $room = null;
         if ($this->roomId) {
-            $room = Room::with('assets')->find($this->roomId);
+            $room = Room::with('kirItems')->find($this->roomId);
         }
 
         $roomName = $room ? $room->name : 'Ruang Kepala Puskesmas';
 
-        // Jika ruangan memiliki data aset di database, gunakan data tersebut
-        if ($room && $room->assets && $room->assets->count() > 0) {
-            $grouped = $room->assets->groupBy(function($item) {
-                $name = $item->name ?? '-';
-                $merk = $item->merk ?? '';
-                $bahan = $item->bahan ?? '';
-                return $name . '|' . $merk . '|' . $bahan;
-            });
-
+        // Jika ruangan memiliki data kirItems di database, gunakan data tersebut
+        if ($room && $room->kirItems && $room->kirItems->count() > 0) {
             $rows = collect();
             $no = 1;
-            foreach ($grouped as $group) {
-                $first = $group->first();
-                $baik = $group->filter(fn($i) => in_array(strtolower($i->condition ?? ''), ['baik', 'b']))->count();
-                $kurangBaik = $group->filter(fn($i) => in_array(strtolower($i->condition ?? ''), ['kurang baik', 'kb', 'rusak ringan', 'rr']))->count();
-                $rusakBerat = $group->filter(fn($i) => in_array(strtolower($i->condition ?? ''), ['rusak berat', 'rb']))->count();
-
-                $total = $group->count();
-                if (($baik + $kurangBaik + $rusakBerat) < $total) {
-                    $baik += ($total - ($baik + $kurangBaik + $rusakBerat));
-                }
-
+            foreach ($room->kirItems as $item) {
                 $rows->push([
                     $roomName,
                     $no++,
-                    $first->name,
-                    $first->merk ?: '-',
-                    $first->bahan ?: 'Campuran',
-                    $total,
-                    $baik,
-                    $kurangBaik,
-                    $rusakBerat,
-                    $first->keterangan ?: '-'
+                    $item->name,
+                    $item->merk ?: '-',
+                    $item->bahan ?: 'Campuran',
+                    $item->jumlah,
+                    $item->kondisi_baik,
+                    $item->kondisi_kurang_baik,
+                    $item->kondisi_rusak_berat,
+                    $item->keterangan ?: '-'
                 ]);
             }
             return $rows;

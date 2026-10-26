@@ -87,15 +87,36 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/rooms/import', [\App\Http\Controllers\RoomController::class, 'importExcel'])->name('rooms.import');
     Route::get('/rooms/template', [\App\Http\Controllers\RoomController::class, 'downloadTemplate'])->name('rooms.template');
-    Route::get('/rooms/kir/template', [\App\Http\Controllers\RoomController::class, 'downloadKirTemplate'])->name('rooms.kir.template');
-    Route::post('/rooms/kir/import', [\App\Http\Controllers\RoomController::class, 'importKirExcel'])->name('rooms.kir.import');
-    Route::get('/rooms/kir/cetak-batch', [\App\Http\Controllers\RoomController::class, 'printBatchKir'])->name('rooms.print_batch_kir');
+    Route::get('/rooms/kir/template', [\App\Http\Controllers\KirController::class, 'downloadTemplate'])->name('rooms.kir.template');
+    Route::post('/rooms/kir/import', [\App\Http\Controllers\KirController::class, 'importExcel'])->name('rooms.kir.import');
+    Route::get('/rooms/kir/cetak-batch', [\App\Http\Controllers\KirController::class, 'printBatchKir'])->name('rooms.print_batch_kir');
     Route::get('/rooms/lembar-pemeliharaan', [\App\Http\Controllers\RoomController::class, 'lembarPemeliharaanIndex'])->name('rooms.lembar_pemeliharaan');
     Route::get('/rooms/lembar-pemeliharaan/cetak-batch', [\App\Http\Controllers\RoomController::class, 'printBatchPemeliharaanRuangan'])->name('rooms.print_batch_pemeliharaan_ruangan');
-    Route::get('/rooms/{room}/kir', [\App\Http\Controllers\RoomController::class, 'printKir'])->name('rooms.print_kir');
+    Route::get('/rooms/{room}/kir', [\App\Http\Controllers\KirController::class, 'printKir'])->name('rooms.print_kir');
+    Route::post('/rooms/{room}/kir/add-item', [\App\Http\Controllers\KirController::class, 'storeItem'])->name('rooms.kir.add_item');
+    Route::delete('/rooms/{room}/kir/clear', [\App\Http\Controllers\KirController::class, 'clearRoom'])->name('rooms.kir.clear');
     Route::get('/rooms/{room}/pemeliharaan-alat', [\App\Http\Controllers\RoomController::class, 'printPemeliharaanAlat'])->name('rooms.print_pemeliharaan_alat');
     Route::get('/rooms/{room}/pemeliharaan-ruangan', [\App\Http\Controllers\RoomController::class, 'printPemeliharaanRuangan'])->name('rooms.print_pemeliharaan_ruangan');
     Route::resource('rooms', \App\Http\Controllers\RoomController::class);
+
+    // ==========================================
+    // KARTU INVENTARIS RUANGAN (KIR) - Khusus Barang Non-Aset / Inventaris Ruangan
+    // ==========================================
+    Route::prefix('kir')->name('kir.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\KirController::class, 'index'])->name('index');
+        Route::get('/ruangan/{room}', [\App\Http\Controllers\KirController::class, 'roomItems'])->name('room_items');
+        Route::post('/ruangan/{room}/item', [\App\Http\Controllers\KirController::class, 'storeItem'])->name('item.store');
+        Route::put('/item/{kirItem}', [\App\Http\Controllers\KirController::class, 'updateItem'])->name('item.update');
+        Route::delete('/item/{kirItem}', [\App\Http\Controllers\KirController::class, 'destroyItem'])->name('item.destroy');
+        Route::delete('/ruangan/{room}/clear', [\App\Http\Controllers\KirController::class, 'clearRoom'])->name('room.clear');
+        Route::get('/template', [\App\Http\Controllers\KirController::class, 'downloadTemplate'])->name('template');
+        Route::post('/import', [\App\Http\Controllers\KirController::class, 'importExcel'])->name('import');
+        Route::get('/rekap', [\App\Http\Controllers\KirController::class, 'rekap'])->name('rekap');
+        Route::get('/rekap/export', [\App\Http\Controllers\KirController::class, 'exportRekap'])->name('rekap.export');
+        Route::get('/rekap/print', [\App\Http\Controllers\KirController::class, 'printRekap'])->name('rekap.print');
+        Route::get('/ruangan/{room}/print', [\App\Http\Controllers\KirController::class, 'printKir'])->name('print');
+        Route::get('/batch-print', [\App\Http\Controllers\KirController::class, 'printBatchKir'])->name('print_batch');
+    });
 
     Route::prefix('aset')->name('aset.')->group(function () {
         Route::get('/data/items', [AssetController::class, 'index'])->name('data.items');

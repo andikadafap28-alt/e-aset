@@ -416,8 +416,8 @@
     <!-- Toolbar Layar Atas -->
     <div class="toolbar no-print">
         <div class="toolbar-group">
-            <a href="{{ route('rooms.index') }}" class="btn btn-back">
-                &larr; Ruangan
+            <a href="{{ route('kir.room_items', $room->id) }}" class="btn btn-back">
+                &larr; Kembali ke Ruangan
             </a>
             
             <!-- Pemilih Ruangan Cepat -->
@@ -426,7 +426,7 @@
                 <select id="roomSelector" class="select-room" onchange="switchRoom(this.value)">
                     @foreach($allRooms as $r)
                         <option value="{{ $r->id }}" {{ $r->id == $room->id ? 'selected' : '' }}>
-                            {{ $r->name }} ({{ $r->assets()->count() }} aset)
+                            {{ $r->name }} ({{ $r->kirItems()->count() }} barang)
                         </option>
                     @endforeach
                 </select>
@@ -450,6 +450,12 @@
                     Hari Ini
                 </button>
             </div>
+
+            <!-- Tombol Tambah Barang Manual -->
+            <button type="button" onclick="openAddItemModal()" class="btn" style="background: #4f46e5; color: #fff;" title="Tambah barang satu per satu secara manual ke ruangan ini">
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                + Tambah Barang
+            </button>
 
             <!-- Tombol Download Template Excel -->
             <a href="{{ route('rooms.kir.template', ['room_id' => $room->id]) }}" class="btn btn-download" title="Download Format Excel KIR Ruangan Ini untuk Diedit / Diisi">
@@ -559,9 +565,21 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="9" class="text-center" style="padding: 24px; color: #64748b; font-style: italic;">
-                                Belum ada data barang di ruangan ini.<br>
-                                <span style="font-size: 8.5pt;">Gunakan menu <strong>Download Excel</strong> lalu isi dan <strong>Upload Excel</strong> untuk menghasilkan KIR otomatis.</span>
+                            <td colspan="9" class="text-center" style="padding: 28px 15px;">
+                                <div style="color: #64748b; font-size: 11pt; margin-bottom: 12px; font-style: italic;">
+                                    Belum ada data barang di ruangan {{ $currentRoom->name }}.
+                                </div>
+                                <div class="no-print" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                                    <button type="button" onclick="openAddItemModal()" class="btn" style="background: #4f46e5; color: #fff; font-size: 12px;">
+                                        ➕ Tambah Barang Manual
+                                    </button>
+                                    <button type="button" onclick="openImportModal()" class="btn" style="background: #7c3aed; color: #fff; font-size: 12px;">
+                                        📤 Upload File Excel
+                                    </button>
+                                    <a href="{{ route('rooms.kir.template', ['room_id' => $currentRoom->id]) }}" class="btn" style="background: #059669; color: #fff; font-size: 12px;">
+                                        📥 Download Template Excel
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         @endforelse
@@ -596,6 +614,75 @@
                 </div>
             </div>
         @endforeach
+    </div>
+
+    <!-- Modal Tambah Barang Manual -->
+    <div id="addItemModal" class="modal-overlay" onclick="if(event.target === this) closeAddItemModal()">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #1e1b4b;">
+                <h3>➕ Tambah Barang ke Ruangan {{ $room->name }}</h3>
+                <button type="button" class="modal-close" onclick="closeAddItemModal()">&times;</button>
+            </div>
+            <form action="{{ route('rooms.kir.add_item', $room->id) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <p style="margin-top: 0; line-height: 1.4; color: #475569; font-size: 12px; margin-bottom: 14px;">
+                        Masukkan data barang satu per satu. Data akan langsung tercatat di sistem e-Aset dan ditampilkan pada Kartu Inventaris Ruangan (KIR).
+                    </p>
+
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 4px; font-size: 12px;">Nama / Jenis Barang <span style="color: #ef4444;">*</span></label>
+                        <input type="text" name="name" required placeholder="Cth: AC, TV LED, Kursi, Lemari Kaca..." style="width: 100%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 4px; font-size: 12px;">Merek / Model</label>
+                            <input type="text" name="merk" placeholder="Cth: Panasonic, Polaris, Dell..." style="width: 100%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 4px; font-size: 12px;">Bahan</label>
+                            <input type="text" name="bahan" value="Campuran" placeholder="Cth: Campuran, Besi, Kayu..." list="bahanList" style="width: 100%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                            <datalist id="bahanList">
+                                <option value="Campuran">
+                                <option value="Besi">
+                                <option value="Kayu">
+                                <option value="Plastik">
+                                <option value="Kaca">
+                                <option value="Alumunium">
+                                <option value="Karet">
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 4px; font-size: 12px;">Jumlah Barang <span style="color: #ef4444;">*</span></label>
+                            <input type="number" name="jumlah" min="1" value="1" required style="width: 100%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 4px; font-size: 12px;">Keadaan / Kondisi <span style="color: #ef4444;">*</span></label>
+                            <select name="condition" required style="width: 100%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                                <option value="Baik" selected>Baik</option>
+                                <option value="Kurang Baik">Kurang Baik</option>
+                                <option value="Rusak Berat">Rusak Berat</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 8px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 4px; font-size: 12px;">Keterangan Mutasi dll.</label>
+                        <input type="text" name="keterangan" placeholder="Opsional (cth: Pengadaan 2026, Hibah, dll.)" style="width: 100%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-back" onclick="closeAddItemModal()">Batal</button>
+                    <button type="submit" class="btn" style="background: #4f46e5; color: #fff;">
+                        Simpan Barang
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Modal Upload Excel KIR -->
@@ -725,13 +812,22 @@
             window.location.href = `/rooms/${roomId}/kir?date=${currentDate}`;
         }
 
-        // Buka / Tutup Modal Import
+        // Buka / Tutup Modal Import Excel
         function openImportModal() {
             document.getElementById('importModal').style.display = 'flex';
         }
 
         function closeImportModal() {
             document.getElementById('importModal').style.display = 'none';
+        }
+
+        // Buka / Tutup Modal Tambah Barang Manual
+        function openAddItemModal() {
+            document.getElementById('addItemModal').style.display = 'flex';
+        }
+
+        function closeAddItemModal() {
+            document.getElementById('addItemModal').style.display = 'none';
         }
 
         // Periksa apakah ada tanggal tersimpan sebelumnya di localStorage
