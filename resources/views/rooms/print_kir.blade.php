@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KIR - {{ $room->name ?? 'Kartu Inventaris Ruangan' }} (F4)</title>
+    <title>KIR - {{ $room->name ?? 'Kartu Inventaris Ruangan' }} (F4 - 1 Halaman)</title>
     <style>
-        /* Pengaturan Kertas F4 (216mm x 330mm) */
+        /* Pengaturan Standar Kertas F4 / Folio (216mm x 330mm) */
         @page {
             size: 216mm 330mm;
-            margin: 15mm 15mm 15mm 15mm;
+            margin: 10mm 12mm 10mm 12mm;
         }
 
         * {
             box-sizing: border-box;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 10.5pt;
-            line-height: 1.25;
+            font-size: 10pt;
+            line-height: 1.2;
             color: #000;
-            background-color: #f1f5f9;
+            background-color: #0b1120;
             margin: 0;
             padding: 0;
         }
@@ -34,32 +34,33 @@
             z-index: 1000;
             background: #0f172a;
             color: #f8fafc;
-            padding: 10px 18px;
+            padding: 8px 16px;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            font-size: 13px;
+            font-size: 12.5px;
+            border-bottom: 1px solid #1e293b;
         }
 
         .toolbar-group {
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
+            gap: 5px;
+            padding: 5px 11px;
             border-radius: 6px;
             font-weight: 600;
-            font-size: 12.5px;
+            font-size: 12px;
             cursor: pointer;
             text-decoration: none;
             border: 1px solid transparent;
@@ -77,7 +78,7 @@
         .btn-print {
             background: #2563eb;
             color: #fff;
-            box-shadow: 0 2px 4px rgba(37,99,235,0.3);
+            box-shadow: 0 2px 6px rgba(37,99,235,0.4);
         }
         .btn-print:hover { background: #1d4ed8; }
 
@@ -97,8 +98,8 @@
             background: #1e293b;
             color: #cbd5e1;
             border: 1px solid #334155;
-            padding: 4px 8px;
-            font-size: 11.5px;
+            padding: 3px 7px;
+            font-size: 11px;
             border-radius: 4px;
         }
         .btn-preset:hover {
@@ -110,6 +111,7 @@
         .toolbar-label {
             color: #94a3b8;
             font-weight: 500;
+            font-size: 11.5px;
         }
 
         .select-room, .input-date {
@@ -117,52 +119,114 @@
             color: #f8fafc;
             border: 1px solid #475569;
             border-radius: 6px;
-            padding: 5px 8px;
-            font-size: 12.5px;
+            padding: 4px 7px;
+            font-size: 12px;
             outline: none;
         }
         .select-room:focus, .input-date:focus {
             border-color: #38bdf8;
         }
 
-        /* Lembar Dokumen Fisik F4 */
+        /* Status Badge Muat 1 Halaman */
+        .fit-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        .fit-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.4);
+        }
+        .fit-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+        }
+        .fit-badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            display: inline-block;
+        }
+
+        .btn-autofit {
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            cursor: pointer;
+        }
+        .btn-autofit.active {
+            background: #0f172a;
+            border-color: #22c55e;
+            color: #86efac;
+            box-shadow: 0 0 0 1px #22c55e;
+        }
+
+        /* Lembar Dokumen Fisik F4 di Layar */
         .sheet-wrapper {
-            padding: 20px 10px;
+            padding: 24px 10px 60px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            background: #0b1120;
+            min-height: 100vh;
         }
 
+        /* Kertas F4 Standard: 216mm x 330mm */
         .page-sheet {
             background: #ffffff;
             width: 216mm;
+            height: 330mm;
+            max-height: 330mm;
             min-height: 330mm;
-            padding: 15mm 15mm 15mm 15mm;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            padding: 10mm 12mm 10mm 12mm;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.35);
             position: relative;
             margin-bottom: 30px;
+            box-sizing: border-box;
+            overflow: hidden; /* Mencegah elemen keluar batas lembar fisik */
+        }
+
+        /* Container Dalam yang Menampung Seluruh Konten & Menerima Auto-Scale */
+        .page-sheet-inner {
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            transform-origin: top center;
+            box-sizing: border-box;
         }
 
         /* Header Dokumen KIR */
         .kir-title {
             text-align: center;
-            font-size: 14pt;
+            font-size: 13.5pt;
             font-weight: bold;
-            letter-spacing: 1.5px;
-            margin-bottom: 22px;
+            letter-spacing: 1.2px;
+            margin-bottom: 14px;
             text-transform: uppercase;
+            line-height: 1.15;
         }
 
         table.header-meta {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 14px;
-            font-size: 10.5pt;
+            margin-bottom: 12px;
+            font-size: 9.5pt;
         }
 
         table.header-meta td {
             vertical-align: top;
-            padding: 1.5px 0;
+            padding: 1px 0;
             border: none;
         }
 
@@ -185,27 +249,28 @@
         table.kir-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 24px;
-            font-size: 9.5pt;
+            margin-bottom: 14px;
+            font-size: 9pt;
         }
 
         table.kir-table th, table.kir-table td {
             border: 1px solid #000;
-            padding: 4px 5px;
+            padding: 3.5px 4.5px;
             vertical-align: middle;
+            word-break: break-word;
         }
 
         table.kir-table th {
             text-align: center;
             font-weight: bold;
-            font-size: 9.5pt;
+            font-size: 9pt;
             background-color: #fff;
         }
 
         table.kir-table tr.col-numbers th {
             font-weight: normal;
-            font-size: 8pt;
-            padding: 2px;
+            font-size: 7.5pt;
+            padding: 1.5px;
         }
 
         table.kir-table td.text-center { text-align: center; }
@@ -215,7 +280,7 @@
         /* Tanda Tangan */
         .ttd-wrapper {
             width: 100%;
-            margin-top: 25px;
+            margin-top: 16px;
             page-break-inside: avoid;
             display: flex;
             justify-content: space-between;
@@ -224,7 +289,8 @@
         .ttd-box {
             width: 45%;
             text-align: center;
-            font-size: 10.5pt;
+            font-size: 9.5pt;
+            line-height: 1.2;
         }
 
         .ttd-box-left {
@@ -240,19 +306,19 @@
         }
 
         .ttd-jabatan {
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .ttd-image-area {
-            height: 72px;
+            height: 56px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 4px 0;
+            margin: 2px 0;
         }
 
         .ttd-image-area img {
-            max-height: 68px;
+            max-height: 52px;
             max-width: 175px;
             object-fit: contain;
         }
@@ -261,12 +327,12 @@
             font-weight: bold;
             text-transform: uppercase;
             text-decoration: underline;
-            margin-top: 4px;
+            margin-top: 3px;
         }
 
         .ttd-nip {
-            margin-top: 2px;
-            letter-spacing: 0.5px;
+            margin-top: 1px;
+            letter-spacing: 0.3px;
         }
 
         .doc-date-display {
@@ -284,7 +350,68 @@
             display: table;
         }
 
-        /* Modal Import */
+        /* =========================================================
+           LEVEL KERAPATAN OTOMATIS (TIERED DENSITY CLASSES)
+           Memastikan dari 1 sampai 70+ barang tetap muat tepat 1 lembar F4!
+           ========================================================= */
+
+        /* 1. Normal (<= 18 barang) */
+        .density-normal .kir-title { font-size: 13.5pt; margin-bottom: 14px; }
+        .density-normal table.header-meta { font-size: 9.5pt; margin-bottom: 12px; }
+        .density-normal table.header-meta td { padding: 1px 0; }
+        .density-normal table.kir-table { font-size: 9pt; margin-bottom: 16px; }
+        .density-normal table.kir-table th, .density-normal table.kir-table td { padding: 3.5px 4.5px; }
+        .density-normal .ttd-wrapper { margin-top: 18px; }
+        .density-normal .ttd-box { font-size: 9.5pt; }
+        .density-normal .ttd-image-area { height: 56px; }
+        .density-normal .ttd-image-area img { max-height: 52px; }
+
+        /* 2. Rapat (Compact: 19 - 28 barang) */
+        .density-compact .kir-title { font-size: 12pt; margin-bottom: 8px; letter-spacing: 1px; }
+        .density-compact table.header-meta { font-size: 8.5pt; margin-bottom: 7px; }
+        .density-compact table.header-meta td { padding: 0.6px 0; }
+        .density-compact table.kir-table { font-size: 8pt; margin-bottom: 10px; }
+        .density-compact table.kir-table th, .density-compact table.kir-table td { padding: 2px 3.5px; line-height: 1.12; }
+        .density-compact table.kir-table tr.col-numbers th { font-size: 7pt; padding: 1px; }
+        .density-compact .ttd-wrapper { margin-top: 10px; }
+        .density-compact .ttd-box { font-size: 8.8pt; }
+        .density-compact .ttd-jabatan { margin-bottom: 3px; }
+        .density-compact .ttd-image-area { height: 44px; margin: 1px 0; }
+        .density-compact .ttd-image-area img { max-height: 40px; }
+        .density-compact .ttd-nama { margin-top: 2px; }
+
+        /* 3. Sangat Rapat (Dense: 29 - 40 barang) */
+        .density-dense .kir-title { font-size: 11pt; margin-bottom: 5px; letter-spacing: 0.8px; }
+        .density-dense table.header-meta { font-size: 8pt; margin-bottom: 5px; }
+        .density-dense table.header-meta td { padding: 0.3px 0; }
+        .density-dense table.kir-table { font-size: 7.2pt; margin-bottom: 6px; }
+        .density-dense table.kir-table th, .density-dense table.kir-table td { padding: 1.3px 2.5px; line-height: 1.08; }
+        .density-dense table.kir-table tr.col-numbers th { font-size: 6.5pt; padding: 0.6px; }
+        .density-dense .ttd-wrapper { margin-top: 6px; }
+        .density-dense .ttd-box { font-size: 8pt; }
+        .density-dense .ttd-title { margin-bottom: 1px; }
+        .density-dense .ttd-jabatan { margin-bottom: 1px; }
+        .density-dense .ttd-image-area { height: 36px; margin: 1px 0; }
+        .density-dense .ttd-image-area img { max-height: 34px; }
+        .density-dense .ttd-nama { margin-top: 1px; }
+
+        /* 4. Ultra Rapat (Ultra: 41+ barang, contoh: 48 barang di R. Gigi) */
+        .density-ultra .kir-title { font-size: 10pt; margin-bottom: 3px; letter-spacing: 0.5px; }
+        .density-ultra table.header-meta { font-size: 7.2pt; margin-bottom: 4px; }
+        .density-ultra table.header-meta td { padding: 0.1px 0; }
+        .density-ultra table.kir-table { font-size: 6.5pt; margin-bottom: 5px; }
+        .density-ultra table.kir-table th, .density-ultra table.kir-table td { padding: 0.8px 2px; line-height: 1.04; }
+        .density-ultra table.kir-table tr.col-numbers th { font-size: 5.8pt; padding: 0.3px; }
+        .density-ultra .ttd-wrapper { margin-top: 5px; }
+        .density-ultra .ttd-box { font-size: 7.2pt; }
+        .density-ultra .ttd-title { margin-bottom: 0px; }
+        .density-ultra .ttd-jabatan { margin-bottom: 1px; }
+        .density-ultra .ttd-image-area { height: 30px; margin: 0; }
+        .density-ultra .ttd-image-area img { max-height: 28px; }
+        .density-ultra .ttd-nama { margin-top: 1px; }
+        .density-ultra .ttd-nip { margin-top: 0px; }
+
+        /* Modal Styles */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -366,32 +493,66 @@
         .alert-success { background: #059669; }
         .alert-error { background: #dc2626; }
 
-        /* Media Print Khusus F4 */
+        /* =========================================================
+           MEDIA PRINT KHUSUS F4 - DIJAMIN TEPAT 1 HALAMAN PER RUANGAN
+           ========================================================= */
         @media print {
-            body {
+            @page {
+                size: 216mm 330mm;
+                margin: 10mm 12mm 10mm 12mm;
+            }
+
+            html, body {
                 background: #fff !important;
                 color: #000 !important;
-                font-size: 10pt;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
-            .toolbar, .modal-overlay, .alert-box {
+
+            .toolbar, .modal-overlay, .alert-box, .no-print {
                 display: none !important;
             }
+
             .sheet-wrapper {
                 padding: 0 !important;
                 margin: 0 !important;
+                display: block !important;
+                background: #fff !important;
             }
+
+            /* Tiap ruangan mengunci tinggi 310mm (330mm - margin 20mm) sehingga 100% PASTI 1 Halaman */
             .page-sheet {
                 width: 100% !important;
-                min-height: auto !important;
+                height: 310mm !important;
+                max-height: 310mm !important;
+                min-height: 310mm !important;
                 padding: 0 !important;
                 margin: 0 !important;
                 box-shadow: none !important;
                 border: none !important;
-                page-break-after: always;
+                box-sizing: border-box !important;
+                overflow: hidden !important; /* MUTLAK: Mencegah browser print engine membuat halaman 2 */
+                page-break-after: always !important;
+                break-after: page !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
+
             .page-sheet:last-child {
-                page-break-after: auto;
+                page-break-after: auto !important;
+                break-after: auto !important;
             }
+
+            .page-sheet-inner {
+                width: 100% !important;
+                height: 100% !important;
+                max-height: 310mm !important;
+                overflow: hidden !important;
+            }
+
             .doc-date-display {
                 border-bottom: none !important;
                 padding: 0 !important;
@@ -417,7 +578,7 @@
     <div class="toolbar no-print">
         <div class="toolbar-group">
             <a href="{{ route('kir.room_items', $room->id) }}" class="btn btn-back">
-                &larr; Kembali ke Ruangan
+                &larr; Kembali
             </a>
             
             <!-- Pemilih Ruangan Cepat -->
@@ -433,11 +594,52 @@
             </div>
         </div>
 
+        <!-- Group Kontrol: Fitur Kunci 1 Halaman -->
+        <div class="toolbar-group" style="background: rgba(15, 23, 42, 0.8); padding: 3px 8px; border-radius: 8px; border: 1px solid #334155;">
+            <!-- Badge Status Muat Halaman -->
+            <div id="pageFitBadge" class="fit-badge fit-success" title="Status muat dokumen pada kertas F4">
+                <span class="fit-badge-dot"></span>
+                <span id="pageFitText">✓ Pas 1 Halaman (Auto)</span>
+            </div>
+
+            <!-- Tombol Toggle Kunci 1 Halaman -->
+            <button type="button" id="toggleAutoFitBtn" onclick="toggleAutoFit()" class="btn btn-autofit active" title="Kunci dokumen agar selalu pas tepat di 1 halaman F4 tanpa terpotong / meluber ke halaman 2">
+                ⚡ Paksa 1 Halaman: <strong style="color: #4ade80;">AKTIF</strong>
+            </button>
+
+            <!-- Dropdown Kerapatan Teks / Density -->
+            <div style="display: flex; align-items: center; gap: 4px;">
+                <span class="toolbar-label" style="font-size: 11px;">Kerapatan:</span>
+                <select id="densitySelector" class="select-room" onchange="changeDensity(this.value)" style="font-size: 11.5px; padding: 3px 6px;">
+                    <option value="auto">⚡ Otomatis (Rekomendasi)</option>
+                    <option value="density-normal">Standar (<= 18 barang)</option>
+                    <option value="density-compact">Rapat (19-28 barang)</option>
+                    <option value="density-dense">Sangat Rapat (29-40 barang)</option>
+                    <option value="density-ultra">Ultra Rapat (41+ barang)</option>
+                </select>
+            </div>
+
+            <!-- Dropdown Skala Zoom -->
+            <div style="display: flex; align-items: center; gap: 4px;">
+                <span class="toolbar-label" style="font-size: 11px;">Skala:</span>
+                <select id="zoomSelector" class="select-room" onchange="changeZoom(this.value)" style="font-size: 11.5px; padding: 3px 6px;">
+                    <option value="auto">⚡ Auto-Fit (Presisi)</option>
+                    <option value="1">100%</option>
+                    <option value="0.95">95%</option>
+                    <option value="0.90">90%</option>
+                    <option value="0.85">85%</option>
+                    <option value="0.80">80%</option>
+                    <option value="0.75">75%</option>
+                    <option value="0.70">70%</option>
+                </select>
+            </div>
+        </div>
+
         <div class="toolbar-group">
             <!-- Menu Pengubah Tanggal Cetak (KIR diupdate tiap 6 bulan sekali) -->
-            <div style="display: flex; align-items: center; gap: 6px; background: rgba(30, 41, 59, 0.85); padding: 3px 8px; border-radius: 6px; border: 1px solid #334155;">
-                <span class="toolbar-label" style="color: #38bdf8; font-weight: 600;">📅 Tanggal Cetak:</span>
-                <input type="date" id="datePicker" class="input-date" value="{{ $docDate }}" onchange="changeDocDate(this.value)" title="Ubah tanggal tanda tangan KIR (Wajib diupdate tiap 6 bulan sekali)">
+            <div style="display: flex; align-items: center; gap: 5px; background: rgba(30, 41, 59, 0.85); padding: 3px 6px; border-radius: 6px; border: 1px solid #334155;">
+                <span class="toolbar-label" style="color: #38bdf8; font-weight: 600; font-size: 11.5px;">📅 Tgl Cetak:</span>
+                <input type="date" id="datePicker" class="input-date" value="{{ $docDate }}" onchange="changeDocDate(this.value)" style="padding: 3px 6px; font-size: 11.5px;" title="Ubah tanggal tanda tangan KIR (Wajib diupdate tiap 6 bulan sekali)">
                 
                 <!-- Preset Cepat 6 Bulan Sekali -->
                 <button type="button" class="btn btn-preset" onclick="setPresetDate('sem1')" title="Set semester 1 (02 Januari)">
@@ -453,26 +655,23 @@
 
             <!-- Tombol Tambah Barang Manual -->
             <button type="button" onclick="openAddItemModal()" class="btn" style="background: #4f46e5; color: #fff;" title="Tambah barang satu per satu secara manual ke ruangan ini">
-                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                + Tambah Barang
+                + Tambah
             </button>
 
             <!-- Tombol Download Template Excel -->
             <a href="{{ route('rooms.kir.template', ['room_id' => $room->id]) }}" class="btn btn-download" title="Download Format Excel KIR Ruangan Ini untuk Diedit / Diisi">
-                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 Download Excel
             </a>
 
             <!-- Tombol Upload / Import Excel -->
             <button type="button" onclick="openImportModal()" class="btn btn-upload" title="Unggah file Excel KIR yang telah diisi untuk langsung generate kartu inventaris">
-                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                 Upload Excel
             </button>
 
-            <!-- Tombol Cetak Dokumen F4 -->
-            <button onclick="window.print()" class="btn btn-print" title="Cetak Dokumen KIR pada Kertas F4 (216x330 mm)">
-                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                Cetak KIR (F4)
+            <!-- Tombol Cetak Dokumen F4 (1 Halaman Dijamin) -->
+            <button type="button" onclick="printDoc()" class="btn btn-print" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); font-weight: 700; padding: 6px 14px; border: 1px solid #60a5fa;" title="Cetak Dokumen KIR pada Kertas F4 (Pasti Muat 1 Halaman)">
+                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Cetak KIR (F4 - 1 Halaman)
             </button>
         </div>
     </div>
@@ -486,130 +685,136 @@
         @foreach($renderRooms as $currentRoom)
             @php
                 $items = isset($isBatch) && $isBatch ? ($groupedItemsMap[$currentRoom->id] ?? collect()) : $groupedItems;
+                $itemCount = count($items);
+                // Level kerapatan otomatis berdasarkan jumlah item
+                $autoDensity = $itemCount > 40 ? 'density-ultra' : ($itemCount > 28 ? 'density-dense' : ($itemCount > 18 ? 'density-compact' : 'density-normal'));
             @endphp
 
-            <div class="page-sheet">
-                <!-- Judul Utama Dokumen -->
-                <div class="kir-title">KARTU INVENTARIS RUANGAN</div>
+            <div class="page-sheet {{ $autoDensity }}" data-room-id="{{ $currentRoom->id }}" data-item-count="{{ $itemCount }}" data-auto-density="{{ $autoDensity }}">
+                <!-- Inner Container untuk penyesuaian skala presisi -->
+                <div class="page-sheet-inner">
+                    <!-- Judul Utama Dokumen -->
+                    <div class="kir-title">KARTU INVENTARIS RUANGAN</div>
 
-                <!-- Metadata Satuan Kerja & Ruangan Sesuai Standar Resmi -->
-                <table class="header-meta">
-                    <tr>
-                        <td class="label">PROPINSI</td>
-                        <td class="separator">:</td>
-                        <td class="value">JAWA TIMUR</td>
-                    </tr>
-                    <tr>
-                        <td class="label">KABUPATEN/KOTAMADYA</td>
-                        <td class="separator">:</td>
-                        <td class="value">LAMONGAN</td>
-                    </tr>
-                    <tr>
-                        <td class="label">UNIT</td>
-                        <td class="separator">:</td>
-                        <td class="value">DINAS KESEHATAN</td>
-                    </tr>
-                    <tr>
-                        <td class="label">SATUAN KERJA</td>
-                        <td class="separator">:</td>
-                        <td class="value">PUSKESMAS MANTUP</td>
-                    </tr>
-                    <tr>
-                        <td class="label" style="letter-spacing: 2px;">R U A N G A N</td>
-                        <td class="separator">:</td>
-                        <td class="value" style="font-weight: bold;">{{ strtoupper($currentRoom->name) }}</td>
-                    </tr>
-                </table>
+                    <!-- Metadata Satuan Kerja & Ruangan Sesuai Standar Resmi Permendagri -->
+                    <table class="header-meta">
+                        <tr>
+                            <td class="label">PROPINSI</td>
+                            <td class="separator">:</td>
+                            <td class="value">JAWA TIMUR</td>
+                        </tr>
+                        <tr>
+                            <td class="label">KABUPATEN/KOTAMADYA</td>
+                            <td class="separator">:</td>
+                            <td class="value">LAMONGAN</td>
+                        </tr>
+                        <tr>
+                            <td class="label">UNIT</td>
+                            <td class="separator">:</td>
+                            <td class="value">DINAS KESEHATAN</td>
+                        </tr>
+                        <tr>
+                            <td class="label">SATUAN KERJA</td>
+                            <td class="separator">:</td>
+                            <td class="value">PUSKESMAS MANTUP</td>
+                        </tr>
+                        <tr>
+                            <td class="label" style="letter-spacing: 2px;">R U A N G A N</td>
+                            <td class="separator">:</td>
+                            <td class="value" style="font-weight: bold;">{{ strtoupper($currentRoom->name) }}</td>
+                        </tr>
+                    </table>
 
-                <!-- Tabel Data KIR -->
-                <table class="kir-table">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" style="width: 5%;">No. Urut</th>
-                            <th rowspan="2" style="width: 25%;">Jenis Barang / Nama Barang</th>
-                            <th rowspan="2" style="width: 15%;">Merek / Model</th>
-                            <th rowspan="2" style="width: 11%;">Bahan</th>
-                            <th rowspan="2" style="width: 8%;">Jumlah<br>Barang</th>
-                            <th colspan="3" style="width: 22%;">Keadaan Barang</th>
-                            <th rowspan="2" style="width: 14%;">Keterangan<br>Mutasi dll.</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 7.3%;">Baik</th>
-                            <th style="width: 7.3%;">Kurang<br>Baik</th>
-                            <th style="width: 7.3%;">Rusak<br>Berat</th>
-                        </tr>
-                        <tr class="col-numbers">
-                            <th>1</th>
-                            <th>2</th>
-                            <th>3</th>
-                            <th>6</th>
-                            <th>9</th>
-                            <th>10</th>
-                            <th>11</th>
-                            <th>12</th>
-                            <th>13</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($items as $item)
-                        <tr>
-                            <td class="text-center">{{ $item->no }}</td>
-                            <td class="text-left">{{ $item->name }}</td>
-                            <td class="text-left">{{ $item->merk ?: '' }}</td>
-                            <td class="text-left">{{ $item->bahan ?: 'Campuran' }}</td>
-                            <td class="text-center">{{ $item->total }}</td>
-                            <td class="text-center">{{ $item->baik > 0 ? $item->baik : '' }}</td>
-                            <td class="text-center">{{ $item->kurang_baik > 0 ? $item->kurang_baik : '' }}</td>
-                            <td class="text-center">{{ $item->rusak_berat > 0 ? $item->rusak_berat : '' }}</td>
-                            <td class="text-left">{{ $item->keterangan ?: '' }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="9" class="text-center" style="padding: 28px 15px;">
-                                <div style="color: #64748b; font-size: 11pt; margin-bottom: 12px; font-style: italic;">
-                                    Belum ada data barang di ruangan {{ $currentRoom->name }}.
-                                </div>
-                                <div class="no-print" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-                                    <button type="button" onclick="openAddItemModal()" class="btn" style="background: #4f46e5; color: #fff; font-size: 12px;">
-                                        ➕ Tambah Barang Manual
-                                    </button>
-                                    <button type="button" onclick="openImportModal()" class="btn" style="background: #7c3aed; color: #fff; font-size: 12px;">
-                                        📤 Upload File Excel
-                                    </button>
-                                    <a href="{{ route('rooms.kir.template', ['room_id' => $currentRoom->id]) }}" class="btn" style="background: #059669; color: #fff; font-size: 12px;">
-                                        📥 Download Template Excel
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                    <!-- Tabel Data KIR -->
+                    <table class="kir-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="width: 5%;">No. Urut</th>
+                                <th rowspan="2" style="width: 25%;">Jenis Barang / Nama Barang</th>
+                                <th rowspan="2" style="width: 15%;">Merek / Model</th>
+                                <th rowspan="2" style="width: 11%;">Bahan</th>
+                                <th rowspan="2" style="width: 8%;">Jumlah<br>Barang</th>
+                                <th colspan="3" style="width: 22%;">Keadaan Barang</th>
+                                <th rowspan="2" style="width: 14%;">Keterangan<br>Mutasi dll.</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 7.3%;">Baik</th>
+                                <th style="width: 7.3%;">Kurang<br>Baik</th>
+                                <th style="width: 7.3%;">Rusak<br>Berat</th>
+                            </tr>
+                            <tr class="col-numbers">
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>6</th>
+                                <th>9</th>
+                                <th>10</th>
+                                <th>11</th>
+                                <th>12</th>
+                                <th>13</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($items as $item)
+                            <tr>
+                                <td class="text-center">{{ $item->no }}</td>
+                                <td class="text-left">{{ $item->name }}</td>
+                                <td class="text-left">{{ $item->merk ?: '' }}</td>
+                                <td class="text-left">{{ $item->bahan ?: 'Campuran' }}</td>
+                                <td class="text-center">{{ $item->total }}</td>
+                                <td class="text-center">{{ $item->baik > 0 ? $item->baik : '' }}</td>
+                                <td class="text-center">{{ $item->kurang_baik > 0 ? $item->kurang_baik : '' }}</td>
+                                <td class="text-center">{{ $item->rusak_berat > 0 ? $item->rusak_berat : '' }}</td>
+                                <td class="text-left">{{ $item->keterangan ?: '' }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="9" class="text-center" style="padding: 24px 15px;">
+                                    <div style="color: #64748b; font-size: 10pt; margin-bottom: 10px; font-style: italic;">
+                                        Belum ada data barang di ruangan {{ $currentRoom->name }}.
+                                    </div>
+                                    <div class="no-print" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                                        <button type="button" onclick="openAddItemModal()" class="btn" style="background: #4f46e5; color: #fff; font-size: 11.5px;">
+                                            ➕ Tambah Barang Manual
+                                        </button>
+                                        <button type="button" onclick="openImportModal()" class="btn" style="background: #7c3aed; color: #fff; font-size: 11.5px;">
+                                            📤 Upload File Excel
+                                        </button>
+                                        <a href="{{ route('rooms.kir.template', ['room_id' => $currentRoom->id]) }}" class="btn" style="background: #059669; color: #fff; font-size: 11.5px;">
+                                            📥 Download Template Excel
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
 
-                <!-- Kolom Tanda Tangan Sesuai Posisi & Format Resmi -->
-                <div class="ttd-wrapper clearfix">
-                    <!-- Tanda Tangan Kiri: dr. Muhamad Sunaryadi (Tanpa Stempel) -->
-                    <div class="ttd-box ttd-box-left">
-                        <div class="ttd-title">Mengetahui</div>
-                        <div class="ttd-jabatan">Kepala Puskesmas Mantup</div>
-                        <div class="ttd-image-area">
-                            <img src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" alt="TTD dr. Sunaryadi">
+                    <!-- Kolom Tanda Tangan Sesuai Posisi & Format Resmi -->
+                    <div class="ttd-wrapper clearfix">
+                        <!-- Tanda Tangan Kiri: dr. Muhamad Sunaryadi (Tanpa Stempel) -->
+                        <div class="ttd-box ttd-box-left">
+                            <div class="ttd-title">Mengetahui</div>
+                            <div class="ttd-jabatan">Kepala Puskesmas Mantup</div>
+                            <div class="ttd-image-area">
+                                <img src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" alt="TTD dr. Sunaryadi">
+                            </div>
+                            <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
+                            <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
                         </div>
-                        <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
-                        <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
-                    </div>
 
-                    <!-- Tanda Tangan Kanan: Andika Dafa Penta Pratama (Tanggal Cetak Diupdate Tiap 6 Bulan) -->
-                    <div class="ttd-box ttd-box-right">
-                        <div class="ttd-title">
-                            Mantup, <span class="doc-date-display" contenteditable="true" title="Klik untuk edit teks manual jika diperlukan">{{ $formattedDate }}</span>
+                        <!-- Tanda Tangan Kanan: Andika Dafa Penta Pratama (Tanggal Cetak Diupdate Tiap 6 Bulan) -->
+                        <div class="ttd-box ttd-box-right">
+                            <div class="ttd-title">
+                                Mantup, <span class="doc-date-display" contenteditable="true" title="Klik untuk edit teks manual jika diperlukan">{{ $formattedDate }}</span>
+                            </div>
+                            <div class="ttd-jabatan">Pengurus Barang Puskesmas Mantup</div>
+                            <div class="ttd-image-area">
+                                <img src="{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}" alt="TTD Andika Dafa">
+                            </div>
+                            <div class="ttd-nama">ANDIKA DAFA PENTA PRATAMA</div>
+                            <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
                         </div>
-                        <div class="ttd-jabatan">Pengurus Barang Puskesmas Mantup</div>
-                        <div class="ttd-image-area">
-                            <img src="{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}" alt="TTD Andika Dafa">
-                        </div>
-                        <div class="ttd-nama">ANDIKA DAFA PENTA PRATAMA</div>
-                        <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
                     </div>
                 </div>
             </div>
@@ -748,8 +953,13 @@
         </div>
     </div>
 
-    <!-- Script Interaktif untuk Tanggal, Ruangan & Modal -->
+    <!-- Script Interaktif untuk Auto-Fit 1 Halaman, Tanggal, Ruangan & Modal -->
     <script>
+        // State Konfigurasi Auto-Fit
+        let isAutoFitEnabled = true;
+        let selectedDensity = 'auto'; // 'auto' | 'density-normal' | 'density-compact' | 'density-dense' | 'density-ultra'
+        let selectedZoom = 'auto';    // 'auto' | '1' | '0.95' | ...
+
         // Auto-dismiss alert toast
         setTimeout(() => {
             const toast = document.getElementById('toastAlert');
@@ -830,8 +1040,152 @@
             document.getElementById('addItemModal').style.display = 'none';
         }
 
-        // Periksa apakah ada tanggal tersimpan sebelumnya di localStorage
+        /* =========================================================
+           MESIN AUTO-FIT 1 HALAMAN PRESISI TINGGI
+           Menghitung tinggi DOM nyata dan menyesuaikan zoom & density
+           agar SETIAP lembar ruangan 100% tepat muat 1 halaman F4!
+           ========================================================= */
+
+        function applyAutoFit() {
+            const sheets = document.querySelectorAll('.page-sheet');
+            let minScaleUsed = 1;
+            let totalSheets = sheets.length;
+            let maxOverflowFound = 0;
+
+            sheets.forEach((sheet) => {
+                const inner = sheet.querySelector('.page-sheet-inner');
+                if (!inner) return;
+
+                // 1. Terapkan kerapatan (density)
+                sheet.classList.remove('density-normal', 'density-compact', 'density-dense', 'density-ultra');
+                if (selectedDensity === 'auto') {
+                    // Gunakan density bawaan berdasarkan hitungan item
+                    const autoDensity = sheet.dataset.autoDensity || 'density-normal';
+                    sheet.classList.add(autoDensity);
+                } else {
+                    sheet.classList.add(selectedDensity);
+                }
+
+                // Reset zoom sementara untuk pengukuran tinggi murni
+                inner.style.zoom = '1';
+                inner.style.transform = 'none';
+
+                // 2. Jika Auto-Fit Tidak Aktif dan ada manual zoom
+                if (!isAutoFitEnabled) {
+                    if (selectedZoom !== 'auto') {
+                        inner.style.zoom = selectedZoom;
+                    }
+                    return;
+                }
+
+                // 3. Jika Skala Manual dipilih oleh user, prioritaskan skala tersebut
+                if (selectedZoom !== 'auto') {
+                    inner.style.zoom = selectedZoom;
+                    return;
+                }
+
+                // 4. Hitung tinggi area cetak F4 yang tersedia
+                // sheet.clientHeight adalah tinggi inner sheet (antara padding 10mm atas & bawah)
+                const availableHeight = sheet.clientHeight;
+                const contentHeight = inner.scrollHeight;
+
+                if (contentHeight > availableHeight) {
+                    // Konten melebihi 1 halaman, hitung faktor skala presisi (dengan buffer 4px aman)
+                    let scale = (availableHeight - 4) / contentHeight;
+                    // Batasi skala minimum yang wajar (agar teks tetap terbaca)
+                    scale = Math.max(0.55, Math.floor(scale * 1000) / 1000);
+
+                    inner.style.zoom = scale;
+                    inner.dataset.appliedScale = scale;
+
+                    if (scale < minScaleUsed) {
+                        minScaleUsed = scale;
+                    }
+                    maxOverflowFound = Math.max(maxOverflowFound, contentHeight - availableHeight);
+                } else {
+                    inner.style.zoom = '1';
+                    inner.dataset.appliedScale = '1';
+                }
+            });
+
+            // Update badge indikator di toolbar
+            updateBadgeStatus(minScaleUsed, totalSheets);
+        }
+
+        // Perbarui status badge di toolbar
+        function updateBadgeStatus(minScale, totalSheets) {
+            const badge = document.getElementById('pageFitBadge');
+            const text = document.getElementById('pageFitText');
+            if (!badge || !text) return;
+
+            if (!isAutoFitEnabled) {
+                badge.className = 'fit-badge fit-warning';
+                text.textContent = '⚠ Auto-Fit Dimatikan (Manual)';
+                return;
+            }
+
+            badge.className = 'fit-badge fit-success';
+            const percent = Math.round(minScale * 100);
+
+            if (minScale < 1) {
+                text.textContent = `✓ 1 Halaman F4 (Skala ${percent}%)`;
+            } else {
+                text.textContent = `✓ 1 Halaman F4 (100% Pas)`;
+            }
+        }
+
+        // Toggle Tombol Kunci 1 Halaman
+        function toggleAutoFit() {
+            isAutoFitEnabled = !isAutoFitEnabled;
+            const btn = document.getElementById('toggleAutoFitBtn');
+
+            if (isAutoFitEnabled) {
+                btn.className = 'btn btn-autofit active';
+                btn.innerHTML = '⚡ Paksa 1 Halaman: <strong style="color: #4ade80;">AKTIF</strong>';
+            } else {
+                btn.className = 'btn btn-autofit';
+                btn.innerHTML = '⚡ Paksa 1 Halaman: <strong style="color: #f87171;">NONAKTIF</strong>';
+            }
+
+            applyAutoFit();
+        }
+
+        // Ganti Kerapatan Manual
+        function changeDensity(val) {
+            selectedDensity = val;
+            applyAutoFit();
+        }
+
+        // Ganti Skala Zoom Manual
+        function changeZoom(val) {
+            selectedZoom = val;
+            applyAutoFit();
+        }
+
+        // Fungsi Cetak dengan Auto-Fit Eksekusi Terlebih Dahulu
+        function printDoc() {
+            // Pastikan auto-fit dijalankan secara presisi
+            applyAutoFit();
+
+            // Beri jeda 50ms agar engine browser me-render layout geometry sebelum dialog print muncul
+            setTimeout(() => {
+                window.print();
+            }, 60);
+        }
+
+        // Jalankan Auto-Fit saat print dipicu melalui Ctrl+P atau menu browser
+        window.addEventListener('beforeprint', () => {
+            applyAutoFit();
+        });
+
+        // Jalankan saat jendela di-resize atau gambar TTD selesai dimuat
+        window.addEventListener('resize', () => {
+            applyAutoFit();
+        });
+
+        // Inisialisasi awal saat halaman selesai dimuat
         document.addEventListener('DOMContentLoaded', () => {
+            // Cek tanggal dari localStorage
             const urlParams = new URLSearchParams(window.location.search);
             const urlDate = urlParams.get('date');
             if (!urlDate) {
@@ -841,6 +1195,14 @@
                     changeDocDate(savedDate);
                 }
             }
+
+            // Jalankan auto fit setelah DOM siap
+            setTimeout(applyAutoFit, 100);
+
+            // Jalankan lagi ketika seluruh asset (seperti gambar TTD) sudah komplit termuat
+            window.addEventListener('load', () => {
+                applyAutoFit();
+            });
         });
     </script>
 </body>
