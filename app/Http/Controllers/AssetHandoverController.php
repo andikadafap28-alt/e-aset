@@ -57,23 +57,39 @@ class AssetHandoverController extends Controller
     {
         $bast->load('asset', 'employee', 'items.asset');
         
+        $allItems = $bast->items->sortBy(function($item) {
+            return $item->asset->id ?? 0;
+        })->values();
+
         $groupedItems = collect();
         if ($bast->items && $bast->items->count() > 0) {
             $grouped = $bast->items->groupBy(function($item) {
                 $name = $item->asset->name ?? '-';
-                $merk = $item->asset->merk ?? 'Tanpa Merk';
-                $type = $item->asset->type ?? '-';
-                return $name . '|' . $merk . '|' . $type;
+                $keterangan = $item->asset->keterangan ?? ($item->asset->merk ?? '-');
+                return $name . '|' . $keterangan;
             });
             
             foreach($grouped as $key => $group) {
-                $first = $group->first();
+                $first = clone $group->first();
                 $first->qty = $group->count();
+                
+                $regs = $group->map(function($i) {
+                    return $i->asset && $i->asset->no_register !== null ? (int)$i->asset->no_register : null;
+                })->filter()->sort()->values();
+                
+                if ($regs->count() > 1) {
+                    $first->registers = str_pad($regs->first(), 3, '0', STR_PAD_LEFT) . ' s/d ' . str_pad($regs->last(), 3, '0', STR_PAD_LEFT);
+                } elseif ($regs->count() == 1) {
+                    $first->registers = str_pad($regs->first(), 3, '0', STR_PAD_LEFT);
+                } else {
+                    $first->registers = '-';
+                }
+                
                 $groupedItems->push($first);
             }
         }
         
-        return view('bast.print', compact('bast', 'groupedItems'));
+        return view('bast.print', compact('bast', 'groupedItems', 'allItems'));
     }
     
     public function destroy(AssetHandover $bast)

@@ -45,6 +45,7 @@
             Kembali
         </a>
     </div>
+</div>
 
 <!-- Tabs Container -->
 <div x-data="{ activeTab: 'tab1' }" class="bg-white/70 backdrop-blur-md rounded-xl border border-slate-200 shadow-sm overflow-hidden">

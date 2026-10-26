@@ -3,104 +3,379 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bukti Serah Terima Barang</title>
+    <title>BAST - {{ $bast->employee->name ?? 'Penerima' }} - {{ \Carbon\Carbon::parse($bast->handover_date)->format('d-m-Y') }}</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 12pt;
-            margin: 0;
-            padding: 20px;
+        @page {
+            size: A4 portrait;
+            margin: 12mm 15mm 15mm 15mm;
         }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.45;
+            color: #111827;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* Top Action Bar (Screen Only) */
+        .top-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            text-decoration: none;
+        }
+
+        .btn-print {
+            background-color: #2563eb;
+            color: white;
+        }
+        .btn-print:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-toggle {
+            background-color: #334155;
+            color: #e2e8f0;
+            border: 1px solid #475569;
+        }
+        .btn-toggle:hover {
+            background-color: #475569;
+            color: white;
+        }
+
+        .btn-toggle.active {
+            background-color: #0284c7;
+            color: white;
+            border-color: #38bdf8;
+        }
+
+        .btn-back {
+            background-color: transparent;
+            color: #94a3b8;
+            border: 1px solid #475569;
+        }
+        .btn-back:hover {
+            background-color: #334155;
+            color: white;
+        }
+
+        /* Paper Simulation on Screen */
+        .page-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 18mm 20mm;
+            margin: 25px auto;
+            background: white;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        /* Page Break for Print */
+        .page-break {
+            page-break-before: always;
+            break-before: page;
+        }
+
+        /* Kop Surat */
         .kop-surat {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid black;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            border-bottom: 3px double #000;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
         }
-        .kop-surat img {
-            width: 80px;
+
+        .kop-logo {
+            width: 75px;
+            height: auto;
+            object-fit: contain;
         }
+
         .kop-teks {
             text-align: center;
             flex-grow: 1;
+            padding: 0 10px;
         }
-        .kop-teks h3, .kop-teks h2 {
-            margin: 0;
-            font-weight: bold;
-        }
-        .kop-teks p {
+
+        .kop-teks h4 {
             margin: 0;
             font-size: 11pt;
+            font-weight: bold;
+            letter-spacing: 0.5px;
         }
-        .judul {
+
+        .kop-teks h3 {
+            margin: 0;
+            font-size: 12pt;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .kop-teks h2 {
+            margin: 2px 0;
+            font-size: 15pt;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .kop-teks p {
+            margin: 1px 0;
+            font-size: 8.5pt;
+        }
+
+        /* Judul Dokumen */
+        .doc-title-container {
             text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .doc-title {
+            font-size: 13pt;
             font-weight: bold;
             text-decoration: underline;
-            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin: 0;
         }
-        .data-penerima table {
-            margin-bottom: 20px;
+
+        .doc-number {
+            font-size: 10pt;
+            font-weight: 500;
+            margin-top: 3px;
         }
-        .data-penerima td {
-            padding: 3px 0;
+
+        /* Paragraf Pembuka */
+        .content-p {
+            text-align: justify;
+            margin: 10px 0;
+            font-size: 10.5pt;
+            line-height: 1.5;
+        }
+
+        /* Tabel Pihak */
+        .table-parties {
+            width: 100%;
+            margin: 8px 0 12px 0;
+            font-size: 10.5pt;
+            border-collapse: collapse;
+        }
+
+        .table-parties td {
+            padding: 2.5px 0;
             vertical-align: top;
         }
-        .data-penerima td:first-child {
-            width: 150px;
+
+        .table-parties td.num {
+            width: 25px;
+            font-weight: bold;
         }
-        .tabel-barang {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+
+        .table-parties td.label {
+            width: 170px;
         }
-        .tabel-barang th, .tabel-barang td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-        .tabel-barang th {
+
+        .table-parties td.colon {
+            width: 15px;
             text-align: center;
         }
-        .teks-penutup {
-            margin-bottom: 40px;
-            text-align: justify;
+
+        .table-parties td.val {
+            font-weight: 500;
         }
-        .ttd-container {
+
+        /* Area Tanda Tangan */
+        .ttd-wrapper {
+            margin-top: 25px;
+            width: 100%;
+        }
+
+        .ttd-row-two {
             display: flex;
             justify-content: space-between;
-            margin-top: 50px;
+            margin-bottom: 25px;
         }
+
         .ttd-box {
+            width: 44%;
             text-align: center;
-            width: 30%;
+            font-size: 10.5pt;
+            line-height: 1.35;
         }
-        .ttd-tengah {
-            width: 40%;
-            margin-top: -30px;
+
+        .ttd-role {
+            font-weight: normal;
         }
-        .nama-ttd {
+
+        .ttd-space {
+            height: 65px;
+        }
+
+        .ttd-name {
             font-weight: bold;
             text-decoration: underline;
-            margin-top: 80px;
+            font-size: 11pt;
         }
+
+        .ttd-nip {
+            font-size: 10pt;
+            margin-top: 2px;
+        }
+
+        .ttd-row-one {
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+        }
+
+        /* Lembar Lampiran */
+        .lampiran-meta {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 12px;
+            font-size: 9.5pt;
+        }
+
+        .lampiran-meta table {
+            border-collapse: collapse;
+        }
+
+        .lampiran-meta td {
+            padding: 1px 4px;
+        }
+
+        .lampiran-title {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .lampiran-title h3 {
+            margin: 0;
+            font-size: 11.5pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .lampiran-title p {
+            margin: 3px 0 0 0;
+            font-size: 9.5pt;
+            color: #374151;
+        }
+
+        /* Tabel Rincian Barang */
+        .tabel-rincian {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+            margin-bottom: 16px;
+        }
+
+        .tabel-rincian th, .tabel-rincian td {
+            border: 1px solid #1f2937;
+            padding: 5px 6px;
+            vertical-align: middle;
+        }
+
+        .tabel-rincian th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            text-align: center;
+            font-size: 8.5pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .tabel-rincian td.center {
+            text-align: center;
+        }
+
+        .tabel-rincian td.font-mono {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 8.5pt;
+        }
+
+        .total-row {
+            font-weight: bold;
+            background-color: #f8fafc;
+        }
+
+        /* Print Media Query */
         @media print {
             body {
-                padding: 0;
+                background: white !important;
+                color: black !important;
             }
-            .btn-print {
-                display: none;
+
+            .top-toolbar {
+                display: none !important;
             }
-        }
-        .btn-print {
-            margin-bottom: 20px;
-            padding: 10px 20px;
-            background: #4e73df;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
+
+            .page-sheet {
+                width: 100% !important;
+                min-height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            .page-break {
+                page-break-before: always !important;
+                break-before: page !important;
+            }
+
+            .tabel-rincian th {
+                background-color: #f1f5f9 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .total-row {
+                background-color: #f8fafc !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
         }
     </style>
 </head>
@@ -112,117 +387,343 @@
             $name = str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], $name);
             return $name;
         }
+
+        $dateCarbon = \Carbon\Carbon::parse($bast->handover_date)->locale('id');
+        $namaHari = $dateCarbon->isoFormat('dddd');
+        $tglFormat = $dateCarbon->isoFormat('D MMMM Y');
+        
+        // Jabatan & Keperluan
+        $empName = formatName($bast->employee->name ?? 'drg. Rina Sawitri');
+        $empNip = $bast->employee->nip ?? '196711132010012001';
+        $empJabatan = $bast->employee->jabatan ?: ($bast->employee->golongan ?: 'Dokter Gigi');
+        $keperluan = $bast->keperluan ?: 'Pelayanan Poli Gigi';
+        $totalItemsCount = $bast->items ? $bast->items->count() : 1;
     @endphp
-    <button class="btn-print" onclick="window.print()">Print Dokumen</button>
 
-    <div class="kop-surat">
-        <!-- Gunakan placeholder image jika logo belum ada -->
-        <img src="{{ asset('img/logo-lamongan.png') }}" alt="Logo Lamongan" onerror="this.src='https://via.placeholder.com/80?text=Logo'">
-        <div class="kop-teks">
-            <h3>PEMERINTAH KABUPATEN LAMONGAN</h3>
-            <h3>DINAS KESEHATAN</h3>
-            <h2>PUSKESMAS MANTUP</h2>
-            <p>Jln. Raya Mantup No. 55 Mantup Lamongan</p>
-            <p>Telp. (0322) 4670302 Email : puskesmasmantup98@gmail.com</p>
+    <!-- Top Action Toolbar (Layar Monitor Sahaja, Disembunyikan Saat Cetak) -->
+    <div class="top-toolbar">
+        <div class="toolbar-group">
+            <a href="{{ route('bast.index') }}" class="btn-action btn-back">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Kembali
+            </a>
+            <span style="font-size: 13px; font-weight: 500; color: #cbd5e1; border-left: 1px solid #475569; padding-left: 12px;">
+                BAST: <strong>{{ $empName }}</strong> ({{ $tglFormat }}) &bull; {{ $totalItemsCount }} Barang
+            </span>
         </div>
-        <img src="{{ asset('img/logo-husada.png') }}" alt="Logo Husada" onerror="this.src='https://via.placeholder.com/80?text=Bakti+Husada'">
+
+        <div class="toolbar-group">
+            <span style="font-size: 12px; color: #94a3b8; margin-right: 4px;">Pilihan Tampilan Lampiran:</span>
+            <button type="button" id="btnModeGrouped" onclick="switchViewMode('grouped')" class="btn-action btn-toggle active" title="Tampilkan rincian dikelompokkan per jenis spesifikasi">
+                <span class="material-symbols-outlined text-[16px]">view_list</span>
+                Ringkasan Spesifikasi ({{ $groupedItems->count() }} Kelompok)
+            </button>
+            <button type="button" id="btnModeDetailed" onclick="switchViewMode('detailed')" class="btn-action btn-toggle" title="Tampilkan seluruh 73 register satu per satu">
+                <span class="material-symbols-outlined text-[16px]">format_list_numbered</span>
+                Detail Lengkap ({{ $allItems->count() }} Unit)
+            </button>
+            <button type="button" onclick="window.print()" class="btn-action btn-print" style="margin-left: 8px;">
+                <span class="material-symbols-outlined text-[18px]">print</span>
+                Print Dokumen
+            </button>
+        </div>
     </div>
 
-    <div class="judul">
-        BUKTI SERAH TERIMA BARANG
-    </div>
+    <!-- ========================================== -->
+    <!-- LEMBAR PERTAMA: SURAT BUKTI SERAH TERIMA  -->
+    <!-- Memuat Keterangan Serah Terima & Tanda Tangan -->
+    <!-- ========================================== -->
+    <div class="page-sheet">
+        <!-- Kop Surat Resmi -->
+        <div class="kop-surat">
+            <img src="{{ asset('img/logo-lamongan.png') }}" class="kop-logo" alt="Logo Lamongan" onerror="this.style.display='none'">
+            <div class="kop-teks">
+                <h4>PEMERINTAH KABUPATEN LAMONGAN</h4>
+                <h3>DINAS KESEHATAN</h3>
+                <h2>PUSKESMAS MANTUP</h2>
+                <p>Jln. Raya Mantup No. 55 Mantup Lamongan Telp. (0322) 4670302</p>
+                <p>Email: puskesmasmantup98@gmail.com &bull; Kode Pos 62283</p>
+            </div>
+            <img src="{{ asset('img/logo-husada.png') }}" class="kop-logo" alt="Logo Bakti Husada" onerror="this.style.display='none'">
+        </div>
 
-    <p>Bersama ini telah kami serahkan kepada :</p>
-    <div class="data-penerima">
-        <table border="0">
+        <!-- Judul Berita Acara -->
+        <div class="doc-title-container">
+            <h1 class="doc-title">BUKTI SERAH TERIMA BARANG</h1>
+            <div class="doc-number">Nomor : 028 / {{ str_pad($bast->id, 3, '0', STR_PAD_LEFT) }} / BAST / 413.102.12 / 2026</div>
+        </div>
+
+        <!-- Pembuka -->
+        <p class="content-p">
+            Pada hari ini <strong>{{ $namaHari }}</strong>, tanggal <strong>{{ $dateCarbon->translatedFormat('d F Y') }}</strong> bertempat di UPTD Puskesmas Mantup, kami yang bertanda tangan di bawah ini :
+        </p>
+
+        <!-- Pihak Kesatu & Kedua -->
+        <table class="table-parties">
             <tr>
-                <td>Nama</td>
-                <td>: {{ formatName($bast->employee->name ?? '') }}</td>
+                <td class="num">1.</td>
+                <td class="label">Nama</td>
+                <td class="colon">:</td>
+                <td class="val"><strong>Andika Dafa Penta Pratama</strong></td>
             </tr>
             <tr>
-                <td>NIP</td>
-                <td>: {{ $bast->employee->nip ?? '-' }}</td>
+                <td></td>
+                <td class="label">NIP</td>
+                <td class="colon">:</td>
+                <td class="val">199907282025041003</td>
             </tr>
             <tr>
-                <td>Jabatan</td>
-                <td>: {{ $bast->employee->golongan ?? '-' }}</td>
+                <td></td>
+                <td class="label">Jabatan</td>
+                <td class="colon">:</td>
+                <td class="val">Pengurus Barang Pembantu Puskesmas Mantup</td>
             </tr>
             <tr>
-                <td>Untuk Keperluan</td>
-                <td>: {{ $bast->keperluan }}</td>
+                <td></td>
+                <td colspan="3" style="padding-top: 4px; font-style: italic; color: #374151;">
+                    Selanjutnya disebut sebagai <strong>PIHAK KESATU</strong> (Yang Menyerahkan)
+                </td>
+            </tr>
+
+            <tr><td colspan="4" style="height: 10px;"></td></tr>
+
+            <tr>
+                <td class="num">2.</td>
+                <td class="label">Nama</td>
+                <td class="colon">:</td>
+                <td class="val"><strong>{{ $empName }}</strong></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="label">NIP</td>
+                <td class="colon">:</td>
+                <td class="val">{{ $empNip }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="label">Jabatan</td>
+                <td class="colon">:</td>
+                <td class="val">{{ $empJabatan }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="label">Untuk Keperluan</td>
+                <td class="colon">:</td>
+                <td class="val"><strong>{{ $keperluan }}</strong></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="3" style="padding-top: 4px; font-style: italic; color: #374151;">
+                    Selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong> (Yang Menerima)
+                </td>
             </tr>
         </table>
+
+        <!-- Klausul Serah Terima -->
+        <p class="content-p">
+            <strong>PIHAK KESATU</strong> telah menyerahkan kepada <strong>PIHAK KEDUA</strong>, dan <strong>PIHAK KEDUA</strong> menyatakan telah menerima dari <strong>PIHAK KESATU</strong> Barang Milik Daerah (BMD) berupa peralatan medis / instrumen kedokteran gigi sejumlah <strong>{{ $totalItemsCount }} ({{ \Illuminate\Support\Str::headline($totalItemsCount == 73 ? 'Tujuh Puluh Tiga' : $totalItemsCount) }}) unit</strong> dengan rincian spesifikasi, nomor register, dan kode barang sebagaimana tercantum dalam <strong>Daftar Rincian Barang (Lembar Lampiran)</strong> yang merupakan bagian tidak terpisahkan dari Berita Acara ini.
+        </p>
+
+        <p class="content-p">
+            Barang-barang tersebut diserahkan dalam kondisi <strong>BAIK</strong> dan lengkap untuk dipergunakan sebagaimana mestinya dalam rangka menunjang kelancaran operasional pelayanan di <strong>{{ $keperluan }}</strong> Puskesmas Mantup. Segala pemeliharaan, kebersihan, dan pengamanan fisik barang selanjutnya menjadi tanggung jawab penerima barang.
+        </p>
+
+        <p class="content-p">
+            Demikian Bukti Serah Terima Barang ini dibuat dengan sebenarnya dalam rangkap secukupnya untuk dapat dipergunakan sebagaimana mestinya.
+        </p>
+
+        <!-- Tanda Tangan Lembar 1 -->
+        <div class="ttd-wrapper">
+            <div class="ttd-row-two">
+                <!-- Pihak Kesatu -->
+                <div class="ttd-box">
+                    Yang Menyerahkan,<br>
+                    <span class="ttd-role">Pengurus Barang Pembantu<br>Puskesmas Mantup</span>
+                    <div class="ttd-space"></div>
+                    <div class="ttd-name">Andika Dafa Penta Pratama</div>
+                    <div class="ttd-nip">NIP. 199907282025041003</div>
+                </div>
+
+                <!-- Pihak Kedua -->
+                <div class="ttd-box">
+                    Mantup, {{ $tglFormat }}<br>
+                    Yang Menerima,<br>
+                    <span class="ttd-role">{{ $empJabatan }}</span>
+                    <div class="ttd-space"></div>
+                    <div class="ttd-name">{{ $empName }}</div>
+                    <div class="ttd-nip">NIP. {{ $empNip }}</div>
+                </div>
+            </div>
+
+            <!-- Mengetahui Kepala Puskesmas -->
+            <div class="ttd-row-one">
+                <div class="ttd-box">
+                    Mengetahui,<br>
+                    <span class="ttd-role">Kepala UPTD Puskesmas Mantup</span>
+                    <div class="ttd-space"></div>
+                    <div class="ttd-name">dr. Muhamad Sunaryadi</div>
+                    <div class="ttd-nip">NIP. 196903132002121007</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <p>Berupa barang yang tersebut di bawah ini :</p>
-    <table class="tabel-barang">
-        <thead>
-            <tr>
-                <th>TANGGAL</th>
-                <th>NAMA<br>BARANG</th>
-                <th>MERK /<br>TYPE</th>
-                <th>BANYAKNYA</th>
-                <th>KET.</th>
-                <th>SUMBER<br>DANA</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if(isset($groupedItems) && $groupedItems->count() > 0)
-                @foreach($groupedItems as $index => $item)
+    <!-- ========================================== -->
+    <!-- LEMBAR KEDUA: LAMPIRAN RINCIAN ALAT-ALAT   -->
+    <!-- Memuat Daftar Alat Lengkap / Spesifikasi    -->
+    <!-- ========================================== -->
+    <div class="page-sheet page-break">
+        <!-- Header Lampiran -->
+        <div class="lampiran-meta">
+            <table>
                 <tr>
-                    @if($index === 0)
-                    <td style="text-align: center;" rowspan="{{ $groupedItems->count() }}">{{ \Carbon\Carbon::parse($bast->handover_date)->isoFormat('D MMMM Y') }}</td>
-                    @endif
-                    <td>{{ $item->asset->name ?? '-' }}</td>
-                    <td>{{ $item->asset->merk ?? 'Tanpa Merk' }} / {{ $item->asset->type ?? '-' }}</td>
-                    <td style="text-align: center;">{{ $item->qty }} unit</td>
-                    @if($index === 0)
-                    <td rowspan="{{ $groupedItems->count() }}">{{ $bast->keterangan }}</td>
-                    <td rowspan="{{ $groupedItems->count() }}">{{ $bast->sumber_dana }}</td>
-                    @endif
+                    <td>Lampiran</td>
+                    <td>: Bukti Serah Terima Barang</td>
                 </tr>
-                @endforeach
-            @else
                 <tr>
-                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($bast->handover_date)->isoFormat('D MMMM Y') }}</td>
-                    <td>{{ $bast->asset->name ?? '-' }}</td>
-                    <td>{{ $bast->asset->merk ?? 'Tanpa Merk' }} / {{ $bast->asset->type ?? '-' }}</td>
-                    <td style="text-align: center;">1 unit</td>
-                    <td>{{ $bast->keterangan }}</td>
-                    <td>{{ $bast->sumber_dana }}</td>
+                    <td>Nomor</td>
+                    <td>: 028 / {{ str_pad($bast->id, 3, '0', STR_PAD_LEFT) }} / BAST / 413.102.12 / 2026</td>
                 </tr>
-            @endif
-        </tbody>
-    </table>
+                <tr>
+                    <td>Tanggal</td>
+                    <td>: {{ $tglFormat }}</td>
+                </tr>
+                <tr>
+                    <td>Penerima</td>
+                    <td>: {{ $empName }} ({{ $empJabatan }})</td>
+                </tr>
+                <tr>
+                    <td>Keperluan</td>
+                    <td>: {{ $keperluan }}</td>
+                </tr>
+            </table>
+        </div>
 
-    <div class="teks-penutup">
-        Yang selanjutnya akan diserahkan kepada koordinator yang ada di {{ $bast->keperluan }} dengan daftar nama terlampir.
+        <div class="lampiran-title">
+            <h3>DAFTAR RINCIAN ALAT KEDOKTERAN GIGI</h3>
+            <p>UPTD PUSKESMAS MANTUP TAHUN ANGGARAN 2026</p>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- MODE 1: RINGKASAN PER SPESIFIKASI (26 BARIS) -->
+        <!-- ========================================== -->
+        <div id="viewGrouped">
+            <table class="tabel-rincian">
+                <thead>
+                    <tr>
+                        <th style="width: 25px;">NO</th>
+                        <th style="width: 110px;">KODE BARANG (108)</th>
+                        <th style="width: 70px;">NO. REG</th>
+                        <th>NAMA KELOMPOK BARANG</th>
+                        <th>SPESIFIKASI / NAMA ALAT</th>
+                        <th style="width: 45px;">QTY</th>
+                        <th style="width: 55px;">KONDISI</th>
+                        <th style="width: 80px;">SUMBER</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $sumQty = 0; @endphp
+                    @foreach($groupedItems as $idx => $item)
+                        @php $sumQty += $item->qty; @endphp
+                        <tr>
+                            <td class="center">{{ $idx + 1 }}</td>
+                            <td class="font-mono center">{{ $item->asset->full_kode_108 ?? ($item->asset->kode_108 ?? '-') }}</td>
+                            <td class="font-mono center">{{ $item->registers ?? '-' }}</td>
+                            <td><strong>{{ $item->asset->name ?? '-' }}</strong></td>
+                            <td>{{ $item->asset->keterangan ?: ($item->asset->merk ?: '-') }}</td>
+                            <td class="center font-bold">{{ $item->qty }} unit</td>
+                            <td class="center">{{ $item->asset->condition ?: 'Baik' }}</td>
+                            <td class="center" style="font-size: 8pt;">{{ $item->asset->source ?: ($bast->sumber_dana ?: 'BMD') }}</td>
+                        </tr>
+                    @endforeach
+                    <tr class="total-row">
+                        <td colspan="5" style="text-align: right; padding-right: 12px; text-transform: uppercase;">Total Keseluruhan Barang Diserahkan :</td>
+                        <td class="center">{{ $sumQty }} unit</td>
+                        <td colspan="2" class="center">Lengkap (Baik)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- MODE 2: DETAIL SELURUH 73 BARANG LENGKAP   -->
+        <!-- ========================================== -->
+        <div id="viewDetailed" style="display: none;">
+            <table class="tabel-rincian">
+                <thead>
+                    <tr>
+                        <th style="width: 25px;">NO</th>
+                        <th style="width: 105px;">KODE BARANG</th>
+                        <th style="width: 40px;">REG</th>
+                        <th style="width: 130px;">NIBAR</th>
+                        <th>NAMA BARANG</th>
+                        <th>SPESIFIKASI / KETERANGAN</th>
+                        <th style="width: 50px;">KONDISI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($allItems as $idx => $item)
+                        <tr>
+                            <td class="center">{{ $idx + 1 }}</td>
+                            <td class="font-mono center" style="font-size: 7.5pt;">{{ $item->asset->full_kode_108 ?? '-' }}</td>
+                            <td class="font-mono center">{{ $item->asset->no_register ? str_pad($item->asset->no_register, 3, '0', STR_PAD_LEFT) : '-' }}</td>
+                            <td class="font-mono" style="font-size: 7pt; word-break: break-all;">{{ $item->asset->asset_code ?? '-' }}</td>
+                            <td style="font-size: 8.5pt;"><strong>{{ $item->asset->name ?? '-' }}</strong></td>
+                            <td style="font-size: 8.5pt;">{{ $item->asset->keterangan ?: ($item->asset->merk ?: '-') }}</td>
+                            <td class="center" style="font-size: 8pt;">{{ $item->asset->condition ?: 'Baik' }}</td>
+                        </tr>
+                    @endforeach
+                    <tr class="total-row">
+                        <td colspan="4" style="text-align: right; padding-right: 10px;">TOTAL:</td>
+                        <td colspan="3"><strong>{{ $allItems->count() }} Unit Alat Kedokteran Gigi</strong> (Kondisi Baik)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tanda Tangan Lampiran (Verifikasi) -->
+        <div class="ttd-wrapper" style="margin-top: 25px;">
+            <div class="ttd-row-two">
+                <div class="ttd-box">
+                    Yang Menyerahkan,<br>
+                    <span class="ttd-role">Pengurus Barang Pembantu</span>
+                    <div class="ttd-space" style="height: 55px;"></div>
+                    <div class="ttd-name">Andika Dafa Penta Pratama</div>
+                    <div class="ttd-nip">NIP. 199907282025041003</div>
+                </div>
+
+                <div class="ttd-box">
+                    Mantup, {{ $tglFormat }}<br>
+                    Yang Menerima,<br>
+                    <span class="ttd-role">{{ $empJabatan }}</span>
+                    <div class="ttd-space" style="height: 55px;"></div>
+                    <div class="ttd-name">{{ $empName }}</div>
+                    <div class="ttd-nip">NIP. {{ $empNip }}</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="ttd-container">
-        <div class="ttd-box">
-            <br>
-            Pengurus barang Pembantu<br>
-            Puskesmas Mantup
-            <div class="nama-ttd">Andika Dafa Penta Pratama</div>
-            NIP. 199907282025041003
-        </div>
-        
-        <div class="ttd-box">
-            Mantup, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}<br>
-            Penerima Barang
-            <div class="nama-ttd">{{ formatName($bast->employee->name ?? '') }}</div>
-            NIP. {{ $bast->employee->nip ?? '-' }}
-        </div>
-    </div>
+    <!-- Script Toggle View Mode -->
+    <script>
+        function switchViewMode(mode) {
+            const viewGrouped = document.getElementById('viewGrouped');
+            const viewDetailed = document.getElementById('viewDetailed');
+            const btnGrouped = document.getElementById('btnModeGrouped');
+            const btnDetailed = document.getElementById('btnModeDetailed');
 
-    <div class="ttd-container" style="justify-content: center;">
-        <div class="ttd-box ttd-tengah">
-            Mengetahui,<br>
-            Kepala Puskesmas Mantup
-            <div class="nama-ttd">dr. Muhamad Sunaryadi</div>
-            NIP. 196903132002121007
-        </div>
-    </div>
+            if (mode === 'grouped') {
+                viewGrouped.style.display = 'block';
+                viewDetailed.style.display = 'none';
+                btnGrouped.classList.add('active');
+                btnDetailed.classList.remove('active');
+            } else {
+                viewGrouped.style.display = 'none';
+                viewDetailed.style.display = 'block';
+                btnGrouped.classList.remove('active');
+                btnDetailed.classList.add('active');
+            }
+        }
+    </script>
 </body>
 </html>
