@@ -43,7 +43,7 @@
                         <select name="employee_id" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" required>
                             <option value="">-- Pilih Pegawai --</option>
                             @foreach($employees as $employee)
-                                <option value="{{ $employee->id }}">{{ str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], ucwords(strtolower($employee->name), " .-")) }} - {{ $employee->golongan ?: 'Tanpa Golongan/Jabatan' }}</option>
+                                <option value="{{ $employee->id }}">{{ str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], ucwords(strtolower($employee->name), " .-")) }} - {{ $employee->jabatan ?: ($employee->golongan ?: 'Tanpa Jabatan') }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -53,7 +53,7 @@
                         <select id="asset-select" name="asset_ids[]" multiple class="w-full" required placeholder="Cari dan pilih barang...">
                             <option value="">-- Pilih Barang --</option>
                             @foreach($assets as $asset)
-                                <option value="{{ $asset->id }}">{{ $asset->asset_code }} | {{ $asset->name }} | {{ $asset->category }}</option>
+                                <option value="{{ $asset->id }}">{{ $asset->name }}{{ $asset->merk && trim($asset->merk) ? ' ('.trim($asset->merk).')' : '' }} | Reg: {{ $asset->no_register ? str_pad($asset->no_register, 3, '0', STR_PAD_LEFT) : '-' }} | {{ $asset->kode_108 ?? $asset->asset_code }}</option>
                             @endforeach
                         </select>
                     </div>

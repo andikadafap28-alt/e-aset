@@ -40,7 +40,7 @@ class AssetHandoverController extends Controller
             'keperluan' => $request->keperluan,
             'keterangan' => $request->keterangan,
             'sumber_dana' => $request->sumber_dana,
-            // 'asset_id' diabaikan atau dibiarkan null karena menggunakan tabel pivot
+            'asset_id' => $request->asset_ids[0] ?? null,
         ]);
 
         foreach ($request->asset_ids as $assetId) {

@@ -21,7 +21,7 @@
 
         body {
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 11pt;
+            font-size: 10.5pt;
             line-height: 1.45;
             color: #111827;
             background-color: #f1f5f9;
@@ -168,7 +168,7 @@
         /* Judul Dokumen */
         .doc-title-container {
             text-align: center;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .doc-title {
@@ -183,7 +183,7 @@
         /* Paragraf Pembuka */
         .content-p {
             text-align: justify;
-            margin: 10px 0;
+            margin: 8px 0;
             font-size: 10.5pt;
             line-height: 1.5;
         }
@@ -191,13 +191,13 @@
         /* Tabel Pihak */
         .table-parties {
             width: 100%;
-            margin: 8px 0 12px 0;
+            margin: 6px 0 10px 0;
             font-size: 10.5pt;
             border-collapse: collapse;
         }
 
         .table-parties td {
-            padding: 2.5px 0;
+            padding: 2px 0;
             vertical-align: top;
         }
 
@@ -221,7 +221,7 @@
 
         /* Area Tanda Tangan */
         .ttd-wrapper {
-            margin-top: 25px;
+            margin-top: 22px;
             width: 100%;
         }
 
@@ -294,7 +294,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 9pt;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .tabel-rincian th, .tabel-rincian td {
@@ -346,6 +346,10 @@
                 border: none !important;
             }
 
+            .hidden-lampiran {
+                display: none !important;
+            }
+
             .page-break {
                 page-break-before: always !important;
                 break-before: page !important;
@@ -374,16 +378,71 @@
             return $name;
         }
 
+        if (!function_exists('terbilang')) {
+            function terbilang($angka) {
+                $bilangan = ['', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan', 'Sepuluh', 'Sebelas'];
+                if ($angka < 12) {
+                    return $bilangan[$angka];
+                } elseif ($angka < 20) {
+                    return terbilang($angka - 10) . ' Belas';
+                } elseif ($angka < 100) {
+                    return terbilang(intval($angka / 10)) . ' Puluh' . (($angka % 10 != 0) ? ' ' . terbilang($angka % 10) : '');
+                } elseif ($angka < 200) {
+                    return 'Seratus' . (($angka - 100 != 0) ? ' ' . terbilang($angka - 100) : '');
+                } elseif ($angka < 1000) {
+                    return terbilang(intval($angka / 100)) . ' Ratus' . (($angka % 100 != 0) ? ' ' . terbilang($angka % 100) : '');
+                }
+                return (string)$angka;
+            }
+        }
+
         $dateCarbon = \Carbon\Carbon::parse($bast->handover_date)->locale('id');
         $namaHari = $dateCarbon->isoFormat('dddd');
         $tglFormat = $dateCarbon->isoFormat('D MMMM Y');
         
-        // Jabatan & Keperluan
-        $empName = formatName($bast->employee->name ?? 'drg. Rina Sawitri');
-        $empNip = $bast->employee->nip ?? '196711132010012001';
-        $empJabatan = $bast->employee->jabatan ?: ($bast->employee->golongan ?: 'Dokter Gigi');
-        $keperluan = $bast->keperluan ?: 'Pelayanan Poli Gigi';
+        // Cek apakah penerima adalah Kepala Puskesmas
+        $isKepalaPuskesmas = ($bast->employee_id == 1) 
+            || str_contains(strtolower($bast->employee->name ?? ''), 'sunaryadi') 
+            || str_contains(strtolower($bast->employee->jabatan ?? ''), 'kepala puskesmas');
+
+        $empName = formatName($bast->employee->name ?? ($isKepalaPuskesmas ? 'dr. Muhammad Sunaryadi' : '-'));
+        $empNip = $bast->employee->nip ?? ($isKepalaPuskesmas ? '196903132002121007' : '-');
+        
+        if ($isKepalaPuskesmas) {
+            $empJabatan = 'Kepala Puskesmas Mantup';
+        } else {
+            $empJabatan = $bast->employee->jabatan ?: ($bast->employee->golongan ?: 'Staf Puskesmas Mantup');
+        }
+
+        $keperluan = $bast->keperluan ?: ($isKepalaPuskesmas ? 'Operasional Kedinasan Kepala Puskesmas' : 'Operasional Pelayanan');
         $totalItemsCount = $bast->items ? $bast->items->count() : 1;
+
+        // Tentukan nama barang & judul lampiran secara dinamis
+        $firstItem = $bast->items ? $bast->items->first() : null;
+        $firstAsset = $firstItem ? $firstItem->asset : $bast->asset;
+        $firstAssetName = $firstAsset ? $firstAsset->name : 'Barang Milik Daerah';
+
+        if ($totalItemsCount == 1) {
+            $namaSpesifik = $firstAssetName;
+            $merkOrKet = $firstAsset ? ($firstAsset->merk ?: $firstAsset->keterangan) : '';
+            if ($merkOrKet && trim($merkOrKet) != '') {
+                $namaSpesifik .= ' (' . trim($merkOrKet) . ')';
+            }
+            $jenisBarangTeks = 'berupa ' . $namaSpesifik;
+            $judulLampiran = strtoupper($firstAssetName);
+        } else {
+            $categories = $bast->items->map(function($i) {
+                return $i->asset->category ?? $i->asset->name ?? null;
+            })->filter()->unique();
+
+            if ($categories->count() == 1) {
+                $jenisBarangTeks = 'berupa ' . $categories->first();
+                $judulLampiran = strtoupper($categories->first());
+            } else {
+                $jenisBarangTeks = 'berupa Barang Milik Daerah (BMD)';
+                $judulLampiran = 'BARANG MILIK DAERAH (BMD)';
+            }
+        }
     @endphp
 
     <!-- Top Action Toolbar (Layar Monitor Sahaja, Disembunyikan Saat Cetak) -->
@@ -399,15 +458,22 @@
         </div>
 
         <div class="toolbar-group">
-            <span style="font-size: 12px; color: #94a3b8; margin-right: 4px;">Pilihan Tampilan Lampiran:</span>
-            <button type="button" id="btnModeGrouped" onclick="switchViewMode('grouped')" class="btn-action btn-toggle active" title="Tampilkan rincian dikelompokkan per jenis spesifikasi">
-                <span class="material-symbols-outlined text-[16px]">view_list</span>
-                Ringkasan Spesifikasi ({{ $groupedItems->count() }} Kelompok)
-            </button>
-            <button type="button" id="btnModeDetailed" onclick="switchViewMode('detailed')" class="btn-action btn-toggle" title="Tampilkan seluruh 73 register satu per satu">
-                <span class="material-symbols-outlined text-[16px]">format_list_numbered</span>
-                Detail Lengkap ({{ $allItems->count() }} Unit)
-            </button>
+            @if($totalItemsCount <= 3)
+                <button type="button" id="btnPageMode" onclick="toggleLampiranSheet()" class="btn-action btn-toggle" title="Sertakan atau sembunyikan lembar lampiran terpisah">
+                    <span class="material-symbols-outlined text-[16px]">file_copy</span>
+                    <span id="txtLampiranBtn">Sertakan Lembar Lampiran</span>
+                </button>
+            @else
+                <span style="font-size: 12px; color: #94a3b8; margin-right: 4px;">Pilihan Lampiran:</span>
+                <button type="button" id="btnModeGrouped" onclick="switchViewMode('grouped')" class="btn-action btn-toggle active" title="Tampilkan rincian dikelompokkan per jenis spesifikasi">
+                    <span class="material-symbols-outlined text-[16px]">view_list</span>
+                    Ringkasan Spesifikasi ({{ $groupedItems->count() }} Kelompok)
+                </button>
+                <button type="button" id="btnModeDetailed" onclick="switchViewMode('detailed')" class="btn-action btn-toggle" title="Tampilkan seluruh register satu per satu">
+                    <span class="material-symbols-outlined text-[16px]">format_list_numbered</span>
+                    Detail Lengkap ({{ $allItems->count() }} Unit)
+                </button>
+            @endif
             <button type="button" onclick="window.print()" class="btn-action btn-print" style="margin-left: 8px;">
                 <span class="material-symbols-outlined text-[18px]">print</span>
                 Print Dokumen
@@ -433,7 +499,7 @@
             <img src="{{ asset('img/logo-husada.png') }}" class="kop-logo" alt="Logo Bakti Husada" onerror="this.style.display='none'">
         </div>
 
-        <!-- Judul Berita Acara (Tanpa Nomor) -->
+        <!-- Judul Berita Acara -->
         <div class="doc-title-container">
             <h1 class="doc-title">BUKTI SERAH TERIMA BARANG</h1>
         </div>
@@ -465,12 +531,12 @@
             </tr>
             <tr>
                 <td></td>
-                <td colspan="3" style="padding-top: 4px; font-style: italic; color: #374151;">
+                <td colspan="3" style="padding-top: 3px; font-style: italic; color: #374151;">
                     Selanjutnya disebut sebagai <strong>PIHAK KESATU</strong> (Yang Menyerahkan)
                 </td>
             </tr>
 
-            <tr><td colspan="4" style="height: 10px;"></td></tr>
+            <tr><td colspan="4" style="height: 8px;"></td></tr>
 
             <tr>
                 <td class="num">2.</td>
@@ -498,28 +564,71 @@
             </tr>
             <tr>
                 <td></td>
-                <td colspan="3" style="padding-top: 4px; font-style: italic; color: #374151;">
+                <td colspan="3" style="padding-top: 3px; font-style: italic; color: #374151;">
                     Selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong> (Yang Menerima)
                 </td>
             </tr>
         </table>
 
         <!-- Klausul Serah Terima -->
-        <p class="content-p">
-            <strong>PIHAK KESATU</strong> telah menyerahkan kepada <strong>PIHAK KEDUA</strong>, dan <strong>PIHAK KEDUA</strong> menyatakan telah menerima dari <strong>PIHAK KESATU</strong> Barang Milik Daerah (BMD) berupa peralatan medis / instrumen kedokteran gigi sejumlah <strong>{{ $totalItemsCount }} ({{ \Illuminate\Support\Str::headline($totalItemsCount == 73 ? 'Tujuh Puluh Tiga' : $totalItemsCount) }}) unit</strong> dengan rincian spesifikasi, nomor register, dan kode barang sebagaimana tercantum dalam <strong>Daftar Rincian Barang (Lembar Lampiran)</strong> yang merupakan bagian tidak terpisahkan dari Berita Acara ini.
-        </p>
+        @if($totalItemsCount <= 3)
+            <p class="content-p">
+                <strong>PIHAK KESATU</strong> telah menyerahkan kepada <strong>PIHAK KEDUA</strong>, dan <strong>PIHAK KEDUA</strong> menyatakan telah menerima dari <strong>PIHAK KESATU</strong> Barang Milik Daerah (BMD) {{ $jenisBarangTeks }} sejumlah <strong>{{ $totalItemsCount }} ({{ terbilang($totalItemsCount) }}) unit</strong> dengan rincian spesifikasi sebagai berikut :
+            </p>
 
-        <p class="content-p">
-            Barang-barang tersebut diserahkan dalam kondisi <strong>BAIK</strong> dan lengkap untuk dipergunakan sebagaimana mestinya dalam rangka menunjang kelancaran operasional pelayanan di <strong>{{ $keperluan }}</strong> Puskesmas Mantup. Segala pemeliharaan, kebersihan, dan pengamanan fisik barang selanjutnya menjadi tanggung jawab penerima barang.
-        </p>
+            <!-- Tabel Rincian Langsung di Halaman 1 untuk Barang Sedikit (<= 3) -->
+            <table class="tabel-rincian" style="margin: 8px 0 12px 0;">
+                <thead>
+                    <tr>
+                        <th style="width: 28px;">NO</th>
+                        <th style="width: 135px;">KODE BARANG (108)</th>
+                        <th style="width: 75px;">NO. REG</th>
+                        <th>NAMA BARANG</th>
+                        <th>MERK / SPESIFIKASI</th>
+                        <th style="width: 50px;">QTY</th>
+                        <th style="width: 65px;">KONDISI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($allItems as $idx => $item)
+                        <tr>
+                            <td class="center">{{ $idx + 1 }}</td>
+                            <td class="font-mono center">{{ $item->asset->kode_108 ?? ($item->asset->full_kode_108 ?? '-') }}</td>
+                            <td class="font-mono center">{{ $item->asset->no_register ? str_pad($item->asset->no_register, 3, '0', STR_PAD_LEFT) : '-' }}</td>
+                            <td><strong>{{ $item->asset->name ?? '-' }}</strong></td>
+                            <td>{{ $item->asset->merk && trim($item->asset->merk) ? $item->asset->merk : ($item->asset->keterangan ?: '-') }}</td>
+                            <td class="center font-bold">1 unit</td>
+                            <td class="center">{{ $item->asset->condition ?: 'Baik' }}</td>
+                        </tr>
+                    @endforeach
+                    <tr class="total-row">
+                        <td colspan="5" style="text-align: right; padding-right: 12px; text-transform: uppercase;">Total Barang Diserahkan :</td>
+                        <td class="center font-bold">{{ $totalItemsCount }} unit</td>
+                        <td class="center">Lengkap (Baik)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="content-p">
+                Barang tersebut diserahkan dalam kondisi <strong>BAIK</strong> dan lengkap untuk dipergunakan sebagaimana mestinya dalam rangka menunjang kelancaran operasional kedinasan di Puskesmas Mantup. Segala pemeliharaan, kebersihan, dan pengamanan fisik barang selanjutnya menjadi tanggung jawab penerima barang.
+            </p>
+        @else
+            <p class="content-p">
+                <strong>PIHAK KESATU</strong> telah menyerahkan kepada <strong>PIHAK KEDUA</strong>, dan <strong>PIHAK KEDUA</strong> menyatakan telah menerima dari <strong>PIHAK KESATU</strong> Barang Milik Daerah (BMD) {{ $jenisBarangTeks }} sejumlah <strong>{{ $totalItemsCount }} ({{ terbilang($totalItemsCount) }}) unit</strong> dengan rincian spesifikasi, nomor register, dan kode barang sebagaimana tercantum dalam <strong>Daftar Rincian Barang (Lembar Lampiran)</strong> yang merupakan bagian tidak terpisahkan dari Berita Acara ini.
+            </p>
+
+            <p class="content-p">
+                Barang-barang tersebut diserahkan dalam kondisi <strong>BAIK</strong> dan lengkap untuk dipergunakan sebagaimana mestinya dalam rangka menunjang kelancaran operasional pelayanan di <strong>{{ $keperluan }}</strong> Puskesmas Mantup. Segala pemeliharaan, kebersihan, dan pengamanan fisik barang selanjutnya menjadi tanggung jawab penerima barang.
+            </p>
+        @endif
 
         <p class="content-p">
             Demikian Bukti Serah Terima Barang ini dibuat dengan sebenarnya dalam rangkap secukupnya untuk dapat dipergunakan sebagaimana mestinya.
         </p>
 
-        <!-- Tanda Tangan Lembar 1 (Sejajar Sempurna Menggunakan Tabel) -->
+        <!-- Area Tanda Tangan -->
         <div class="ttd-wrapper">
-            <table class="ttd-table" style="margin-bottom: 25px;">
+            <table class="ttd-table" style="margin-bottom: {{ $isKepalaPuskesmas ? '10px' : '20px' }};">
                 <tr style="vertical-align: top;">
                     <td style="width: 50%;">
                         <br>
@@ -548,33 +657,34 @@
                 </tr>
             </table>
 
-            <!-- Mengetahui Kepala Puskesmas -->
-            <table class="ttd-table">
-                <tr style="vertical-align: top;">
-                    <td>
-                        Mengetahui,<br>
-                        <span class="ttd-role">Kepala Puskesmas Mantup</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="height: 65px;"></td>
-                </tr>
-                <tr style="vertical-align: top;">
-                    <td>
-                        <div class="ttd-name">dr. Muhamad Sunaryadi</div>
-                        <div class="ttd-nip">NIP. 196903132002121007</div>
-                    </td>
-                </tr>
-            </table>
+            @if(!$isKepalaPuskesmas)
+                <!-- Mengetahui Kepala Puskesmas (Hanya tampil jika penerima BUKAN Kepala Puskesmas) -->
+                <table class="ttd-table">
+                    <tr style="vertical-align: top;">
+                        <td>
+                            Mengetahui,<br>
+                            <span class="ttd-role">Kepala Puskesmas Mantup</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height: 60px;"></td>
+                    </tr>
+                    <tr style="vertical-align: top;">
+                        <td>
+                            <div class="ttd-name">dr. Muhammad Sunaryadi</div>
+                            <div class="ttd-nip">NIP. 196903132002121007</div>
+                        </td>
+                    </tr>
+                </table>
+            @endif
         </div>
     </div>
 
     <!-- ========================================== -->
-    <!-- LEMBAR KEDUA: LAMPIRAN RINCIAN ALAT-ALAT   -->
-    <!-- Memuat Daftar Alat Lengkap / Spesifikasi    -->
+    <!-- LEMBAR KEDUA: LAMPIRAN RINCIAN BARANG      -->
     <!-- ========================================== -->
-    <div class="page-sheet page-break">
-        <!-- Header Lampiran (Tanpa Nomor) -->
+    <div class="page-sheet page-break {{ $totalItemsCount <= 3 ? 'hidden-lampiran' : '' }}" id="lembarKedua" style="{{ $totalItemsCount <= 3 ? 'display: none;' : '' }}">
+        <!-- Header Lampiran -->
         <div class="lampiran-meta">
             <table>
                 <tr>
@@ -597,14 +707,11 @@
         </div>
 
         <div class="lampiran-title">
-            <h3>DAFTAR RINCIAN ALAT KEDOKTERAN GIGI</h3>
-            <p>PUSKESMAS MANTUP TAHUN 2026</p>
+            <h3>DAFTAR RINCIAN {{ $judulLampiran }}</h3>
+            <p>PUSKESMAS MANTUP TAHUN {{ $dateCarbon->format('Y') }}</p>
         </div>
 
-        <!-- ========================================== -->
-        <!-- MODE 1: RINGKASAN PER SPESIFIKASI (26 BARIS) -->
-        <!-- Kolom Sumber Ditiadakan Sesuai Permintaan  -->
-        <!-- ========================================== -->
+        <!-- MODE 1: RINGKASAN PER SPESIFIKASI -->
         <div id="viewGrouped">
             <table class="tabel-rincian">
                 <thead>
@@ -613,7 +720,7 @@
                         <th style="width: 130px;">KODE BARANG (108)</th>
                         <th style="width: 85px;">NO. REG</th>
                         <th>NAMA KELOMPOK BARANG</th>
-                        <th>SPESIFIKASI / NAMA ALAT</th>
+                        <th>SPESIFIKASI / NAMA BARANG</th>
                         <th style="width: 50px;">QTY</th>
                         <th style="width: 65px;">KONDISI</th>
                     </tr>
@@ -641,9 +748,7 @@
             </table>
         </div>
 
-        <!-- ========================================== -->
-        <!-- MODE 2: DETAIL SELURUH 73 BARANG LENGKAP   -->
-        <!-- ========================================== -->
+        <!-- MODE 2: DETAIL SELURUH BARANG LENGKAP -->
         <div id="viewDetailed" style="display: none;">
             <table class="tabel-rincian">
                 <thead>
@@ -661,7 +766,7 @@
                     @foreach($allItems as $idx => $item)
                         <tr>
                             <td class="center">{{ $idx + 1 }}</td>
-                            <td class="font-mono center" style="font-size: 7.5pt;">{{ $item->asset->full_kode_108 ?? '-' }}</td>
+                            <td class="font-mono center" style="font-size: 7.5pt;">{{ $item->asset->full_kode_108 ?? ($item->asset->kode_108 ?? '-') }}</td>
                             <td class="font-mono center">{{ $item->asset->no_register ? str_pad($item->asset->no_register, 3, '0', STR_PAD_LEFT) : '-' }}</td>
                             <td class="font-mono" style="font-size: 7pt; word-break: break-all;">{{ $item->asset->asset_code ?? '-' }}</td>
                             <td style="font-size: 8.5pt;"><strong>{{ $item->asset->name ?? '-' }}</strong></td>
@@ -671,13 +776,13 @@
                     @endforeach
                     <tr class="total-row">
                         <td colspan="4" style="text-align: right; padding-right: 10px;">TOTAL:</td>
-                        <td colspan="3"><strong>{{ $allItems->count() }} Unit Alat Kedokteran Gigi</strong> (Kondisi Baik)</td>
+                        <td colspan="3"><strong>{{ $allItems->count() }} Unit {{ $judulLampiran }}</strong> (Kondisi Baik)</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Tanda Tangan Lampiran (Sejajar Sempurna Antara Nama & NIP) -->
+        <!-- Tanda Tangan Lampiran -->
         <div class="ttd-wrapper" style="margin-top: 25px;">
             <table class="ttd-table">
                 <tr style="vertical-align: top;">
@@ -710,24 +815,44 @@
         </div>
     </div>
 
-    <!-- Script Toggle View Mode -->
+    <!-- Script View Mode & Toggle Lampiran -->
     <script>
+        function toggleLampiranSheet() {
+            const sheet2 = document.getElementById('lembarKedua');
+            const txtBtn = document.getElementById('txtLampiranBtn');
+            const btn = document.getElementById('btnPageMode');
+
+            if (sheet2.style.display === 'none' || sheet2.classList.contains('hidden-lampiran')) {
+                sheet2.style.display = 'block';
+                sheet2.classList.remove('hidden-lampiran');
+                btn.classList.add('active');
+                txtBtn.textContent = 'Sembunyikan Lembar Lampiran (Cukup 1 Lembar)';
+            } else {
+                sheet2.style.display = 'none';
+                sheet2.classList.add('hidden-lampiran');
+                btn.classList.remove('active');
+                txtBtn.textContent = 'Sertakan Lembar Lampiran';
+            }
+        }
+
         function switchViewMode(mode) {
             const viewGrouped = document.getElementById('viewGrouped');
             const viewDetailed = document.getElementById('viewDetailed');
             const btnGrouped = document.getElementById('btnModeGrouped');
             const btnDetailed = document.getElementById('btnModeDetailed');
 
+            if (!viewGrouped || !viewDetailed) return;
+
             if (mode === 'grouped') {
                 viewGrouped.style.display = 'block';
                 viewDetailed.style.display = 'none';
-                btnGrouped.classList.add('active');
-                btnDetailed.classList.remove('active');
+                if (btnGrouped) btnGrouped.classList.add('active');
+                if (btnDetailed) btnDetailed.classList.remove('active');
             } else {
                 viewGrouped.style.display = 'none';
                 viewDetailed.style.display = 'block';
-                btnGrouped.classList.remove('active');
-                btnDetailed.classList.add('active');
+                if (btnGrouped) btnGrouped.classList.remove('active');
+                if (btnDetailed) btnDetailed.classList.add('active');
             }
         }
     </script>

@@ -171,9 +171,14 @@
             </tbody>
         </table>
 
+        @php
+            $isKepalaPuskesmas = str_contains(strtolower($loan->borrower_name ?? ''), 'sunaryadi') 
+                || str_contains(strtolower($loan->borrower_position ?? ''), 'kepala puskesmas');
+        @endphp
+
         <!-- FOOTER TEXT -->
         <div class="mb-8 text-justify">
-            <p class="editable-field" id="val_footer" contenteditable="true">{!! $customData['val_footer'] ?? ('Yang selanjutnya akan diserahkan kepada koordinator yang ada di ' . ($loan->notes ? ucwords(strtolower($loan->notes)) : 'Pelayanan Ponkesdes/Pustu ............................') . ' dengan daftar nama terlampir.') !!}</p>
+            <p class="editable-field" id="val_footer" contenteditable="true">{!! $customData['val_footer'] ?? ($isKepalaPuskesmas ? 'Barang tersebut diserahkan dalam keadaan baik dan lengkap untuk dipergunakan sebagaimana mestinya dalam rangka menunjang kelancaran operasional kedinasan di Puskesmas Mantup.' : ('Yang selanjutnya akan diserahkan kepada koordinator yang ada di ' . ($loan->notes ? ucwords(strtolower($loan->notes)) : 'Pelayanan Ponkesdes/Pustu ............................') . ' dengan daftar nama terlampir.')) !!}</p>
         </div>
 
         <!-- SIGNATURES -->
@@ -194,7 +199,7 @@
             <div class="text-center w-[250px] flex flex-col h-[180px]">
                 <div>
                     <div class="mb-0">Mantup, <span class="editable-field" id="val_ttd_date" contenteditable="true">{!! $customData['val_ttd_date'] ?? \Carbon\Carbon::parse($loan->loan_date)->translatedFormat('d F Y') !!}</span></div>
-                    <div>Penerima Barang</div>
+                    <div>{{ $isKepalaPuskesmas ? 'Yang Menerima / Kepala Puskesmas' : 'Penerima Barang' }}</div>
                 </div>
                 <div class="mt-auto">
                     <div class="font-bold underline editable-field" id="val_ttd_penerima_name" contenteditable="true">{!! $customData['val_ttd_penerima_name'] ?? $loan->borrower_name !!}</div>
@@ -203,7 +208,8 @@
             </div>
         </div>
 
-        <!-- CENTER SIGNATURE -->
+        @if(!$isKepalaPuskesmas)
+        <!-- CENTER SIGNATURE (Hanya tampil jika penerima BUKAN Kepala Puskesmas) -->
         <div class="flex justify-center mt-6">
             <div class="text-center w-[300px] flex flex-col h-[180px]">
                 <div>
@@ -216,6 +222,7 @@
                 </div>
             </div>
         </div>
+        @endif
         
     </div>
 
