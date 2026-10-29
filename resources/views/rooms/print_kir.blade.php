@@ -409,12 +409,22 @@
         .density-ultra .ttd-image-area { height: 30px; margin: 0; }
         .density-ultra .ttd-image-area img { max-height: 28px; }
         .density-ultra .ttd-nama { margin-top: 1px; }
-        .density-ultra .ttd-nip { margin-top: 0px; }
-
-        /* Opsi Sembunyikan Tanda Tangan */
-        body.hide-ttd .ttd-wrapper,
-        .hide-ttd .ttd-wrapper {
+        /* Opsi Sembunyikan KEDUA Gambar Tanda Tangan (dr. MUHAMAD SUNARYADI & ANDIKA DAFA PENTA PRATAMA)
+           Menyisakan ruang kosong yang rapi untuk tanda tangan basah (manual) kedua belah pihak */
+        body.hide-ttd .ttd-box-left .ttd-image-area img,
+        body.hide-ttd .ttd-box-right .ttd-image-area img,
+        body.hide-ttd .ttd-image-area img,
+        .hide-ttd .ttd-image-area img {
             display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+
+        body.hide-ttd .ttd-image-area,
+        .hide-ttd .ttd-image-area {
+            visibility: hidden !important;
+            min-height: 48px !important;
+            height: 48px !important;
         }
 
         /* Mode Tampilan 2 Halaman vs 1 Halaman */
@@ -592,10 +602,21 @@
                 padding: 0 !important;
             }
 
-            /* Sembunyikan TTD saat di-print jika opsi TTD dihilangkan */
-            body.hide-ttd .ttd-wrapper,
-            .hide-ttd .ttd-wrapper {
+            /* Sembunyikan KEDUA Gambar TTD (dr. Muhamad Sunaryadi & Andika Dafa) saat di-print untuk Tanda Tangan Basah/Manual */
+            body.hide-ttd .ttd-box-left .ttd-image-area img,
+            body.hide-ttd .ttd-box-right .ttd-image-area img,
+            body.hide-ttd .ttd-image-area img,
+            .hide-ttd .ttd-image-area img {
                 display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+            }
+
+            body.hide-ttd .ttd-image-area,
+            .hide-ttd .ttd-image-area {
+                visibility: hidden !important;
+                min-height: 48px !important;
+                height: 48px !important;
             }
 
             /* Mode 2 Halaman vs 1 Halaman saat Print */
@@ -671,9 +692,9 @@
                 📄 Format: <strong id="pageModeText" style="color: #38bdf8;">{{ $defaultTwoPages ? '2 HALAMAN' : '1 HALAMAN' }}</strong>
             </button>
 
-            <!-- Tombol Toggle Tanda Tangan (TTD) -->
-            <button type="button" id="toggleTtdBtn" onclick="toggleTtd()" class="btn" style="background: #1e293b; color: #f8fafc; border: 1px solid {{ (isset($showTtd) && !$showTtd) ? '#f87171' : '#475569' }};" title="Tampilkan atau hilangkan tanda tangan (dr. Sunaryadi & Andika Dafa)">
-                ✍ TTD: <strong id="ttdStatusText" style="color: {{ (isset($showTtd) && !$showTtd) ? '#f87171' : '#4ade80' }};">{{ (isset($showTtd) && !$showTtd) ? 'DIHILANGKAN' : 'DITAMPILKAN' }}</strong>
+            <!-- Tombol Toggle Gambar Tanda Tangan (TTD) -->
+            <button type="button" id="toggleTtdBtn" onclick="toggleTtd()" class="btn" style="background: #1e293b; color: #f8fafc; border: 1px solid {{ (isset($showTtd) && !$showTtd) ? '#f87171' : '#475569' }};" title="Tampilkan kedua gambar tanda tangan atau kosongkan keduanya (ttd dr. Sunaryadi & ttd Andika Dafa) untuk tanda tangan basah secara manual">
+                ✍ Gambar TTD: <strong id="ttdStatusText" style="color: {{ (isset($showTtd) && !$showTtd) ? '#f87171' : '#4ade80' }};">{{ (isset($showTtd) && !$showTtd) ? 'KOSONG KEDUANYA (TTD BASAH)' : 'DITAMPILKAN' }}</strong>
             </button>
 
             <!-- Tombol Toggle Kunci 1 Halaman -->
@@ -1245,7 +1266,7 @@
 
                     <div style="margin-bottom: 8px;">
                         <label style="display: block; font-weight: 600; margin-bottom: 4px; font-size: 12px;">Keterangan Mutasi dll.</label>
-                        <input type="text" name="keterangan" placeholder="Opsional (cth: Pengadaan 2026, Hibah, dll.)" style="width: 100%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                        <input type="text" name="keterangan" placeholder="Opsional (cth: Hibah, Mutasi, dll.)" style="width: 100%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1435,7 +1456,7 @@
             } else {
                 body.classList.add('hide-ttd');
                 if (text) {
-                    text.textContent = 'DIHILANGKAN';
+                    text.textContent = 'KOSONG KEDUANYA (TTD BASAH)';
                     text.style.color = '#f87171';
                 }
                 if (btn) btn.style.borderColor = '#f87171';
