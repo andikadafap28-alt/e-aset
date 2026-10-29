@@ -395,11 +395,13 @@
 </head>
 <body>
     @php
-        function formatName($name) {
-            if (!$name) return '-';
-            $name = ucwords(strtolower($name), " .-");
-            $name = str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], $name);
-            return $name;
+        if (!function_exists('formatName')) {
+            function formatName($name) {
+                if (!$name) return '-';
+                $name = ucwords(strtolower($name), " .-");
+                $name = str_replace(['Dr. ', 'Drg. '], ['dr. ', 'drg. '], $name);
+                return $name;
+            }
         }
 
         if (!function_exists('terbilang')) {
@@ -428,6 +430,25 @@
         $isKepalaPuskesmas = ($bast->employee_id == 1) 
             || str_contains(strtolower($bast->employee->name ?? ''), 'sunaryadi') 
             || str_contains(strtolower($bast->employee->jabatan ?? ''), 'kepala puskesmas');
+
+        // Cek apakah penerima adalah PPPK (khusus Dhendhy, Almira, Suharsono, atau NIP PPPK)
+        $isPppk = false;
+        if ($bast->employee) {
+            $empNameLower = strtolower($bast->employee->name ?? '');
+            $empJabatanLower = strtolower($bast->employee->jabatan ?? '');
+            $rawNip = preg_replace('/[^0-9]/', '', (string)$bast->employee->nip);
+            if (in_array($bast->employee_id, [58, 59, 60]) 
+                || str_contains($empNameLower, 'dhendhy') 
+                || str_contains($empNameLower, 'almira') 
+                || str_contains($empNameLower, 'suharsono')) {
+                $isPppk = true;
+            } elseif (str_contains($empJabatanLower, 'pppk') || str_contains($empJabatanLower, 'p3k')) {
+                $isPppk = true;
+            } elseif (strlen($rawNip) == 18 && (substr($rawNip, 12, 2) === '21' || substr($rawNip, 14, 2) === '21')) {
+                $isPppk = true;
+            }
+        }
+        $nipLabel = $isPppk ? 'NIPPPK' : 'NIP';
 
         $empName = formatName($bast->employee->name ?? ($isKepalaPuskesmas ? 'dr. Muhammad Sunaryadi' : '-'));
         $empNip = $bast->employee->nip ?? ($isKepalaPuskesmas ? '196903132002121007' : '-');
@@ -574,7 +595,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td class="label">NIP</td>
+                <td class="label">{{ $nipLabel }}</td>
                 <td class="colon">:</td>
                 <td class="val">{{ $empNip }}</td>
             </tr>
@@ -682,7 +703,7 @@
                     </td>
                     <td>
                         <div class="ttd-name">{{ $empName }}</div>
-                        <div class="ttd-nip">NIP. {{ $empNip }}</div>
+                        <div class="ttd-nip">{{ $nipLabel }}. {{ $empNip }}</div>
                     </td>
                 </tr>
             </table>
@@ -838,7 +859,7 @@
                     </td>
                     <td>
                         <div class="ttd-name">{{ $empName }}</div>
-                        <div class="ttd-nip">NIP. {{ $empNip }}</div>
+                        <div class="ttd-nip">{{ $nipLabel }}. {{ $empNip }}</div>
                     </td>
                 </tr>
             </table>
@@ -884,6 +905,8 @@
                 if (btnGrouped) btnGrouped.classList.remove('active');
                 if (btnDetailed) btnDetailed.classList.add('active');
             }
+        }
+
         function printFullDocument() {
             document.body.classList.remove('print-only-sumber-mode');
             window.print();

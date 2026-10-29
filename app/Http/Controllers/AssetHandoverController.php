@@ -12,7 +12,15 @@ class AssetHandoverController extends Controller
     public function index()
     {
         $handovers = AssetHandover::with(['asset', 'employee', 'items.asset'])->latest()->get();
-        return view('bast.index', compact('handovers'));
+        $tensimeterLoans = \App\Models\AssetLoan::with(['asset'])
+            ->whereHas('asset', function($q) {
+                $q->whereRaw('LOWER(name) LIKE ?', ['%tensi%']);
+            })
+            ->latest('loan_date')
+            ->latest('id')
+            ->get();
+
+        return view('bast.index', compact('handovers', 'tensimeterLoans'));
     }
 
     public function create()
