@@ -226,6 +226,9 @@ Route::middleware(['auth'])->group(function () {
     // BAST (Bukti Serah Terima)
     Route::resource('bast', \App\Http\Controllers\AssetHandoverController::class)->except(['edit', 'update']);
 
+    // Berita Acara Stock Opname Persediaan
+    Route::resource('ba-stock-opname', \App\Http\Controllers\StockOpnamePersediaanController::class);
+
     Route::prefix('stock-opname')->name('stock-opname.')->group(function () {
         Route::get('/', [\App\Http\Controllers\StockOpnameController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\StockOpnameController::class, 'create'])->name('create');

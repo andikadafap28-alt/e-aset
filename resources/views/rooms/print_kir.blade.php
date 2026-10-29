@@ -411,6 +411,40 @@
         .density-ultra .ttd-nama { margin-top: 1px; }
         .density-ultra .ttd-nip { margin-top: 0px; }
 
+        /* Opsi Sembunyikan Tanda Tangan */
+        body.hide-ttd .ttd-wrapper,
+        .hide-ttd .ttd-wrapper {
+            display: none !important;
+        }
+
+        /* Mode Tampilan 2 Halaman vs 1 Halaman */
+        .room-sheet-container.mode-two-pages .view-two-pages {
+            display: block !important;
+        }
+        .room-sheet-container.mode-two-pages .view-single-page {
+            display: none !important;
+        }
+
+        .room-sheet-container.mode-single-page .view-two-pages {
+            display: none !important;
+        }
+        .room-sheet-container.mode-single-page .view-single-page {
+            display: block !important;
+        }
+
+        /* Footer Halaman KIR */
+        .kir-page-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 7.5pt;
+            color: #475569;
+            border-top: 1px dashed #94a3b8;
+            margin-top: 8px;
+            padding-top: 3px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
         /* Modal Styles */
         .modal-overlay {
             position: fixed;
@@ -557,10 +591,31 @@
                 border-bottom: none !important;
                 padding: 0 !important;
             }
+
+            /* Sembunyikan TTD saat di-print jika opsi TTD dihilangkan */
+            body.hide-ttd .ttd-wrapper,
+            .hide-ttd .ttd-wrapper {
+                display: none !important;
+            }
+
+            /* Mode 2 Halaman vs 1 Halaman saat Print */
+            .room-sheet-container.mode-two-pages .view-single-page {
+                display: none !important;
+            }
+            .room-sheet-container.mode-two-pages .view-two-pages {
+                display: block !important;
+            }
+
+            .room-sheet-container.mode-single-page .view-two-pages {
+                display: none !important;
+            }
+            .room-sheet-container.mode-single-page .view-single-page {
+                display: block !important;
+            }
         }
     </style>
 </head>
-<body>
+<body class="{{ (isset($showTtd) && !$showTtd) ? 'hide-ttd' : '' }}">
 
     <!-- Notification Alert jika ada session flash -->
     @if(session('success'))
@@ -594,28 +649,47 @@
             </div>
         </div>
 
-        <!-- Group Kontrol: Fitur Kunci 1 Halaman -->
+        @php
+            $isRoomGigi = ($room->id == 6) || (stripos($room->name, 'gigi') !== false);
+            $itemCountMain = $room->kirItems()->count();
+            $defaultTwoPages = (isset($modePages) && $modePages === '2') || (!isset($modePages) && ($itemCountMain > 35 || $isRoomGigi));
+            if (isset($modePages) && $modePages === '1') {
+                $defaultTwoPages = false;
+            }
+        @endphp
+
+        <!-- Group Kontrol: Fitur Halaman & Tanda Tangan -->
         <div class="toolbar-group" style="background: rgba(15, 23, 42, 0.8); padding: 3px 8px; border-radius: 8px; border: 1px solid #334155;">
             <!-- Badge Status Muat Halaman -->
             <div id="pageFitBadge" class="fit-badge fit-success" title="Status muat dokumen pada kertas F4">
                 <span class="fit-badge-dot"></span>
-                <span id="pageFitText">✓ Pas 1 Halaman (Auto)</span>
+                <span id="pageFitText">✓ Pas F4 (Auto)</span>
             </div>
 
+            <!-- Tombol Toggle Mode 1 Halaman vs 2 Halaman -->
+            <button type="button" id="togglePageModeBtn" onclick="togglePageMode()" class="btn" style="background: #1e293b; color: #f8fafc; border: 1px solid #38bdf8;" title="Pilih format cetak: 1 Halaman (Ultra Rapat) atau 2 Halaman (Lega & Rapi)">
+                📄 Format: <strong id="pageModeText" style="color: #38bdf8;">{{ $defaultTwoPages ? '2 HALAMAN' : '1 HALAMAN' }}</strong>
+            </button>
+
+            <!-- Tombol Toggle Tanda Tangan (TTD) -->
+            <button type="button" id="toggleTtdBtn" onclick="toggleTtd()" class="btn" style="background: #1e293b; color: #f8fafc; border: 1px solid {{ (isset($showTtd) && !$showTtd) ? '#f87171' : '#475569' }};" title="Tampilkan atau hilangkan tanda tangan (dr. Sunaryadi & Andika Dafa)">
+                ✍ TTD: <strong id="ttdStatusText" style="color: {{ (isset($showTtd) && !$showTtd) ? '#f87171' : '#4ade80' }};">{{ (isset($showTtd) && !$showTtd) ? 'DIHILANGKAN' : 'DITAMPILKAN' }}</strong>
+            </button>
+
             <!-- Tombol Toggle Kunci 1 Halaman -->
-            <button type="button" id="toggleAutoFitBtn" onclick="toggleAutoFit()" class="btn btn-autofit active" title="Kunci dokumen agar selalu pas tepat di 1 halaman F4 tanpa terpotong / meluber ke halaman 2">
-                ⚡ Paksa 1 Halaman: <strong style="color: #4ade80;">AKTIF</strong>
+            <button type="button" id="toggleAutoFitBtn" onclick="toggleAutoFit()" class="btn btn-autofit active" title="Kunci dokumen agar selalu pas tepat pada kertas F4">
+                ⚡ Auto-Fit: <strong style="color: #4ade80;">AKTIF</strong>
             </button>
 
             <!-- Dropdown Kerapatan Teks / Density -->
             <div style="display: flex; align-items: center; gap: 4px;">
                 <span class="toolbar-label" style="font-size: 11px;">Kerapatan:</span>
                 <select id="densitySelector" class="select-room" onchange="changeDensity(this.value)" style="font-size: 11.5px; padding: 3px 6px;">
-                    <option value="auto">⚡ Otomatis (Rekomendasi)</option>
-                    <option value="density-normal">Standar (<= 18 barang)</option>
-                    <option value="density-compact">Rapat (19-28 barang)</option>
-                    <option value="density-dense">Sangat Rapat (29-40 barang)</option>
-                    <option value="density-ultra">Ultra Rapat (41+ barang)</option>
+                    <option value="auto">⚡ Otomatis</option>
+                    <option value="density-normal">Standar (<= 18)</option>
+                    <option value="density-compact">Rapat (19-28)</option>
+                    <option value="density-dense">Sangat Rapat (29-40)</option>
+                    <option value="density-ultra">Ultra Rapat (41+)</option>
                 </select>
             </div>
 
@@ -623,7 +697,7 @@
             <div style="display: flex; align-items: center; gap: 4px;">
                 <span class="toolbar-label" style="font-size: 11px;">Skala:</span>
                 <select id="zoomSelector" class="select-room" onchange="changeZoom(this.value)" style="font-size: 11.5px; padding: 3px 6px;">
-                    <option value="auto">⚡ Auto-Fit (Presisi)</option>
+                    <option value="auto">⚡ Auto-Fit</option>
                     <option value="1">100%</option>
                     <option value="0.95">95%</option>
                     <option value="0.90">90%</option>
@@ -668,10 +742,10 @@
                 Upload Excel
             </button>
 
-            <!-- Tombol Cetak Dokumen F4 (1 Halaman Dijamin) -->
-            <button type="button" onclick="printDoc()" class="btn btn-print" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); font-weight: 700; padding: 6px 14px; border: 1px solid #60a5fa;" title="Cetak Dokumen KIR pada Kertas F4 (Pasti Muat 1 Halaman)">
+            <!-- Tombol Cetak Dokumen F4 -->
+            <button type="button" onclick="printDoc()" class="btn btn-print" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); font-weight: 700; padding: 6px 14px; border: 1px solid #60a5fa;" title="Cetak Dokumen KIR pada Kertas F4">
                 <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                Cetak KIR (F4 - 1 Halaman)
+                Cetak KIR (F4 - <span id="printBtnPageText">{{ $defaultTwoPages ? '2 Halaman' : '1 Halaman' }}</span>)
             </button>
         </div>
     </div>
@@ -686,138 +760,432 @@
             @php
                 $items = isset($isBatch) && $isBatch ? ($groupedItemsMap[$currentRoom->id] ?? collect()) : $groupedItems;
                 $itemCount = count($items);
-                // Level kerapatan otomatis berdasarkan jumlah item
-                $autoDensity = $itemCount > 40 ? 'density-ultra' : ($itemCount > 28 ? 'density-dense' : ($itemCount > 18 ? 'density-compact' : 'density-normal'));
+                $isGigiRoom = ($currentRoom->id == 6) || (stripos($currentRoom->name, 'gigi') !== false);
+                $hasTwoPages = ($itemCount > 35) || $isGigiRoom;
+                $roomTwoPages = (isset($modePages) && $modePages === '2') || (!isset($modePages) && $hasTwoPages);
+                if (isset($modePages) && $modePages === '1') {
+                    $roomTwoPages = false;
+                }
+
+                // Split index untuk 2 halaman (Halaman 1 maksimal 40 baris agar pas F4)
+                $splitIndex = 40;
+                if ($itemCount < 70 && $itemCount > 35) {
+                    $splitIndex = (int)ceil($itemCount / 2);
+                }
+                $itemsPage1 = $items->slice(0, $splitIndex);
+                $itemsPage2 = $items->slice($splitIndex);
+
+                // Level kerapatan otomatis untuk mode 1 halaman
+                $autoDensitySingle = $itemCount > 40 ? 'density-ultra' : ($itemCount > 28 ? 'density-dense' : ($itemCount > 18 ? 'density-compact' : 'density-normal'));
+                // Level kerapatan untuk mode 2 halaman (karena per halaman hanya ~35-40 item)
+                $densityPage1 = count($itemsPage1) > 28 ? 'density-dense' : 'density-compact';
+                $densityPage2 = count($itemsPage2) > 28 ? 'density-dense' : 'density-compact';
             @endphp
 
-            <div class="page-sheet {{ $autoDensity }}" data-room-id="{{ $currentRoom->id }}" data-item-count="{{ $itemCount }}" data-auto-density="{{ $autoDensity }}">
-                <!-- Inner Container untuk penyesuaian skala presisi -->
-                <div class="page-sheet-inner">
-                    <!-- Judul Utama Dokumen -->
-                    <div class="kir-title">KARTU INVENTARIS RUANGAN</div>
+            @if($hasTwoPages)
+                <div class="room-sheet-container {{ $roomTwoPages ? 'mode-two-pages' : 'mode-single-page' }}" data-room-id="{{ $currentRoom->id }}">
+                    <!-- VIEW 2 HALAMAN (LEGA, RAPI & MUDAH DIBACA) -->
+                    <div class="view-two-pages">
+                        <!-- LEMBAR 1 DARI 2 -->
+                        <div class="page-sheet {{ $densityPage1 }} page-sheet-1" data-room-id="{{ $currentRoom->id }}" data-item-count="{{ count($itemsPage1) }}" data-auto-density="{{ $densityPage1 }}">
+                            <div class="page-sheet-inner">
+                                <div class="kir-title">KARTU INVENTARIS RUANGAN</div>
+                                <table class="header-meta">
+                                    <tr>
+                                        <td class="label">PROPINSI</td>
+                                        <td class="separator">:</td>
+                                        <td class="value">JAWA TIMUR</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">KABUPATEN/KOTAMADYA</td>
+                                        <td class="separator">:</td>
+                                        <td class="value">LAMONGAN</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">UNIT</td>
+                                        <td class="separator">:</td>
+                                        <td class="value">DINAS KESEHATAN</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">SATUAN KERJA</td>
+                                        <td class="separator">:</td>
+                                        <td class="value">PUSKESMAS MANTUP</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label" style="letter-spacing: 2px;">R U A N G A N</td>
+                                        <td class="separator">:</td>
+                                        <td class="value" style="font-weight: bold;">{{ strtoupper($currentRoom->name) }}</td>
+                                    </tr>
+                                </table>
 
-                    <!-- Metadata Satuan Kerja & Ruangan Sesuai Standar Resmi Permendagri -->
-                    <table class="header-meta">
-                        <tr>
-                            <td class="label">PROPINSI</td>
-                            <td class="separator">:</td>
-                            <td class="value">JAWA TIMUR</td>
-                        </tr>
-                        <tr>
-                            <td class="label">KABUPATEN/KOTAMADYA</td>
-                            <td class="separator">:</td>
-                            <td class="value">LAMONGAN</td>
-                        </tr>
-                        <tr>
-                            <td class="label">UNIT</td>
-                            <td class="separator">:</td>
-                            <td class="value">DINAS KESEHATAN</td>
-                        </tr>
-                        <tr>
-                            <td class="label">SATUAN KERJA</td>
-                            <td class="separator">:</td>
-                            <td class="value">PUSKESMAS MANTUP</td>
-                        </tr>
-                        <tr>
-                            <td class="label" style="letter-spacing: 2px;">R U A N G A N</td>
-                            <td class="separator">:</td>
-                            <td class="value" style="font-weight: bold;">{{ strtoupper($currentRoom->name) }}</td>
-                        </tr>
-                    </table>
+                                <!-- Tabel Bagian 1 (Items 1 s/d splitIndex) -->
+                                <table class="kir-table">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" style="width: 5%;">No. Urut</th>
+                                            <th rowspan="2" style="width: 25%;">Jenis Barang / Nama Barang</th>
+                                            <th rowspan="2" style="width: 15%;">Merek / Model</th>
+                                            <th rowspan="2" style="width: 11%;">Bahan</th>
+                                            <th rowspan="2" style="width: 8%;">Jumlah<br>Barang</th>
+                                            <th colspan="3" style="width: 22%;">Keadaan Barang</th>
+                                            <th rowspan="2" style="width: 14%;">Keterangan<br>Mutasi dll.</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="width: 7.3%;">Baik</th>
+                                            <th style="width: 7.3%;">Kurang<br>Baik</th>
+                                            <th style="width: 7.3%;">Rusak<br>Berat</th>
+                                        </tr>
+                                        <tr class="col-numbers">
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>6</th>
+                                            <th>9</th>
+                                            <th>10</th>
+                                            <th>11</th>
+                                            <th>12</th>
+                                            <th>13</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($itemsPage1 as $item)
+                                        <tr>
+                                            <td class="text-center">{{ $item->no }}</td>
+                                            <td class="text-left">{{ $item->name }}</td>
+                                            <td class="text-left">{{ $item->merk ?: '' }}</td>
+                                            <td class="text-left">{{ $item->bahan ?: 'Campuran' }}</td>
+                                            <td class="text-center">{{ $item->total }}</td>
+                                            <td class="text-center">{{ $item->baik > 0 ? $item->baik : '' }}</td>
+                                            <td class="text-center">{{ $item->kurang_baik > 0 ? $item->kurang_baik : '' }}</td>
+                                            <td class="text-center">{{ $item->rusak_berat > 0 ? $item->rusak_berat : '' }}</td>
+                                            <td class="text-left">{{ $item->keterangan ?: '' }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
 
-                    <!-- Tabel Data KIR -->
-                    <table class="kir-table">
-                        <thead>
-                            <tr>
-                                <th rowspan="2" style="width: 5%;">No. Urut</th>
-                                <th rowspan="2" style="width: 25%;">Jenis Barang / Nama Barang</th>
-                                <th rowspan="2" style="width: 15%;">Merek / Model</th>
-                                <th rowspan="2" style="width: 11%;">Bahan</th>
-                                <th rowspan="2" style="width: 8%;">Jumlah<br>Barang</th>
-                                <th colspan="3" style="width: 22%;">Keadaan Barang</th>
-                                <th rowspan="2" style="width: 14%;">Keterangan<br>Mutasi dll.</th>
-                            </tr>
-                            <tr>
-                                <th style="width: 7.3%;">Baik</th>
-                                <th style="width: 7.3%;">Kurang<br>Baik</th>
-                                <th style="width: 7.3%;">Rusak<br>Berat</th>
-                            </tr>
-                            <tr class="col-numbers">
-                                <th>1</th>
-                                <th>2</th>
-                                <th>3</th>
-                                <th>6</th>
-                                <th>9</th>
-                                <th>10</th>
-                                <th>11</th>
-                                <th>12</th>
-                                <th>13</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($items as $item)
-                            <tr>
-                                <td class="text-center">{{ $item->no }}</td>
-                                <td class="text-left">{{ $item->name }}</td>
-                                <td class="text-left">{{ $item->merk ?: '' }}</td>
-                                <td class="text-left">{{ $item->bahan ?: 'Campuran' }}</td>
-                                <td class="text-center">{{ $item->total }}</td>
-                                <td class="text-center">{{ $item->baik > 0 ? $item->baik : '' }}</td>
-                                <td class="text-center">{{ $item->kurang_baik > 0 ? $item->kurang_baik : '' }}</td>
-                                <td class="text-center">{{ $item->rusak_berat > 0 ? $item->rusak_berat : '' }}</td>
-                                <td class="text-left">{{ $item->keterangan ?: '' }}</td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="9" class="text-center" style="padding: 24px 15px;">
-                                    <div style="color: #64748b; font-size: 10pt; margin-bottom: 10px; font-style: italic;">
-                                        Belum ada data barang di ruangan {{ $currentRoom->name }}.
-                                    </div>
-                                    <div class="no-print" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-                                        <button type="button" onclick="openAddItemModal()" class="btn" style="background: #4f46e5; color: #fff; font-size: 11.5px;">
-                                            ➕ Tambah Barang Manual
-                                        </button>
-                                        <button type="button" onclick="openImportModal()" class="btn" style="background: #7c3aed; color: #fff; font-size: 11.5px;">
-                                            📤 Upload File Excel
-                                        </button>
-                                        <a href="{{ route('rooms.kir.template', ['room_id' => $currentRoom->id]) }}" class="btn" style="background: #059669; color: #fff; font-size: 11.5px;">
-                                            📥 Download Template Excel
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-
-                    <!-- Kolom Tanda Tangan Sesuai Posisi & Format Resmi -->
-                    <div class="ttd-wrapper clearfix">
-                        <!-- Tanda Tangan Kiri: dr. Muhamad Sunaryadi (Tanpa Stempel) -->
-                        <div class="ttd-box ttd-box-left">
-                            <div class="ttd-title">Mengetahui</div>
-                            <div class="ttd-jabatan">Kepala Puskesmas Mantup</div>
-                            <div class="ttd-image-area">
-                                <img src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" alt="TTD dr. Sunaryadi">
+                                <!-- Footer Halaman 1 -->
+                                <div class="kir-page-footer">
+                                    <span>KIR Puskesmas Mantup &bull; {{ $currentRoom->name }}</span>
+                                    <span style="font-weight: bold;">Halaman 1 dari 2 (Bersambung ke Halaman 2) &rarr;</span>
+                                </div>
                             </div>
-                            <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
-                            <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
                         </div>
 
-                        <!-- Tanda Tangan Kanan: Andika Dafa Penta Pratama (Tanggal Cetak Diupdate Tiap 6 Bulan) -->
-                        <div class="ttd-box ttd-box-right">
-                            <div class="ttd-title">
-                                Mantup, <span class="doc-date-display" contenteditable="true" title="Klik untuk edit teks manual jika diperlukan">{{ $formattedDate }}</span>
+                        <!-- LEMBAR 2 DARI 2 -->
+                        <div class="page-sheet {{ $densityPage2 }} page-sheet-2" data-room-id="{{ $currentRoom->id }}" data-item-count="{{ count($itemsPage2) }}" data-auto-density="{{ $densityPage2 }}">
+                            <div class="page-sheet-inner">
+                                <div class="kir-title" style="margin-bottom: 4px;">KARTU INVENTARIS RUANGAN (LANJUTAN)</div>
+                                <table class="header-meta" style="margin-bottom: 6px;">
+                                    <tr>
+                                        <td class="label" style="width: 140px;">SATUAN KERJA</td>
+                                        <td class="separator">:</td>
+                                        <td class="value">PUSKESMAS MANTUP</td>
+                                        <td style="text-align: right; font-weight: bold; color: #1e293b; font-size: 8.5pt;">HALAMAN 2 DARI 2</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label" style="letter-spacing: 2px;">R U A N G A N</td>
+                                        <td class="separator">:</td>
+                                        <td class="value" style="font-weight: bold;">{{ strtoupper($currentRoom->name) }}</td>
+                                        <td style="text-align: right; font-size: 8pt; color: #64748b;">(Lanjutan Nomor {{ $splitIndex + 1 }} s/d {{ $itemCount }})</td>
+                                    </tr>
+                                </table>
+
+                                <!-- Tabel Bagian 2 (Items splitIndex+1 s/d end) -->
+                                <table class="kir-table">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" style="width: 5%;">No. Urut</th>
+                                            <th rowspan="2" style="width: 25%;">Jenis Barang / Nama Barang</th>
+                                            <th rowspan="2" style="width: 15%;">Merek / Model</th>
+                                            <th rowspan="2" style="width: 11%;">Bahan</th>
+                                            <th rowspan="2" style="width: 8%;">Jumlah<br>Barang</th>
+                                            <th colspan="3" style="width: 22%;">Keadaan Barang</th>
+                                            <th rowspan="2" style="width: 14%;">Keterangan<br>Mutasi dll.</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="width: 7.3%;">Baik</th>
+                                            <th style="width: 7.3%;">Kurang<br>Baik</th>
+                                            <th style="width: 7.3%;">Rusak<br>Berat</th>
+                                        </tr>
+                                        <tr class="col-numbers">
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>6</th>
+                                            <th>9</th>
+                                            <th>10</th>
+                                            <th>11</th>
+                                            <th>12</th>
+                                            <th>13</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($itemsPage2 as $item)
+                                        <tr>
+                                            <td class="text-center">{{ $item->no }}</td>
+                                            <td class="text-left">{{ $item->name }}</td>
+                                            <td class="text-left">{{ $item->merk ?: '' }}</td>
+                                            <td class="text-left">{{ $item->bahan ?: 'Campuran' }}</td>
+                                            <td class="text-center">{{ $item->total }}</td>
+                                            <td class="text-center">{{ $item->baik > 0 ? $item->baik : '' }}</td>
+                                            <td class="text-center">{{ $item->kurang_baik > 0 ? $item->kurang_baik : '' }}</td>
+                                            <td class="text-center">{{ $item->rusak_berat > 0 ? $item->rusak_berat : '' }}</td>
+                                            <td class="text-left">{{ $item->keterangan ?: '' }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                                <!-- Kolom Tanda Tangan Sesuai Posisi & Format Resmi (Bisa Disembunyikan) -->
+                                <div class="ttd-wrapper clearfix">
+                                    <div class="ttd-box ttd-box-left">
+                                        <div class="ttd-title">Mengetahui</div>
+                                        <div class="ttd-jabatan">Kepala Puskesmas Mantup</div>
+                                        <div class="ttd-image-area">
+                                            <img src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" alt="TTD dr. Sunaryadi">
+                                        </div>
+                                        <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
+                                        <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
+                                    </div>
+
+                                    <div class="ttd-box ttd-box-right">
+                                        <div class="ttd-title">
+                                            Mantup, <span class="doc-date-display" contenteditable="true" title="Klik untuk edit teks manual jika diperlukan">{{ $formattedDate }}</span>
+                                        </div>
+                                        <div class="ttd-jabatan">Pengurus Barang Puskesmas Mantup</div>
+                                        <div class="ttd-image-area">
+                                            <img src="{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}" alt="TTD Andika Dafa">
+                                        </div>
+                                        <div class="ttd-nama">ANDIKA DAFA PENTA PRATAMA</div>
+                                        <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
+                                    </div>
+                                </div>
+
+                                <!-- Footer Halaman 2 -->
+                                <div class="kir-page-footer">
+                                    <span>KIR Puskesmas Mantup &bull; {{ $currentRoom->name }}</span>
+                                    <span style="font-weight: bold;">Halaman 2 dari 2 (Selesai)</span>
+                                </div>
                             </div>
-                            <div class="ttd-jabatan">Pengurus Barang Puskesmas Mantup</div>
-                            <div class="ttd-image-area">
-                                <img src="{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}" alt="TTD Andika Dafa">
+                        </div>
+                    </div>
+
+                    <!-- VIEW 1 HALAMAN (ALTERNATIF RAPAT) -->
+                    <div class="view-single-page">
+                        <div class="page-sheet {{ $autoDensitySingle }}" data-room-id="{{ $currentRoom->id }}" data-item-count="{{ $itemCount }}" data-auto-density="{{ $autoDensitySingle }}">
+                            <div class="page-sheet-inner">
+                                <div class="kir-title">KARTU INVENTARIS RUANGAN</div>
+                                <table class="header-meta">
+                                    <tr>
+                                        <td class="label">PROPINSI</td>
+                                        <td class="separator">:</td>
+                                        <td class="value">JAWA TIMUR</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">KABUPATEN/KOTAMADYA</td>
+                                        <td class="separator">:</td>
+                                        <td class="value">LAMONGAN</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">UNIT</td>
+                                        <td class="separator">:</td>
+                                        <td class="value">DINAS KESEHATAN</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">SATUAN KERJA</td>
+                                        <td class="separator">:</td>
+                                        <td class="value">PUSKESMAS MANTUP</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label" style="letter-spacing: 2px;">R U A N G A N</td>
+                                        <td class="separator">:</td>
+                                        <td class="value" style="font-weight: bold;">{{ strtoupper($currentRoom->name) }}</td>
+                                    </tr>
+                                </table>
+
+                                <table class="kir-table">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" style="width: 5%;">No. Urut</th>
+                                            <th rowspan="2" style="width: 25%;">Jenis Barang / Nama Barang</th>
+                                            <th rowspan="2" style="width: 15%;">Merek / Model</th>
+                                            <th rowspan="2" style="width: 11%;">Bahan</th>
+                                            <th rowspan="2" style="width: 8%;">Jumlah<br>Barang</th>
+                                            <th colspan="3" style="width: 22%;">Keadaan Barang</th>
+                                            <th rowspan="2" style="width: 14%;">Keterangan<br>Mutasi dll.</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="width: 7.3%;">Baik</th>
+                                            <th style="width: 7.3%;">Kurang<br>Baik</th>
+                                            <th style="width: 7.3%;">Rusak<br>Berat</th>
+                                        </tr>
+                                        <tr class="col-numbers">
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>6</th>
+                                            <th>9</th>
+                                            <th>10</th>
+                                            <th>11</th>
+                                            <th>12</th>
+                                            <th>13</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($items as $item)
+                                        <tr>
+                                            <td class="text-center">{{ $item->no }}</td>
+                                            <td class="text-left">{{ $item->name }}</td>
+                                            <td class="text-left">{{ $item->merk ?: '' }}</td>
+                                            <td class="text-left">{{ $item->bahan ?: 'Campuran' }}</td>
+                                            <td class="text-center">{{ $item->total }}</td>
+                                            <td class="text-center">{{ $item->baik > 0 ? $item->baik : '' }}</td>
+                                            <td class="text-center">{{ $item->kurang_baik > 0 ? $item->kurang_baik : '' }}</td>
+                                            <td class="text-center">{{ $item->rusak_berat > 0 ? $item->rusak_berat : '' }}</td>
+                                            <td class="text-left">{{ $item->keterangan ?: '' }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                                <div class="ttd-wrapper clearfix">
+                                    <div class="ttd-box ttd-box-left">
+                                        <div class="ttd-title">Mengetahui</div>
+                                        <div class="ttd-jabatan">Kepala Puskesmas Mantup</div>
+                                        <div class="ttd-image-area">
+                                            <img src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" alt="TTD dr. Sunaryadi">
+                                        </div>
+                                        <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
+                                        <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
+                                    </div>
+                                    <div class="ttd-box ttd-box-right">
+                                        <div class="ttd-title">
+                                            Mantup, <span class="doc-date-display" contenteditable="true">{{ $formattedDate }}</span>
+                                        </div>
+                                        <div class="ttd-jabatan">Pengurus Barang Puskesmas Mantup</div>
+                                        <div class="ttd-image-area">
+                                            <img src="{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}" alt="TTD Andika Dafa">
+                                        </div>
+                                        <div class="ttd-nama">ANDIKA DAFA PENTA PRATAMA</div>
+                                        <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="ttd-nama">ANDIKA DAFA PENTA PRATAMA</div>
-                            <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @else
+                <!-- Ruangan Normal (<= 35 item): Standar 1 Halaman -->
+                <div class="page-sheet {{ $autoDensitySingle }}" data-room-id="{{ $currentRoom->id }}" data-item-count="{{ $itemCount }}" data-auto-density="{{ $autoDensitySingle }}">
+                    <div class="page-sheet-inner">
+                        <div class="kir-title">KARTU INVENTARIS RUANGAN</div>
+                        <table class="header-meta">
+                            <tr>
+                                <td class="label">PROPINSI</td>
+                                <td class="separator">:</td>
+                                <td class="value">JAWA TIMUR</td>
+                            </tr>
+                            <tr>
+                                <td class="label">KABUPATEN/KOTAMADYA</td>
+                                <td class="separator">:</td>
+                                <td class="value">LAMONGAN</td>
+                            </tr>
+                            <tr>
+                                <td class="label">UNIT</td>
+                                <td class="separator">:</td>
+                                <td class="value">DINAS KESEHATAN</td>
+                            </tr>
+                            <tr>
+                                <td class="label">SATUAN KERJA</td>
+                                <td class="separator">:</td>
+                                <td class="value">PUSKESMAS MANTUP</td>
+                            </tr>
+                            <tr>
+                                <td class="label" style="letter-spacing: 2px;">R U A N G A N</td>
+                                <td class="separator">:</td>
+                                <td class="value" style="font-weight: bold;">{{ strtoupper($currentRoom->name) }}</td>
+                            </tr>
+                        </table>
+
+                        <table class="kir-table">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" style="width: 5%;">No. Urut</th>
+                                    <th rowspan="2" style="width: 25%;">Jenis Barang / Nama Barang</th>
+                                    <th rowspan="2" style="width: 15%;">Merek / Model</th>
+                                    <th rowspan="2" style="width: 11%;">Bahan</th>
+                                    <th rowspan="2" style="width: 8%;">Jumlah<br>Barang</th>
+                                    <th colspan="3" style="width: 22%;">Keadaan Barang</th>
+                                    <th rowspan="2" style="width: 14%;">Keterangan<br>Mutasi dll.</th>
+                                </tr>
+                                <tr>
+                                    <th style="width: 7.3%;">Baik</th>
+                                    <th style="width: 7.3%;">Kurang<br>Baik</th>
+                                    <th style="width: 7.3%;">Rusak<br>Berat</th>
+                                </tr>
+                                <tr class="col-numbers">
+                                    <th>1</th>
+                                    <th>2</th>
+                                    <th>3</th>
+                                    <th>6</th>
+                                    <th>9</th>
+                                    <th>10</th>
+                                    <th>11</th>
+                                    <th>12</th>
+                                    <th>13</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($items as $item)
+                                <tr>
+                                    <td class="text-center">{{ $item->no }}</td>
+                                    <td class="text-left">{{ $item->name }}</td>
+                                    <td class="text-left">{{ $item->merk ?: '' }}</td>
+                                    <td class="text-left">{{ $item->bahan ?: 'Campuran' }}</td>
+                                    <td class="text-center">{{ $item->total }}</td>
+                                    <td class="text-center">{{ $item->baik > 0 ? $item->baik : '' }}</td>
+                                    <td class="text-center">{{ $item->kurang_baik > 0 ? $item->kurang_baik : '' }}</td>
+                                    <td class="text-center">{{ $item->rusak_berat > 0 ? $item->rusak_berat : '' }}</td>
+                                    <td class="text-left">{{ $item->keterangan ?: '' }}</td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="9" class="text-center" style="padding: 24px 15px;">
+                                        <div style="color: #64748b; font-size: 10pt; margin-bottom: 10px; font-style: italic;">
+                                            Belum ada data barang di ruangan {{ $currentRoom->name }}.
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+
+                        <div class="ttd-wrapper clearfix">
+                            <div class="ttd-box ttd-box-left">
+                                <div class="ttd-title">Mengetahui</div>
+                                <div class="ttd-jabatan">Kepala Puskesmas Mantup</div>
+                                <div class="ttd-image-area">
+                                    <img src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" alt="TTD dr. Sunaryadi">
+                                </div>
+                                <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
+                                <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
+                            </div>
+                            <div class="ttd-box ttd-box-right">
+                                <div class="ttd-title">
+                                    Mantup, <span class="doc-date-display" contenteditable="true">{{ $formattedDate }}</span>
+                                </div>
+                                <div class="ttd-jabatan">Pengurus Barang Puskesmas Mantup</div>
+                                <div class="ttd-image-area">
+                                    <img src="{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}" alt="TTD Andika Dafa">
+                                </div>
+                                <div class="ttd-nama">ANDIKA DAFA PENTA PRATAMA</div>
+                                <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
         @endforeach
     </div>
 
@@ -953,12 +1321,14 @@
         </div>
     </div>
 
-    <!-- Script Interaktif untuk Auto-Fit 1 Halaman, Tanggal, Ruangan & Modal -->
+    <!-- Script Interaktif untuk Auto-Fit, Mode Halaman (1 vs 2 Halaman), Opsi TTD, Tanggal, Ruangan & Modal -->
     <script>
-        // State Konfigurasi Auto-Fit
+        // State Konfigurasi Auto-Fit & Layout
         let isAutoFitEnabled = true;
         let selectedDensity = 'auto'; // 'auto' | 'density-normal' | 'density-compact' | 'density-dense' | 'density-ultra'
         let selectedZoom = 'auto';    // 'auto' | '1' | '0.95' | ...
+        let isTtdShown = {{ (isset($showTtd) && !$showTtd) ? 'false' : 'true' }};
+        let isTwoPagesMode = {{ (isset($defaultTwoPages) && $defaultTwoPages) ? 'true' : 'false' }};
 
         // Auto-dismiss alert toast
         setTimeout(() => {
@@ -1019,7 +1389,9 @@
         function switchRoom(roomId) {
             if (!roomId) return;
             const currentDate = document.getElementById('datePicker').value || '2026-01-02';
-            window.location.href = `/rooms/${roomId}/kir?date=${currentDate}`;
+            const ttdParam = isTtdShown ? '1' : '0';
+            const pagesParam = isTwoPagesMode ? '2' : '1';
+            window.location.href = `/rooms/${roomId}/kir?date=${currentDate}&ttd=${ttdParam}&pages=${pagesParam}`;
         }
 
         // Buka / Tutup Modal Import Excel
@@ -1041,25 +1413,105 @@
         }
 
         /* =========================================================
-           MESIN AUTO-FIT 1 HALAMAN PRESISI TINGGI
-           Menghitung tinggi DOM nyata dan menyesuaikan zoom & density
-           agar SETIAP lembar ruangan 100% tepat muat 1 halaman F4!
+           KONTROL INTERAKTIF: TOGGLE TANDA TANGAN (TTD)
            ========================================================= */
+        function toggleTtd() {
+            isTtdShown = !isTtdShown;
+            applyTtdState();
+        }
 
+        function applyTtdState() {
+            const btn = document.getElementById('toggleTtdBtn');
+            const text = document.getElementById('ttdStatusText');
+            const body = document.body;
+
+            if (isTtdShown) {
+                body.classList.remove('hide-ttd');
+                if (text) {
+                    text.textContent = 'DITAMPILKAN';
+                    text.style.color = '#4ade80';
+                }
+                if (btn) btn.style.borderColor = '#475569';
+            } else {
+                body.classList.add('hide-ttd');
+                if (text) {
+                    text.textContent = 'DIHILANGKAN';
+                    text.style.color = '#f87171';
+                }
+                if (btn) btn.style.borderColor = '#f87171';
+            }
+
+            localStorage.setItem('e_aset_kir_show_ttd', isTtdShown ? '1' : '0');
+
+            const url = new URL(window.location.href);
+            url.searchParams.set('ttd', isTtdShown ? '1' : '0');
+            window.history.replaceState({}, '', url.toString());
+
+            applyAutoFit();
+        }
+
+        /* =========================================================
+           KONTROL INTERAKTIF: TOGGLE 1 HALAMAN VS 2 HALAMAN
+           ========================================================= */
+        function togglePageMode() {
+            isTwoPagesMode = !isTwoPagesMode;
+            applyPageModeState();
+        }
+
+        function applyPageModeState() {
+            const text = document.getElementById('pageModeText');
+            const printText = document.getElementById('printBtnPageText');
+            const containers = document.querySelectorAll('.room-sheet-container');
+
+            containers.forEach(container => {
+                if (isTwoPagesMode) {
+                    container.classList.remove('mode-single-page');
+                    container.classList.add('mode-two-pages');
+                } else {
+                    container.classList.remove('mode-two-pages');
+                    container.classList.add('mode-single-page');
+                }
+            });
+
+            if (text) {
+                text.textContent = isTwoPagesMode ? '2 HALAMAN' : '1 HALAMAN';
+                text.style.color = isTwoPagesMode ? '#38bdf8' : '#fbbf24';
+            }
+            if (printText) {
+                printText.textContent = isTwoPagesMode ? '2 Halaman' : '1 Halaman';
+            }
+
+            localStorage.setItem('e_aset_kir_pages_mode', isTwoPagesMode ? '2' : '1');
+
+            const url = new URL(window.location.href);
+            url.searchParams.set('pages', isTwoPagesMode ? '2' : '1');
+            window.history.replaceState({}, '', url.toString());
+
+            applyAutoFit();
+        }
+
+        /* =========================================================
+           MESIN AUTO-FIT 1/2 HALAMAN PRESISI TINGGI (F4)
+           ========================================================= */
         function applyAutoFit() {
             const sheets = document.querySelectorAll('.page-sheet');
             let minScaleUsed = 1;
-            let totalSheets = sheets.length;
+            let totalSheets = 0;
             let maxOverflowFound = 0;
 
             sheets.forEach((sheet) => {
+                // Abaikan sheet yang tidak aktif / tersembunyi
+                if (sheet.offsetParent === null && window.getComputedStyle(sheet).display === 'none') {
+                    return;
+                }
+                totalSheets++;
+
                 const inner = sheet.querySelector('.page-sheet-inner');
                 if (!inner) return;
 
                 // 1. Terapkan kerapatan (density)
                 sheet.classList.remove('density-normal', 'density-compact', 'density-dense', 'density-ultra');
                 if (selectedDensity === 'auto') {
-                    // Gunakan density bawaan berdasarkan hitungan item
                     const autoDensity = sheet.dataset.autoDensity || 'density-normal';
                     sheet.classList.add(autoDensity);
                 } else {
@@ -1078,21 +1530,18 @@
                     return;
                 }
 
-                // 3. Jika Skala Manual dipilih oleh user, prioritaskan skala tersebut
+                // 3. Jika Skala Manual dipilih oleh user
                 if (selectedZoom !== 'auto') {
                     inner.style.zoom = selectedZoom;
                     return;
                 }
 
                 // 4. Hitung tinggi area cetak F4 yang tersedia
-                // sheet.clientHeight adalah tinggi inner sheet (antara padding 10mm atas & bawah)
                 const availableHeight = sheet.clientHeight;
                 const contentHeight = inner.scrollHeight;
 
-                if (contentHeight > availableHeight) {
-                    // Konten melebihi 1 halaman, hitung faktor skala presisi (dengan buffer 4px aman)
+                if (contentHeight > availableHeight && availableHeight > 0) {
                     let scale = (availableHeight - 4) / contentHeight;
-                    // Batasi skala minimum yang wajar (agar teks tetap terbaca)
                     scale = Math.max(0.55, Math.floor(scale * 1000) / 1000);
 
                     inner.style.zoom = scale;
@@ -1127,10 +1576,18 @@
             badge.className = 'fit-badge fit-success';
             const percent = Math.round(minScale * 100);
 
-            if (minScale < 1) {
-                text.textContent = `✓ 1 Halaman F4 (Skala ${percent}%)`;
+            if (isTwoPagesMode) {
+                if (minScale < 1) {
+                    text.textContent = `✓ 2 Halaman F4 (Skala ${percent}%)`;
+                } else {
+                    text.textContent = `✓ 2 Halaman F4 (100% Pas & Lega)`;
+                }
             } else {
-                text.textContent = `✓ 1 Halaman F4 (100% Pas)`;
+                if (minScale < 1) {
+                    text.textContent = `✓ 1 Halaman F4 (Skala ${percent}%)`;
+                } else {
+                    text.textContent = `✓ 1 Halaman F4 (100% Pas)`;
+                }
             }
         }
 
@@ -1141,10 +1598,10 @@
 
             if (isAutoFitEnabled) {
                 btn.className = 'btn btn-autofit active';
-                btn.innerHTML = '⚡ Paksa 1 Halaman: <strong style="color: #4ade80;">AKTIF</strong>';
+                btn.innerHTML = '⚡ Auto-Fit: <strong style="color: #4ade80;">AKTIF</strong>';
             } else {
                 btn.className = 'btn btn-autofit';
-                btn.innerHTML = '⚡ Paksa 1 Halaman: <strong style="color: #f87171;">NONAKTIF</strong>';
+                btn.innerHTML = '⚡ Auto-Fit: <strong style="color: #f87171;">NONAKTIF</strong>';
             }
 
             applyAutoFit();
@@ -1164,29 +1621,47 @@
 
         // Fungsi Cetak dengan Auto-Fit Eksekusi Terlebih Dahulu
         function printDoc() {
-            // Pastikan auto-fit dijalankan secara presisi
             applyAutoFit();
-
-            // Beri jeda 50ms agar engine browser me-render layout geometry sebelum dialog print muncul
             setTimeout(() => {
                 window.print();
             }, 60);
         }
 
-        // Jalankan Auto-Fit saat print dipicu melalui Ctrl+P atau menu browser
         window.addEventListener('beforeprint', () => {
             applyAutoFit();
         });
 
-        // Jalankan saat jendela di-resize atau gambar TTD selesai dimuat
         window.addEventListener('resize', () => {
             applyAutoFit();
         });
 
         // Inisialisasi awal saat halaman selesai dimuat
         document.addEventListener('DOMContentLoaded', () => {
-            // Cek tanggal dari localStorage
             const urlParams = new URLSearchParams(window.location.search);
+
+            // Cek URL params untuk TTD
+            if (urlParams.has('ttd')) {
+                isTtdShown = urlParams.get('ttd') === '1';
+            } else {
+                const savedTtd = localStorage.getItem('e_aset_kir_show_ttd');
+                if (savedTtd !== null) {
+                    isTtdShown = savedTtd === '1';
+                }
+            }
+            applyTtdState();
+
+            // Cek URL params untuk Mode Halaman
+            if (urlParams.has('pages')) {
+                isTwoPagesMode = urlParams.get('pages') === '2';
+            } else {
+                const savedPages = localStorage.getItem('e_aset_kir_pages_mode');
+                if (savedPages !== null) {
+                    isTwoPagesMode = savedPages === '2';
+                }
+            }
+            applyPageModeState();
+
+            // Cek tanggal dari localStorage
             const urlDate = urlParams.get('date');
             if (!urlDate) {
                 const savedDate = localStorage.getItem('e_aset_kir_date');
@@ -1196,10 +1671,8 @@
                 }
             }
 
-            // Jalankan auto fit setelah DOM siap
             setTimeout(applyAutoFit, 100);
 
-            // Jalankan lagi ketika seluruh asset (seperti gambar TTD) sudah komplit termuat
             window.addEventListener('load', () => {
                 applyAutoFit();
             });

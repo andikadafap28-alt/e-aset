@@ -536,7 +536,7 @@ class KirController extends Controller
      */
     public function printKir(Request $request, Room $room)
     {
-        $groupedItems = $room->kirItems;
+        $groupedItems = $room->kirItems()->orderBy('id')->get();
         $allRooms = Room::orderBy('name')->get();
         $docDate = $request->input('date', '2026-01-02');
         $formattedDate = $this->formatIndoDate($docDate);
@@ -556,12 +556,17 @@ class KirController extends Controller
             ];
         });
 
+        $showTtd = $request->input('ttd', '1') !== '0';
+        $modePages = $request->input('pages', null);
+
         return view('rooms.print_kir', [
             'room' => $room,
             'groupedItems' => $mappedItems,
             'allRooms' => $allRooms,
             'docDate' => $docDate,
             'formattedDate' => $formattedDate,
+            'showTtd' => $showTtd,
+            'modePages' => $modePages,
         ]);
     }
 
@@ -605,6 +610,9 @@ class KirController extends Controller
             });
         }
 
+        $showTtd = $request->input('ttd', '1') !== '0';
+        $modePages = $request->input('pages', null);
+
         return view('rooms.print_kir', [
             'room' => $rooms->first(),
             'rooms' => $rooms,
@@ -613,6 +621,8 @@ class KirController extends Controller
             'docDate' => $docDate,
             'formattedDate' => $formattedDate,
             'isBatch' => true,
+            'showTtd' => $showTtd,
+            'modePages' => $modePages,
         ]);
     }
 

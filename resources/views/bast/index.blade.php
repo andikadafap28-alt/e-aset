@@ -28,7 +28,11 @@
             <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Daftar Bukti Serah Terima (BAST)</h1>
             <p class="text-sm text-slate-500 mt-1">Pantau dan cetak seluruh BAST barang inventaris ruangan serta BAST tensimeter Ponkesdes / Pustu dalam satu tempat.</p>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2.5 flex-wrap">
+            <a href="{{ route('ba-stock-opname.index') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2.5 bg-slate-800 hover:bg-slate-900 text-slate-100 hover:text-white font-medium text-xs rounded-xl transition-all shadow-sm border border-slate-700">
+                <span class="material-symbols-outlined text-[18px] text-amber-400">receipt_long</span>
+                BA Stok Opname Persediaan
+            </a>
             <a href="{{ route('bast.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-medium text-sm rounded-xl hover:bg-blue-700 transition-all shadow-sm shadow-blue-600/20 active:scale-95">
                 <span class="material-symbols-outlined text-[20px]">add</span>
                 Buat BAST Baru

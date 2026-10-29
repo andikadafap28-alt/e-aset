@@ -45,7 +45,7 @@
                 logistikLainnyaOpen: {{ in_array(request()->segment(1), ['natura_pakan_lainnya', 'persediaan_lainnya']) ? 'true' : 'false' }},
                 asetOpen: {{ request()->is('aset/*') || request()->is('aset') || request()->is('bast/*') || request()->is('bast') || request()->is('dpp/*') || request()->is('dpp') ? 'true' : 'false' }},
                 kirOpen: {{ request()->is('kir*') ? 'true' : 'false' }},
-                laporanOpen: {{ request()->is('laporan/*') || request()->is('laporan') || request()->is('stock-opname/*') || request()->is('stock-opname') ? 'true' : 'false' }},
+                laporanOpen: {{ request()->is('laporan/*') || request()->is('laporan') || request()->is('stock-opname/*') || request()->is('stock-opname') || request()->is('ba-stock-opname*') ? 'true' : 'false' }},
                 sistemOpen: {{ request()->is('employees/*') || request()->is('employees') || request()->is('rooms/*') || request()->is('rooms') || request()->is('settings/*') || request()->is('settings') || request()->is('asisten/*') ? 'true' : 'false' }} 
             }">
                 
@@ -216,7 +216,11 @@
                     </button>
                     <div x-show="laporanOpen" x-collapse class="pl-11 pr-4 mt-1 space-y-1 mb-2">
                         <a href="{{ route('laporan.index') }}" class="{{ request()->routeIs('laporan.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Pusat Laporan</a>
-                        <a href="{{ route('stock-opname.index') }}" class="{{ request()->routeIs('stock-opname.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Stock Opname</a>
+                        <a href="{{ route('stock-opname.index') }}" class="{{ request()->routeIs('stock-opname.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors">Stock Opname Aset</a>
+                        <a href="{{ route('ba-stock-opname.index') }}" class="{{ request()->routeIs('ba-stock-opname.*') ? 'text-blue-400 font-semibold' : 'text-slate-400 hover:text-white' }} block py-2 text-sm transition-colors flex items-center justify-between">
+                            <span>BA Stok Opname Persediaan</span>
+                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-mono">Resmi</span>
+                        </a>
                     </div>
                 </div>
                 @endif
