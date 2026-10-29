@@ -109,29 +109,55 @@ class StockOpnamePersediaan extends Model
     }
 
     /**
-     * Konversi angka ke kata terbilang Bahasa Indonesia
+     * Konversi angka ke kata terbilang Bahasa Indonesia lengkap (Ratusan, Ribuan, Jutaan, Milyaran)
      */
-    public static function angkaKeKata($angka)
+    public static function terbilang($angka)
     {
         $bilangan = ['', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan', 'Sepuluh', 'Sebelas'];
-        $angka = (int)$angka;
+        $angka = abs((float)$angka);
 
         if ($angka < 12) {
-            return $bilangan[$angka];
+            return $bilangan[(int)$angka];
         } elseif ($angka < 20) {
-            return self::angkaKeKata($angka - 10) . ' Belas';
+            return self::terbilang($angka - 10) . ' Belas';
         } elseif ($angka < 100) {
-            return self::angkaKeKata(intval($angka / 10)) . ' Puluh' . (($angka % 10 != 0) ? ' ' . self::angkaKeKata($angka % 10) : '');
+            return self::terbilang((int)($angka / 10)) . ' Puluh' . (($angka % 10 != 0) ? ' ' . self::terbilang($angka % 10) : '');
         } elseif ($angka < 200) {
-            return 'Seratus' . (($angka - 100 != 0) ? ' ' . self::angkaKeKata($angka - 100) : '');
+            return 'Seratus' . (($angka - 100 != 0) ? ' ' . self::terbilang($angka - 100) : '');
         } elseif ($angka < 1000) {
-            return self::angkaKeKata(intval($angka / 100)) . ' Ratus' . (($angka % 100 != 0) ? ' ' . self::angkaKeKata($angka % 100) : '');
+            return self::terbilang((int)($angka / 100)) . ' Ratus' . (($angka % 100 != 0) ? ' ' . self::terbilang($angka % 100) : '');
         } elseif ($angka < 2000) {
-            return 'Seribu' . (($angka - 1000 != 0) ? ' ' . self::angkaKeKata($angka - 1000) : '');
+            return 'Seribu' . (($angka - 1000 != 0) ? ' ' . self::terbilang($angka - 1000) : '');
         } elseif ($angka < 1000000) {
-            return self::angkaKeKata(intval($angka / 1000)) . ' Ribu' . (($angka % 1000 != 0) ? ' ' . self::angkaKeKata($angka % 1000) : '');
+            return self::terbilang((int)($angka / 1000)) . ' Ribu' . (($angka % 1000 != 0) ? ' ' . self::terbilang($angka % 1000) : '');
+        } elseif ($angka < 1000000000) {
+            return self::terbilang((int)($angka / 1000000)) . ' Juta' . (($angka % 1000000 != 0) ? ' ' . self::terbilang($angka % 1000000) : '');
+        } elseif ($angka < 1000000000000) {
+            return self::terbilang((int)($angka / 1000000000)) . ' Milyar' . (($angka % 1000000000 != 0) ? ' ' . self::terbilang($angka % 1000000000) : '');
         }
         return (string)$angka;
+    }
+
+    public function getTotalNilaiTerbilang()
+    {
+        $val = round($this->total_nilai);
+        if ($val <= 0) return 'Nol Rupiah';
+        return trim(self::terbilang($val)) . ' Rupiah';
+    }
+
+    /**
+     * Format nomor surat agar memiliki space yang cukup lebar untuk penulisan nomor manual menggunakan bolpoin
+     */
+    public function getFormattedNomorSuratHtml()
+    {
+        $raw = trim($this->nomor_surat);
+        // Pola pemisah slash untuk nomor manual, misal: 000.2.1.2/   /413.102.5.18/2026 atau 000.2.1.2/ /...
+        if (preg_match('/^(.*?)\s*\/\s*(\/.*)$/', $raw, $matches)) {
+            $prefix = trim($matches[1]);
+            $suffix = trim(ltrim($matches[2], '/ '));
+            return e($prefix) . ' / <span class="nomor-manual-space" style="display: inline-block; min-width: 85px; text-align: center;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> / ' . e($suffix);
+        }
+        return e($raw);
     }
 
     public function getHariTerbilang()
@@ -142,7 +168,7 @@ class StockOpnamePersediaan extends Model
     public function getTanggalTerbilang()
     {
         $day = (int)Carbon::parse($this->tanggal_opname)->format('d');
-        return self::angkaKeKata($day);
+        return self::terbilang($day);
     }
 
     public function getBulanTerbilang()
@@ -153,7 +179,7 @@ class StockOpnamePersediaan extends Model
     public function getTahunTerbilang()
     {
         $year = (int)Carbon::parse($this->tanggal_opname)->format('Y');
-        return self::angkaKeKata($year);
+        return self::terbilang($year);
     }
 
     public function getTanggalFormatted()

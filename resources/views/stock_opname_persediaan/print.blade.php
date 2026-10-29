@@ -276,6 +276,61 @@
             font-weight: bold;
         }
 
+        /* Format Narasi Formal Resmi (Halaman 1) */
+        .formal-points {
+            margin: 8px 0 12px 22px;
+            padding: 0;
+            font-size: 10pt;
+            line-height: 1.5;
+        }
+
+        .formal-points li {
+            margin-bottom: 7px;
+            text-align: justify;
+            padding-left: 4px;
+        }
+
+        .formal-total-box {
+            margin: 8px auto 6px auto;
+            padding: 8px 16px;
+            background: #f8fafc;
+            border: 1.5px solid #000;
+            border-radius: 4px;
+            text-align: center;
+            max-width: 480px;
+        }
+
+        .formal-total-box .nominal {
+            font-size: 12.5pt;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000;
+        }
+
+        .formal-total-box .terbilang {
+            font-size: 9.5pt;
+            font-style: italic;
+            color: #0f172a;
+            margin-top: 3px;
+            font-weight: 500;
+        }
+
+        /* Ruang Space Nomor Manual Bolpoin */
+        .nomor-manual-space {
+            display: inline-block;
+            min-width: 85px;
+            text-align: center;
+            vertical-align: bottom;
+        }
+
+        .party-role-note {
+            font-size: 8.5pt;
+            color: #475569;
+            font-style: italic;
+            padding-top: 1px;
+        }
+
         /* Area Tanda Tangan */
         .ttd-wrapper {
             margin-top: 25px;
@@ -304,6 +359,7 @@
         .ttd-name {
             font-weight: bold;
             font-size: 10.5pt;
+            text-decoration: underline;
         }
 
         .ttd-nip {
@@ -433,6 +489,20 @@
                 page-break-before: avoid !important;
                 break-before: avoid !important;
             }
+
+            .formal-total-box {
+                background: transparent !important;
+                border: 1.5px solid #000 !important;
+            }
+
+            .nomor-manual-space {
+                min-width: 85px !important;
+                display: inline-block !important;
+            }
+
+            .ttd-name {
+                text-decoration: underline !important;
+            }
         }
     </style>
 </head>
@@ -457,13 +527,21 @@
         </div>
 
         <div class="toolbar-group">
+            <button type="button" id="toggleFormatHal1Btn" onclick="toggleHal1Format()" class="btn-action btn-toggle" style="border-color: #38bdf8;" title="Pilih Format Halaman 1: Narasi Formal Resmi (Standar Dinas) atau Daftar Penjumlahan Saldo">
+                <span class="material-symbols-outlined text-[16px]">description</span>
+                Format Hal 1: <strong id="formatHal1Text" style="color: #38bdf8;">NARASI FORMAL (RESMI)</strong>
+            </button>
+            <button type="button" id="toggleLampiranModeBtn" onclick="toggleLampiranMode()" class="btn-action btn-toggle" style="border-color: #4ade80;" title="Pilih Format Lampiran: Tabel Ringkas (Tanpa Sub-Komponen) atau Tabel Rinci">
+                <span class="material-symbols-outlined text-[16px]">table_chart</span>
+                Lampiran: <strong id="lampiranModeText" style="color: #4ade80;">TABEL RINGKAS</strong>
+            </button>
             <a href="{{ route('ba-stock-opname.edit', $record->id) }}" class="btn-action btn-toggle" title="Edit Nilai Rekening">
                 <span class="material-symbols-outlined text-[16px]">edit</span>
                 Edit Data
             </a>
             <button type="button" onclick="printMode('all')" class="btn-action btn-print" title="Cetak Berita Acara dan Lampiran (2 Halaman)">
                 <span class="material-symbols-outlined text-[18px]">print</span>
-                Cetak 2 Halaman Lengkap
+                Cetak 2 Halaman
             </button>
             <button type="button" onclick="printMode('hal1')" class="btn-action btn-toggle" title="Hanya Cetak Halaman 1 (Berita Acara)">
                 <span class="material-symbols-outlined text-[16px]">looks_one</span>
@@ -497,12 +575,12 @@
         <!-- Judul Berita Acara -->
         <div class="doc-title-container">
             <h1 class="doc-title">BERITA ACARA STOK OPNAME PERSEDIAAN</h1>
-            <div class="doc-number">Nomor :{{ $record->nomor_surat }}</div>
+            <div class="doc-number">Nomor : {!! $record->getFormattedNomorSuratHtml() !!}</div>
         </div>
 
         <!-- Paragraf Pembuka -->
         <p class="content-p">
-            Pada hari ini, {{ $record->getHariTerbilang() }} tanggal {{ $record->getTanggalTerbilang() }} bulan {{ $record->getBulanTerbilang() }} tahun {{ $record->getTahunTerbilang() }}, Kami yang bertanda tangan dibawah ini :
+            Pada hari ini, <strong>{{ $record->getHariTerbilang() }}</strong> tanggal <strong>{{ $record->getTanggalTerbilang() }}</strong> bulan <strong>{{ $record->getBulanTerbilang() }}</strong> tahun <strong>{{ $record->getTahunTerbilang() }}</strong> ({{ \Carbon\Carbon::parse($record->tanggal_opname)->format('d-m-Y') }}), bertempat di Puskesmas Mantup Kabupaten Lamongan, Kami yang bertanda tangan di bawah ini :
         </p>
 
         <!-- Tabel Pihak 1 & Pihak 2 -->
@@ -511,7 +589,7 @@
                 <td class="num">1.</td>
                 <td class="label">Nama</td>
                 <td class="colon">:</td>
-                <td class="val">{{ $record->nama_pemeriksa }}</td>
+                <td class="val"><strong>{{ $record->nama_pemeriksa }}</strong></td>
             </tr>
             <tr>
                 <td></td>
@@ -525,6 +603,12 @@
                 <td class="colon">:</td>
                 <td class="val">{{ $record->jabatan_pemeriksa }}</td>
             </tr>
+            <tr>
+                <td></td>
+                <td colspan="3" class="party-role-note">
+                    (Selanjutnya dalam Berita Acara ini disebut sebagai <strong>PIHAK KESATU / Yang Memeriksa</strong>)
+                </td>
+            </tr>
 
             <tr><td colspan="4" style="height: 6px;"></td></tr>
 
@@ -532,7 +616,7 @@
                 <td class="num">2.</td>
                 <td class="label">Nama</td>
                 <td class="colon">:</td>
-                <td class="val">{{ $record->nama_diperiksa }}</td>
+                <td class="val"><strong>{{ $record->nama_diperiksa }}</strong></td>
             </tr>
             <tr>
                 <td></td>
@@ -544,48 +628,87 @@
                 <td></td>
                 <td class="label">Jabatan</td>
                 <td class="colon">:</td>
-                <td class="val">{{ $record->jabatan_diperiksa }}</td>
+                <td class="val">{{ $record->jabatan_diperiksa }} Puskesmas Mantup</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="3" class="party-role-note">
+                    (Selanjutnya dalam Berita Acara ini disebut sebagai <strong>PIHAK KEDUA / Yang Diperiksa</strong>)
+                </td>
             </tr>
         </table>
 
-        <!-- Paragraf Pernyataan -->
-        <p class="content-p">
-            Menyatakan bahwa telah melakukan Stock Opname barang persediaan bulan {{ $bulanAnggaran }} Tahun Anggaran {{ $tahunAnggaran }}, sebagaimana terlampir dalam lampiran berita acara opname (Stock Opname). Adapun total Nilai Barang Persediaan berdasarkan Jenis Rekeningnya per {{ $tglFormat }} adalah :
-        </p>
+        <!-- ======================================================= -->
+        <!-- OPSI FORMAT 1: NARASI FORMAL RESMI (STANDAR DINAS/PEMKAB)-->
+        <!-- Tanpa Tabel Penjumlahan Manual, Menghubungkan ke Lampiran -->
+        <!-- ======================================================= -->
+        <div id="formatHal1Formal" class="format-hal1-view">
+            <p class="content-p" style="margin-top: 10px; margin-bottom: 8px;">
+                Dengan ini menyatakan bahwa <strong>PIHAK KESATU</strong> dan <strong>PIHAK KEDUA</strong> telah bersama-sama melakukan pemeriksaan fisik dan perhitungan sisa persediaan (<em>Stock Opname</em>) terhadap seluruh Barang Persediaan milik Pemerintah Kabupaten Lamongan pada Puskesmas Mantup untuk posisi per tanggal <strong>{{ $tglFormat }}</strong> Tahun Anggaran <strong>{{ $tahunAnggaran }}</strong>, dengan ketentuan dan hasil sebagai berikut:
+            </p>
 
-        <!-- Tabel Rekapitulasi Jenis Rekening (Persis PDF) -->
-        <div class="table-rekening-wrap">
-            <table class="table-rekening">
-                @php $no = 1; @endphp
-                @foreach($rekeningList as $idx => $rek)
-                    <tr>
-                        <td class="r-num">{{ $no++ }}.</td>
-                        <td class="r-name">{{ $rek['name'] }}</td>
-                        <td class="r-colon">:</td>
-                        <td class="r-curr">Rp.</td>
-                        <td class="r-val">{{ number_format($rek['val'], 2, ',', '.') }}</td>
-                    </tr>
-                @endforeach
-                
-                <!-- Baris Garis Pemisah Jumlah -->
-                <tr class="row-total-line">
-                    <td colspan="4"><strong>JUMLAH</strong></td>
-                    <td style="text-align: right; font-size: 8.5pt;">+</td>
-                </tr>
+            <ol class="formal-points">
+                <li>
+                    Pemeriksaan dan perhitungan fisik barang persediaan dilaksanakan secara langsung dan seksama pada gudang farmasi/obat, ruang pelayanan, dan unit penyimpanan barang persediaan Puskesmas Mantup.
+                </li>
+                <li>
+                    Seluruh rincian jenis rekening persediaan, kuantitas fisik, dan akumulasi nilai per rekening tercantum secara terperinci dalam <strong>Daftar Rincian Hasil Stock Opname Barang Persediaan</strong> sebagaimana terlampir dalam Lampiran Berita Acara ini, yang merupakan satu kesatuan dan bagian tidak terpisahkan dari Berita Acara ini.
+                </li>
+                <li>
+                    Seluruh barang persediaan hasil stock opname berada dalam kondisi <strong>BAIK</strong> dan lengkap, dengan akumulasi total nilai saldo persediaan per {{ $tglFormat }} sebesar:
+                    <div class="formal-total-box">
+                        <div class="nominal">Rp. {{ number_format($record->total_nilai, 2, ',', '.') }}</div>
+                        <div class="terbilang">( {{ $record->getTotalNilaiTerbilang() }} )</div>
+                    </div>
+                </li>
+                <li>
+                    Barang persediaan tersebut berada di bawah pengurusan dan tanggung jawab <strong>{{ $record->jabatan_diperiksa }} Puskesmas Mantup</strong> untuk dipergunakan dalam rangka menunjang kelancaran operasional pelayanan kesehatan kepada masyarakat.
+                </li>
+            </ol>
 
-                <!-- Baris Nilai Total Jumlah -->
-                <tr class="row-total-val">
-                    <td colspan="3"></td>
-                    <td class="r-curr"><strong>Rp.</strong></td>
-                    <td class="r-val"><strong>{{ number_format($record->total_nilai, 2, ',', '.') }}</strong></td>
-                </tr>
-            </table>
+            <p class="content-p" style="margin-top: 10px;">
+                Demikian Berita Acara Pemeriksaan Fisik Barang Persediaan (<em>Stock Opname</em>) ini dibuat dengan sebenarnya dalam rangkap secukupnya untuk dapat diketahui dan dipergunakan sebagaimana mestinya.
+            </p>
         </div>
 
-        <!-- Paragraf Penutup -->
-        <p class="content-p" style="margin-top: 14px;">
-            Demikian Berita Acara Persediaan ini dibuat untuk dapat diketahui dan dipergunakan sebagaimana mestinya.
-        </p>
+        <!-- ======================================================= -->
+        <!-- OPSI FORMAT 2: DAFTAR PENJUMLAHAN REKENING (ARITMATIKA) -->
+        <!-- ======================================================= -->
+        <div id="formatHal1Rekap" class="format-hal1-view" style="display: none;">
+            <p class="content-p">
+                Menyatakan bahwa telah melakukan Stock Opname barang persediaan bulan {{ $bulanAnggaran }} Tahun Anggaran {{ $tahunAnggaran }}, sebagaimana terlampir dalam lampiran berita acara opname (Stock Opname). Adapun total Nilai Barang Persediaan berdasarkan Jenis Rekeningnya per {{ $tglFormat }} adalah :
+            </p>
+
+            <div class="table-rekening-wrap">
+                <table class="table-rekening">
+                    @php $no = 1; @endphp
+                    @foreach($rekeningList as $idx => $rek)
+                        <tr>
+                            <td class="r-num">{{ $no++ }}.</td>
+                            <td class="r-name">{{ $rek['name'] }}</td>
+                            <td class="r-colon">:</td>
+                            <td class="r-curr">Rp.</td>
+                            <td class="r-val">{{ number_format($rek['val'], 2, ',', '.') }}</td>
+                        </tr>
+                    @endforeach
+                    
+                    <tr class="row-total-line">
+                        <td colspan="4"><strong>JUMLAH</strong></td>
+                        <td style="text-align: right; font-size: 8.5pt;">+</td>
+                    </tr>
+
+                    <tr class="row-total-val">
+                        <td colspan="3"></td>
+                        <td class="r-curr"><strong>Rp.</strong></td>
+                        <td class="r-val"><strong>{{ number_format($record->total_nilai, 2, ',', '.') }}</strong></td>
+                    </tr>
+                </table>
+            </div>
+
+            <p class="content-p" style="margin-top: 14px;">
+                Demikian Berita Acara Persediaan ini dibuat untuk dapat diketahui dan dipergunakan sebagaimana mestinya.
+            </p>
+        </div>
 
         <!-- Area Tanda Tangan -->
         <div class="ttd-wrapper">
@@ -608,11 +731,11 @@
                 </tr>
                 <tr style="vertical-align: top;">
                     <td>
-                        <div class="ttd-name">{{ $record->nama_pemeriksa }}</div>
+                        <div class="ttd-name"><u>{{ $record->nama_pemeriksa }}</u></div>
                         <div class="ttd-nip">NIP. {{ $record->nip_pemeriksa }}</div>
                     </td>
                     <td>
-                        <div class="ttd-name">{{ $record->nama_diperiksa }}</div>
+                        <div class="ttd-name"><u>{{ $record->nama_diperiksa }}</u></div>
                         <div class="ttd-nip">NIP. {{ $record->nip_diperiksa }}</div>
                     </td>
                 </tr>
@@ -634,7 +757,7 @@
                 </tr>
                 <tr>
                     <td>Nomor</td>
-                    <td>: {{ $record->nomor_surat }}</td>
+                    <td>: {!! $record->getFormattedNomorSuratHtml() !!}</td>
                 </tr>
                 <tr>
                     <td>Tanggal</td>
@@ -649,8 +772,94 @@
             <p>Posisi Fisik Barang Persediaan per {{ $tglFormat }}</p>
         </div>
 
-        <!-- Tabel Rincian Lengkap Termasuk Sub-Komponen Obat & BMHP -->
-        <table class="tabel-lampiran">
+        <!-- ======================================================= -->
+        <!-- OPSI TABEL 1: TABEL RINGKAS (STANDAR RESMI) - DEFAULT    -->
+        <!-- Tanpa Kolom Sub-Komponen & Tanpa Tulisan "Sumber:"     -->
+        <!-- ======================================================= -->
+        <table class="tabel-lampiran" id="lampiranTabelRingkas">
+            <thead>
+                <tr>
+                    <th style="width: 35px;">NO</th>
+                    <th>JENIS REKENING</th>
+                    <th style="width: 200px;">NILAI HASIL STOCK OPNAME (RP)</th>
+                    <th style="width: 140px;">KONDISI</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. ATK -->
+                <tr>
+                    <td class="center font-bold">1</td>
+                    <td><strong>Alat Tulis Kantor (ATK)</strong></td>
+                    <td class="right font-semibold">{{ number_format($record->atk, 2, ',', '.') }}</td>
+                    <td class="center">Baik / Lengkap</td>
+                </tr>
+
+                <!-- 2. Bahan Cetak -->
+                <tr>
+                    <td class="center font-bold">2</td>
+                    <td><strong>Bahan Cetak</strong></td>
+                    <td class="right font-semibold">{{ number_format($record->bahan_cetak, 2, ',', '.') }}</td>
+                    <td class="center">Baik / Lengkap</td>
+                </tr>
+
+                <!-- 3. Benda Pos -->
+                <tr>
+                    <td class="center font-bold">3</td>
+                    <td><strong>Benda Pos</strong></td>
+                    <td class="right font-semibold">{{ number_format($record->benda_pos, 2, ',', '.') }}</td>
+                    <td class="center">Baik / Lengkap</td>
+                </tr>
+
+                <!-- 4. Bahan Komputer -->
+                <tr>
+                    <td class="center font-bold">4</td>
+                    <td><strong>Bahan Komputer</strong></td>
+                    <td class="right font-semibold">{{ number_format($record->bahan_komputer, 2, ',', '.') }}</td>
+                    <td class="center">Baik / Lengkap</td>
+                </tr>
+
+                <!-- 5. Obat BLUD -->
+                <tr>
+                    <td class="center font-bold">5</td>
+                    <td><strong>Obat BLUD</strong></td>
+                    <td class="right font-semibold">{{ number_format($record->total_obat_blud, 2, ',', '.') }}</td>
+                    <td class="center">Baik / Lengkap</td>
+                </tr>
+
+                <!-- 6. Obat APBD -->
+                <tr>
+                    <td class="center font-bold">6</td>
+                    <td><strong>Obat APBD</strong></td>
+                    <td class="right font-semibold">{{ number_format($record->total_obat_apbd, 2, ',', '.') }}</td>
+                    <td class="center">Baik / Lengkap</td>
+                </tr>
+
+                <!-- 7. Obat APBN -->
+                <tr>
+                    <td class="center font-bold">7</td>
+                    <td><strong>Obat APBN</strong></td>
+                    <td class="right font-semibold">{{ number_format($record->total_obat_apbn, 2, ',', '.') }}</td>
+                    <td class="center">Baik / Lengkap</td>
+                </tr>
+
+                <!-- Baris Total Keseluruhan -->
+                <tr class="total-row">
+                    <td colspan="2" style="text-align: right; padding-right: 14px; text-transform: uppercase;">
+                        TOTAL KESELURUHAN NILAI HASIL STOCK OPNAME :
+                    </td>
+                    <td class="right" style="font-size: 10pt;">
+                        <strong>Rp. {{ number_format($record->total_nilai, 2, ',', '.') }}</strong>
+                    </td>
+                    <td class="center font-bold">Lengkap (Baik)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- ======================================================= -->
+        <!-- OPSI TABEL 2: TABEL DENGAN RINCIAN SUB-KOMPONEN OBAT/BMHP-->
+        <!-- (Tulisan "Sumber:" Sudah Dihilangkan Secara Bersih)    -->
+        <!-- ======================================================= -->
+        <table class="tabel-lampiran" id="lampiranTabelRinci" style="display: none;">
             <thead>
                 <tr>
                     <th style="width: 28px;">NO</th>
@@ -702,13 +911,10 @@
                     <td class="center">Baik / Lengkap</td>
                 </tr>
 
-                <!-- 5. Obat BLUD (Breakdown Obat & BMHP) -->
+                <!-- 5. Obat BLUD -->
                 <tr>
                     <td class="center font-bold" rowspan="2">5</td>
-                    <td rowspan="2">
-                        <strong>Obat BLUD</strong>
-                        <span style="display: block; font-size: 7.5pt; color: #475569; margin-top: 2px;">(Sumber: Dana BLUD)</span>
-                    </td>
+                    <td rowspan="2"><strong>Obat BLUD</strong></td>
                     <td>&bull; Obat-Obatan BLUD</td>
                     <td class="right">{{ number_format($record->obat_blud, 2, ',', '.') }}</td>
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
@@ -721,13 +927,10 @@
                     <td class="right">{{ number_format($record->bmhp_blud, 2, ',', '.') }}</td>
                 </tr>
 
-                <!-- 6. Obat APBD (Breakdown Obat & BMHP) -->
+                <!-- 6. Obat APBD -->
                 <tr>
                     <td class="center font-bold" rowspan="2">6</td>
-                    <td rowspan="2">
-                        <strong>Obat APBD</strong>
-                        <span style="display: block; font-size: 7.5pt; color: #475569; margin-top: 2px;">(Sumber: APBD Kabupaten)</span>
-                    </td>
+                    <td rowspan="2"><strong>Obat APBD</strong></td>
                     <td>&bull; Obat-Obatan APBD</td>
                     <td class="right">{{ number_format($record->obat_apbd, 2, ',', '.') }}</td>
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
@@ -740,13 +943,10 @@
                     <td class="right">{{ number_format($record->bmhp_apbd, 2, ',', '.') }}</td>
                 </tr>
 
-                <!-- 7. Obat APBN (Breakdown Obat & BMHP) -->
+                <!-- 7. Obat APBN -->
                 <tr>
                     <td class="center font-bold" rowspan="2">7</td>
-                    <td rowspan="2">
-                        <strong>Obat APBN</strong>
-                        <span style="display: block; font-size: 7.5pt; color: #475569; margin-top: 2px;">(Sumber: APBN / Program Pusat)</span>
-                    </td>
+                    <td rowspan="2"><strong>Obat APBN</strong></td>
                     <td>&bull; Obat-Obatan APBN</td>
                     <td class="right">{{ number_format($record->obat_apbn, 2, ',', '.') }}</td>
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
@@ -798,11 +998,11 @@
                 </tr>
                 <tr style="vertical-align: top;">
                     <td>
-                        <div class="ttd-name">{{ $record->nama_pemeriksa }}</div>
+                        <div class="ttd-name"><u>{{ $record->nama_pemeriksa }}</u></div>
                         <div class="ttd-nip">NIP. {{ $record->nip_pemeriksa }}</div>
                     </td>
                     <td>
-                        <div class="ttd-name">{{ $record->nama_diperiksa }}</div>
+                        <div class="ttd-name"><u>{{ $record->nama_diperiksa }}</u></div>
                         <div class="ttd-nip">NIP. {{ $record->nip_diperiksa }}</div>
                     </td>
                 </tr>
@@ -810,8 +1010,75 @@
         </div>
     </div>
 
-    <!-- Script Kontrol Cetak -->
+    <!-- Script Kontrol Cetak & Format Tampilan -->
     <script>
+        let hal1Format = 'formal';     // 'formal' | 'rekap'
+        let lampiranMode = 'ringkas';  // 'ringkas' | 'rinci'
+
+        function toggleHal1Format() {
+            hal1Format = (hal1Format === 'formal') ? 'rekap' : 'formal';
+            applyHal1Format();
+        }
+
+        function applyHal1Format() {
+            const btn = document.getElementById('toggleFormatHal1Btn');
+            const text = document.getElementById('formatHal1Text');
+            const formalEl = document.getElementById('formatHal1Formal');
+            const rekapEl = document.getElementById('formatHal1Rekap');
+
+            if (hal1Format === 'formal') {
+                if (formalEl) formalEl.style.display = 'block';
+                if (rekapEl) rekapEl.style.display = 'none';
+                if (text) {
+                    text.textContent = 'NARASI FORMAL (RESMI)';
+                    text.style.color = '#38bdf8';
+                }
+                if (btn) btn.style.borderColor = '#38bdf8';
+            } else {
+                if (formalEl) formalEl.style.display = 'none';
+                if (rekapEl) rekapEl.style.display = 'block';
+                if (text) {
+                    text.textContent = 'DAFTAR PENJUMLAHAN';
+                    text.style.color = '#f59e0b';
+                }
+                if (btn) btn.style.borderColor = '#f59e0b';
+            }
+
+            localStorage.setItem('e_aset_so_format_hal1', hal1Format);
+        }
+
+        function toggleLampiranMode() {
+            lampiranMode = (lampiranMode === 'ringkas') ? 'rinci' : 'ringkas';
+            applyLampiranMode();
+        }
+
+        function applyLampiranMode() {
+            const btn = document.getElementById('toggleLampiranModeBtn');
+            const text = document.getElementById('lampiranModeText');
+            const ringkasEl = document.getElementById('lampiranTabelRingkas');
+            const rinciEl = document.getElementById('lampiranTabelRinci');
+
+            if (lampiranMode === 'ringkas') {
+                if (ringkasEl) ringkasEl.style.display = 'table';
+                if (rinciEl) rinciEl.style.display = 'none';
+                if (text) {
+                    text.textContent = 'TABEL RINGKAS';
+                    text.style.color = '#4ade80';
+                }
+                if (btn) btn.style.borderColor = '#4ade80';
+            } else {
+                if (ringkasEl) ringkasEl.style.display = 'none';
+                if (rinciEl) rinciEl.style.display = 'table';
+                if (text) {
+                    text.textContent = 'TABEL DENGAN SUB-KOMPONEN';
+                    text.style.color = '#a78bfa';
+                }
+                if (btn) btn.style.borderColor = '#a78bfa';
+            }
+
+            localStorage.setItem('e_aset_so_lampiran_mode', lampiranMode);
+        }
+
         function printMode(mode) {
             document.body.classList.remove('print-only-hal1', 'print-only-hal2');
 
@@ -828,6 +1095,33 @@
                 window.removeEventListener('afterprint', handleAfterPrint);
             });
         }
+
+        // Inisialisasi awal preferensi format
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Format Halaman 1
+            if (urlParams.has('format')) {
+                hal1Format = urlParams.get('format') === 'rekap' ? 'rekap' : 'formal';
+            } else {
+                const savedFormat = localStorage.getItem('e_aset_so_format_hal1');
+                if (savedFormat !== null) {
+                    hal1Format = savedFormat;
+                }
+            }
+            applyHal1Format();
+
+            // Format Lampiran Halaman 2
+            if (urlParams.has('lampiran')) {
+                lampiranMode = urlParams.get('lampiran') === 'rinci' ? 'rinci' : 'ringkas';
+            } else {
+                const savedLampiran = localStorage.getItem('e_aset_so_lampiran_mode');
+                if (savedLampiran !== null) {
+                    lampiranMode = savedLampiran;
+                }
+            }
+            applyLampiranMode();
+        });
     </script>
 </body>
 </html>

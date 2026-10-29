@@ -64,7 +64,7 @@
                         Nomor Berita Acara <span class="text-rose-500">*</span>
                     </label>
                     <input type="text" name="nomor_surat" id="nomor_surat" value="{{ old('nomor_surat', $record->nomor_surat) }}" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all font-mono text-slate-800">
-                    <p class="text-[11px] text-slate-400 mt-1">Format nomor surat resmi Puskesmas Mantup.</p>
+                    <p class="text-[11px] text-slate-400 mt-1">Format nomor surat resmi Puskesmas Mantup (diberi spasi di antara garis miring untuk penulisan nomor agenda manual menggunakan bolpoin).</p>
                 </div>
             </div>
         </div>
