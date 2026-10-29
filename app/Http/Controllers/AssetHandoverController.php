@@ -95,6 +95,14 @@ class AssetHandoverController extends Controller
                 
                 $groupedItems->push($first);
             }
+        } elseif ($bast->asset) {
+            $dummy = (object)[
+                'asset' => $bast->asset,
+                'qty' => 1,
+                'registers' => $bast->asset->no_register ? str_pad($bast->asset->no_register, 3, '0', STR_PAD_LEFT) : '-'
+            ];
+            $groupedItems->push($dummy);
+            $allItems->push($dummy);
         }
         
         return view('bast.print', compact('bast', 'groupedItems', 'allItems'));
