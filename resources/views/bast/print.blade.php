@@ -366,6 +366,30 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
+
+            /* Mode Cetak HANYA Kolom Sumber */
+            body.print-only-sumber-mode {
+                background: transparent !important;
+            }
+            body.print-only-sumber-mode .page-sheet {
+                box-shadow: none !important;
+                border: none !important;
+                background: transparent !important;
+            }
+            body.print-only-sumber-mode * {
+                visibility: hidden !important;
+                border-color: transparent !important;
+                color: transparent !important;
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+            body.print-only-sumber-mode .print-sumber-target,
+            body.print-only-sumber-mode .print-sumber-target * {
+                visibility: visible !important;
+                color: #000000 !important;
+                font-weight: 700 !important;
+                background: transparent !important;
+            }
         }
     </style>
 </head>
@@ -474,7 +498,11 @@
                     Detail Lengkap ({{ $allItems->count() }} Unit)
                 </button>
             @endif
-            <button type="button" onclick="window.print()" class="btn-action btn-print" style="margin-left: 8px;">
+            <button type="button" onclick="printOnlySumber()" class="btn-action" style="background-color: #d97706; color: white;" title="Cetak HANYA teks kolom sumber untuk menimpa lembaran fisik yang sudah ada tanda tangan">
+                <span class="material-symbols-outlined text-[16px]">format_color_text</span>
+                Cetak HANYA Teks Sumber
+            </button>
+            <button type="button" onclick="printFullDocument()" class="btn-action btn-print" style="margin-left: 4px;">
                 <span class="material-symbols-outlined text-[18px]">print</span>
                 Print Dokumen
             </button>
@@ -581,12 +609,13 @@
                 <thead>
                     <tr>
                         <th style="width: 28px;">NO</th>
-                        <th style="width: 135px;">KODE BARANG (108)</th>
-                        <th style="width: 75px;">NO. REG</th>
+                        <th style="width: 130px;">KODE BARANG (108)</th>
+                        <th style="width: 70px;">NO. REG</th>
                         <th>NAMA BARANG</th>
                         <th>MERK / SPESIFIKASI</th>
-                        <th style="width: 50px;">QTY</th>
-                        <th style="width: 65px;">KONDISI</th>
+                        <th style="width: 45px;">QTY</th>
+                        <th style="width: 60px;">KONDISI</th>
+                        <th style="width: 90px;">SUMBER DANA</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -599,10 +628,11 @@
                             <td>{{ $item->asset->merk && trim($item->asset->merk) ? $item->asset->merk : ($item->asset->keterangan ?: '-') }}</td>
                             <td class="center font-bold">1 unit</td>
                             <td class="center">{{ $item->asset->condition ?: 'Baik' }}</td>
+                            <td class="center font-medium print-sumber-target">{{ $bast->sumber_dana ?: ($item->asset->source ?? 'BMD / APBD 2026') }}</td>
                         </tr>
                     @endforeach
                     <tr class="total-row">
-                        <td colspan="5" style="text-align: right; padding-right: 12px; text-transform: uppercase;">Total Barang Diserahkan :</td>
+                        <td colspan="6" style="text-align: right; padding-right: 12px; text-transform: uppercase;">Total Barang Diserahkan :</td>
                         <td class="center font-bold">{{ $totalItemsCount }} unit</td>
                         <td class="center">Lengkap (Baik)</td>
                     </tr>
@@ -854,6 +884,19 @@
                 if (btnGrouped) btnGrouped.classList.remove('active');
                 if (btnDetailed) btnDetailed.classList.add('active');
             }
+        function printFullDocument() {
+            document.body.classList.remove('print-only-sumber-mode');
+            window.print();
+        }
+
+        function printOnlySumber() {
+            document.body.classList.add('print-only-sumber-mode');
+            window.print();
+
+            window.addEventListener('afterprint', function handleAfterPrint() {
+                document.body.classList.remove('print-only-sumber-mode');
+                window.removeEventListener('afterprint', handleAfterPrint);
+            });
         }
     </script>
 </body>
