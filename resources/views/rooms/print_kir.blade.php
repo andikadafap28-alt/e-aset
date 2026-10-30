@@ -289,8 +289,8 @@
         .ttd-box {
             width: 45%;
             text-align: center;
-            font-size: 9.5pt;
-            line-height: 1.2;
+            font-size: 11pt; /* Standar 11pt mantap & terbaca jelas */
+            line-height: 1.25;
         }
 
         .ttd-box-left {
@@ -302,15 +302,17 @@
         }
 
         .ttd-title {
+            font-size: 11pt;
             margin-bottom: 2px;
         }
 
         .ttd-jabatan {
-            margin-bottom: 8px;
+            font-size: 11pt;
+            margin-bottom: 6px;
         }
 
         .ttd-image-area {
-            height: 82px;
+            height: 84px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -320,8 +322,8 @@
         }
 
         .ttd-image-area img {
-            max-height: 78px;
-            max-width: 175px;
+            max-height: 80px;
+            max-width: 180px;
             width: auto;
             height: auto;
             object-fit: contain;
@@ -334,10 +336,12 @@
             font-weight: bold;
             text-decoration: underline;
             margin-top: 3px;
+            font-size: 11pt; /* Nama tegas 11pt */
         }
 
         .ttd-nip {
-            margin-top: 1px;
+            margin-top: 2px;
+            font-size: 10pt;
             letter-spacing: 0.3px;
         }
 
@@ -368,9 +372,6 @@
         .density-normal table.kir-table { font-size: 9pt; margin-bottom: 16px; }
         .density-normal table.kir-table th, .density-normal table.kir-table td { padding: 3.5px 4.5px; }
         .density-normal .ttd-wrapper { margin-top: 18px; }
-        .density-normal .ttd-box { font-size: 9.5pt; }
-        .density-normal .ttd-image-area { height: 82px; }
-        .density-normal .ttd-image-area img { max-height: 78px; max-width: 175px; }
 
         /* 2. Rapat (Compact: 19 - 28 barang) */
         .density-compact .kir-title { font-size: 12pt; margin-bottom: 8px; letter-spacing: 1px; }
@@ -380,11 +381,6 @@
         .density-compact table.kir-table th, .density-compact table.kir-table td { padding: 2px 3.5px; line-height: 1.12; }
         .density-compact table.kir-table tr.col-numbers th { font-size: 7pt; padding: 1px; }
         .density-compact .ttd-wrapper { margin-top: 10px; }
-        .density-compact .ttd-box { font-size: 8.8pt; }
-        .density-compact .ttd-jabatan { margin-bottom: 6px; }
-        .density-compact .ttd-image-area { height: 68px; margin: 1px 0; }
-        .density-compact .ttd-image-area img { max-height: 68px; max-width: 165px; }
-        .density-compact .ttd-nama { margin-top: 2px; }
 
         /* 3. Sangat Rapat (Dense: 29 - 40 barang) */
         .density-dense .kir-title { font-size: 11pt; margin-bottom: 5px; letter-spacing: 0.8px; }
@@ -393,13 +389,7 @@
         .density-dense table.kir-table { font-size: 7.2pt; margin-bottom: 6px; }
         .density-dense table.kir-table th, .density-dense table.kir-table td { padding: 1.3px 2.5px; line-height: 1.08; }
         .density-dense table.kir-table tr.col-numbers th { font-size: 6.5pt; padding: 0.6px; }
-        .density-dense .ttd-wrapper { margin-top: 6px; }
-        .density-dense .ttd-box { font-size: 8pt; }
-        .density-dense .ttd-title { margin-bottom: 1px; }
-        .density-dense .ttd-jabatan { margin-bottom: 4px; }
-        .density-dense .ttd-image-area { height: 56px; margin: 1px 0; }
-        .density-dense .ttd-image-area img { max-height: 56px; max-width: 155px; }
-        .density-dense .ttd-nama { margin-top: 1px; }
+        .density-dense .ttd-wrapper { margin-top: 8px; }
 
         /* 4. Ultra Rapat (Ultra: 41+ barang, contoh: 48 barang di R. Gigi) */
         .density-ultra .kir-title { font-size: 10pt; margin-bottom: 3px; letter-spacing: 0.5px; }
@@ -408,13 +398,7 @@
         .density-ultra table.kir-table { font-size: 6.5pt; margin-bottom: 5px; }
         .density-ultra table.kir-table th, .density-ultra table.kir-table td { padding: 0.8px 2px; line-height: 1.04; }
         .density-ultra table.kir-table tr.col-numbers th { font-size: 5.8pt; padding: 0.3px; }
-        .density-ultra .ttd-wrapper { margin-top: 5px; }
-        .density-ultra .ttd-box { font-size: 7.2pt; }
-        .density-ultra .ttd-title { margin-bottom: 0px; }
-        .density-ultra .ttd-jabatan { margin-bottom: 3px; }
-        .density-ultra .ttd-image-area { height: 46px; margin: 0; }
-        .density-ultra .ttd-image-area img { max-height: 46px; max-width: 145px; }
-        .density-ultra .ttd-nama { margin-top: 1px; }
+        .density-ultra .ttd-wrapper { margin-top: 6px; }
         /* Opsi Sembunyikan KEDUA Gambar Tanda Tangan (dr. MUHAMAD SUNARYADI & ANDIKA DAFA PENTA PRATAMA)
            Menyisakan ruang kosong yang rapi untuk tanda tangan basah (manual) kedua belah pihak */
         body.hide-ttd .ttd-box-left .ttd-image-area img,
@@ -1587,6 +1571,11 @@
                 inner.style.zoom = '1';
                 inner.style.transform = 'none';
 
+                const ttdWrappers = inner.querySelectorAll('.ttd-wrapper');
+                ttdWrappers.forEach(ttd => {
+                    ttd.style.zoom = '1';
+                });
+
                 // 2. Jika Auto-Fit Tidak Aktif dan ada manual zoom
                 if (!isAutoFitEnabled) {
                     if (selectedZoom !== 'auto') {
@@ -1603,7 +1592,7 @@
 
                 // 4. Hitung tinggi area cetak F4 yang tersedia
                 const availableHeight = sheet.clientHeight;
-                const contentHeight = inner.scrollHeight;
+                let contentHeight = inner.scrollHeight;
 
                 if (contentHeight > availableHeight && availableHeight > 0) {
                     let scale = (availableHeight - 4) / contentHeight;
@@ -1612,6 +1601,22 @@
                     inner.style.zoom = scale;
                     inner.dataset.appliedScale = scale;
 
+                    // KOMPENSASI TTD: Kolom tanda tangan tetap 100% besar alami (11pt & tidak mini seperti hasil print komputer)
+                    ttdWrappers.forEach(ttd => {
+                        ttd.style.zoom = (1 / scale).toFixed(3);
+                    });
+
+                    // Pass 2: Jika pembesaran TTD menyebabkan overflow, sesuaikan kompresi tabel sedikit agar tetap pas 1 lembar F4
+                    if (inner.scrollHeight > availableHeight) {
+                        const overflowRatio = availableHeight / inner.scrollHeight;
+                        scale = Math.max(0.50, Math.floor(scale * overflowRatio * 1000) / 1000);
+                        inner.style.zoom = scale;
+                        inner.dataset.appliedScale = scale;
+                        ttdWrappers.forEach(ttd => {
+                            ttd.style.zoom = (1 / scale).toFixed(3);
+                        });
+                    }
+
                     if (scale < minScaleUsed) {
                         minScaleUsed = scale;
                     }
@@ -1619,6 +1624,9 @@
                 } else {
                     inner.style.zoom = '1';
                     inner.dataset.appliedScale = '1';
+                    ttdWrappers.forEach(ttd => {
+                        ttd.style.zoom = '1';
+                    });
                 }
             });
 

@@ -171,10 +171,10 @@
             page-break-inside: avoid;
         }
         .ttd-box {
-            width: 320px;
+            width: 330px;
             text-align: center;
-            font-size: 10pt;
-            line-height: 1.25;
+            font-size: 11pt;
+            line-height: 1.3;
         }
         .ttd-image-area {
             height: 84px;
@@ -198,7 +198,7 @@
         .ttd-nama {
             font-weight: bold;
             text-decoration: underline;
-            font-size: 10.5pt;
+            font-size: 11pt;
         }
 
         @media print {
