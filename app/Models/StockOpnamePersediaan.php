@@ -146,7 +146,7 @@ class StockOpnamePersediaan extends Model
     }
 
     /**
-     * Format nomor surat agar memiliki space yang cukup lebar untuk penulisan nomor manual menggunakan bolpoin
+     * Format nomor surat agar memiliki space sekitar 5-6 karakter untuk penulisan nomor manual menggunakan bolpoin
      */
     public function getFormattedNomorSuratHtml()
     {
@@ -155,7 +155,7 @@ class StockOpnamePersediaan extends Model
         if (preg_match('/^(.*?)\s*\/\s*(\/.*)$/', $raw, $matches)) {
             $prefix = trim($matches[1]);
             $suffix = trim(ltrim($matches[2], '/ '));
-            return e($prefix) . ' / <span class="nomor-manual-space" style="display: inline-block; min-width: 85px; text-align: center;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> / ' . e($suffix);
+            return e($prefix) . ' / <span class="nomor-manual-space" style="display: inline-block; min-width: 28px; text-align: center;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> / ' . e($suffix);
         }
         return e($raw);
     }

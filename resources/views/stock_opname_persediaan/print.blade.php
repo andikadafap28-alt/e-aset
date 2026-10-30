@@ -278,57 +278,34 @@
 
         /* Format Narasi Formal Resmi (Halaman 1) */
         .formal-points {
-            margin: 8px 0 12px 22px;
+            margin: 8px 0 12px 24px;
             padding: 0;
-            font-size: 10pt;
-            line-height: 1.5;
+            font-size: 10.5pt;
+            line-height: 1.55;
+            color: #000000;
         }
 
         .formal-points li {
-            margin-bottom: 7px;
+            margin-bottom: 8px;
             text-align: justify;
             padding-left: 4px;
+            font-size: 10.5pt;
+            color: #000000;
         }
 
-        .formal-total-box {
-            margin: 8px auto 6px auto;
-            padding: 8px 16px;
-            background: #f8fafc;
-            border: 1.5px solid #000;
-            border-radius: 4px;
-            text-align: center;
-            max-width: 480px;
-        }
-
-        .formal-total-box .nominal {
-            font-size: 12.5pt;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #000;
-        }
-
-        .formal-total-box .terbilang {
-            font-size: 9.5pt;
-            font-style: italic;
-            color: #0f172a;
-            margin-top: 3px;
-            font-weight: 500;
-        }
-
-        /* Ruang Space Nomor Manual Bolpoin */
+        /* Ruang Space Nomor Manual Bolpoin (Sekitar 5-6 karakter spasi) */
         .nomor-manual-space {
             display: inline-block;
-            min-width: 85px;
+            min-width: 28px;
             text-align: center;
             vertical-align: bottom;
         }
 
         .party-role-note {
-            font-size: 8.5pt;
-            color: #475569;
+            font-size: 10pt;
+            color: #000000;
             font-style: italic;
-            padding-top: 1px;
+            padding-top: 2px;
         }
 
         /* Area Tanda Tangan */
@@ -405,8 +382,8 @@
 
         .lampiran-title p {
             margin: 2px 0 0 0;
-            font-size: 9.5pt;
-            color: #374151;
+            font-size: 10pt;
+            color: #000000;
         }
 
         /* Tabel Rincian Lampiran */
@@ -421,6 +398,7 @@
             border: 1px solid #000;
             padding: 5px 6px;
             vertical-align: middle;
+            color: #000000;
         }
 
         .tabel-lampiran th {
@@ -429,6 +407,7 @@
             text-align: center;
             font-size: 8.5pt;
             text-transform: uppercase;
+            color: #000000;
         }
 
         .tabel-lampiran td.center {
@@ -450,6 +429,7 @@
         .tabel-lampiran tr.total-row {
             font-weight: bold;
             background-color: #f1f5f9;
+            color: #000000;
         }
 
         /* Print Media Query */
@@ -490,13 +470,8 @@
                 break-before: avoid !important;
             }
 
-            .formal-total-box {
-                background: transparent !important;
-                border: 1.5px solid #000 !important;
-            }
-
             .nomor-manual-space {
-                min-width: 85px !important;
+                min-width: 28px !important;
                 display: inline-block !important;
             }
 
@@ -655,11 +630,7 @@
                     Seluruh rincian jenis rekening persediaan, kuantitas fisik, dan akumulasi nilai per rekening tercantum secara terperinci dalam <strong>Daftar Rincian Hasil Stock Opname Barang Persediaan</strong> sebagaimana terlampir dalam Lampiran Berita Acara ini, yang merupakan satu kesatuan dan bagian tidak terpisahkan dari Berita Acara ini.
                 </li>
                 <li>
-                    Seluruh barang persediaan hasil stock opname berada dalam kondisi <strong>BAIK</strong> dan lengkap, dengan akumulasi total nilai saldo persediaan per {{ $tglFormat }} sebesar:
-                    <div class="formal-total-box">
-                        <div class="nominal">Rp. {{ number_format($record->total_nilai, 2, ',', '.') }}</div>
-                        <div class="terbilang">( {{ $record->getTotalNilaiTerbilang() }} )</div>
-                    </div>
+                    Seluruh barang persediaan hasil stock opname berada dalam kondisi <strong>BAIK</strong> dan lengkap, dengan akumulasi total nilai saldo persediaan per {{ $tglFormat }} sebesar: <strong>Rp. {{ number_format($record->total_nilai, 2, ',', '.') }}</strong> ( <em>{{ $record->getTotalNilaiTerbilang() }}</em> ).
                 </li>
                 <li>
                     Barang persediaan tersebut berada di bawah pengurusan dan tanggung jawab <strong>{{ $record->jabatan_diperiksa }} Puskesmas Mantup</strong> untuk dipergunakan dalam rangka menunjang kelancaran operasional pelayanan kesehatan kepada masyarakat.
@@ -844,7 +815,7 @@
 
                 <!-- Baris Total Keseluruhan -->
                 <tr class="total-row">
-                    <td colspan="2" style="text-align: right; padding-right: 14px; text-transform: uppercase;">
+                    <td colspan="2" style="text-align: center; text-transform: uppercase;">
                         TOTAL KESELURUHAN NILAI HASIL STOCK OPNAME :
                     </td>
                     <td class="right" style="font-size: 10pt;">
@@ -876,7 +847,7 @@
                     <td class="center font-bold">1</td>
                     <td><strong>Alat Tulis Kantor (ATK)</strong></td>
                     <td>Persediaan Alat Tulis Kantor &amp; Perlengkapan Administrasi</td>
-                    <td class="right text-slate-400">-</td>
+                    <td class="right" style="color: #000000;">-</td>
                     <td class="right font-semibold">{{ number_format($record->atk, 2, ',', '.') }}</td>
                     <td class="center">Baik / Lengkap</td>
                 </tr>
@@ -886,7 +857,7 @@
                     <td class="center font-bold">2</td>
                     <td><strong>Bahan Cetak</strong></td>
                     <td>Karcis Retribusi, Formulir Rekam Medis &amp; Dokumen Cetak</td>
-                    <td class="right text-slate-400">-</td>
+                    <td class="right" style="color: #000000;">-</td>
                     <td class="right font-semibold">{{ number_format($record->bahan_cetak, 2, ',', '.') }}</td>
                     <td class="center">Baik / Lengkap</td>
                 </tr>
@@ -896,7 +867,7 @@
                     <td class="center font-bold">3</td>
                     <td><strong>Benda Pos</strong></td>
                     <td>Materai, Perangko, &amp; Perlengkapan Pos</td>
-                    <td class="right text-slate-400">-</td>
+                    <td class="right" style="color: #000000;">-</td>
                     <td class="right font-semibold">{{ number_format($record->benda_pos, 2, ',', '.') }}</td>
                     <td class="center">Baik / Lengkap</td>
                 </tr>
@@ -906,7 +877,7 @@
                     <td class="center font-bold">4</td>
                     <td><strong>Bahan Komputer</strong></td>
                     <td>Tinta Printer, Toner, Ribbon &amp; Aksesoris IT</td>
-                    <td class="right text-slate-400">-</td>
+                    <td class="right" style="color: #000000;">-</td>
                     <td class="right font-semibold">{{ number_format($record->bahan_komputer, 2, ',', '.') }}</td>
                     <td class="center">Baik / Lengkap</td>
                 </tr>
@@ -961,7 +932,7 @@
 
                 <!-- Baris Total Keseluruhan -->
                 <tr class="total-row">
-                    <td colspan="4" style="text-align: right; padding-right: 12px; text-transform: uppercase;">
+                    <td colspan="4" style="text-align: center; text-transform: uppercase;">
                         TOTAL KESELURUHAN NILAI HASIL STOCK OPNAME :
                     </td>
                     <td class="right" style="font-size: 10pt;">
@@ -973,7 +944,7 @@
         </table>
 
         <!-- Catatan Kaki Lampiran -->
-        <p class="content-p" style="font-size: 9.5pt; margin-top: 10px;">
+        <p class="content-p" style="font-size: 10.5pt; margin-top: 10px; color: #000000;">
             Catatan: Seluruh barang persediaan di atas telah dilakukan pemeriksaan dan perhitungan fisik (Stock Opname) secara seksama dalam kondisi <strong>BAIK</strong> dan lengkap untuk dipergunakan sebagaimana mestinya dalam rangka menunjang kelancaran operasional pelayanan kesehatan di Puskesmas Mantup.
         </p>
 
