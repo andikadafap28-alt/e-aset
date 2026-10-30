@@ -378,115 +378,233 @@ class KirController extends Controller
         return Excel::download(new TemplateKirExport($roomId), $fileName);
     }
 
-    /**
+        /**
      * Import File Excel KIR ke Database (kir_items)
+     * Mendukung multi-sheet (setiap sheet = 1 ruangan), deteksi metadata ruangan ("RUANGAN : ..."),
+     * deteksi kolom ruangan, atau fallback ke target ruangan yang dipilih.
      */
     public function importExcel(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv|max:5120',
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
             'room_id' => 'nullable|exists:rooms,id',
             'replace_existing' => 'nullable'
         ]);
 
         try {
             $spreadsheet = IOFactory::load($request->file('file')->getPathname());
-            $sheet = $spreadsheet->getActiveSheet();
-            $rows = $sheet->toArray();
+            $sheets = $spreadsheet->getAllSheets();
 
-            if (empty($rows) || count($rows) < 2) {
+            if (empty($sheets)) {
                 return back()->with('error', 'File Excel kosong atau format tidak sesuai.');
             }
 
-            // Deteksi header kolom
-            $headerRowIndex = 0;
-            $colMap = [];
-            foreach (array_slice($rows, 0, 5) as $rIdx => $row) {
-                $foundCount = 0;
-                foreach ($row as $cIdx => $cell) {
-                    $val = strtolower(trim((string)$cell));
-                    if (str_contains($val, 'ruang') || str_contains($val, 'lokasi')) { $colMap['room'] = $cIdx; $foundCount++; }
-                    if (str_contains($val, 'nama barang') || str_contains($val, 'jenis barang') || $val === 'uraian') { $colMap['name'] = $cIdx; $foundCount++; }
-                    if (str_contains($val, 'merek') || str_contains($val, 'merk') || str_contains($val, 'model')) { $colMap['merk'] = $cIdx; $foundCount++; }
-                    if (str_contains($val, 'bahan') || str_contains($val, 'material')) { $colMap['bahan'] = $cIdx; $foundCount++; }
-                    if (str_contains($val, 'jumlah') || str_contains($val, 'qty') || str_contains($val, 'total')) { $colMap['jumlah'] = $cIdx; $foundCount++; }
-                    if ($val === 'baik' || str_contains($val, 'keadaan baik')) { $colMap['baik'] = $cIdx; $foundCount++; }
-                    if (str_contains($val, 'kurang baik') || str_contains($val, 'rusak ringan') || $val === 'kb') { $colMap['kurang_baik'] = $cIdx; $foundCount++; }
-                    if (str_contains($val, 'rusak berat') || $val === 'rb') { $colMap['rusak_berat'] = $cIdx; $foundCount++; }
-                    if (str_contains($val, 'keterangan') || str_contains($val, 'mutasi')) { $colMap['keterangan'] = $cIdx; $foundCount++; }
-                }
-                if ($foundCount >= 3) {
-                    $headerRowIndex = $rIdx;
-                    break;
-                }
-            }
-
-            // Fallback jika tidak terdeteksi via keyword
-            if (!isset($colMap['name'])) {
-                $colMap = [
-                    'room' => 0,
-                    'name' => 2,
-                    'merk' => 3,
-                    'bahan' => 4,
-                    'jumlah' => 5,
-                    'baik' => 6,
-                    'kurang_baik' => 7,
-                    'rusak_berat' => 8,
-                    'keterangan' => 9
-                ];
-            }
-
-            $dataRows = array_slice($rows, $headerRowIndex + 1);
             $defaultRoom = $request->room_id ? Room::find($request->room_id) : null;
             $replaceExisting = $request->has('replace_existing') && ($request->input('replace_existing') == '1' || $request->input('replace_existing') === true || $request->input('replace_existing') === 'on');
 
             $processedRooms = [];
+            $clearedRooms = [];
             $totalItems = 0;
 
             \Illuminate\Support\Facades\DB::beginTransaction();
 
-            $groupedByRoom = [];
-            foreach ($dataRows as $row) {
-                $namaBarang = isset($colMap['name']) ? trim((string)($row[$colMap['name']] ?? '')) : '';
-                if (empty($namaBarang) || strtolower($namaBarang) === 'jenis barang / nama barang') continue;
-
-                $roomName = isset($colMap['room']) ? trim((string)($row[$colMap['room']] ?? '')) : '';
-                if (empty($roomName) && $defaultRoom) {
-                    $roomName = $defaultRoom->name;
-                } elseif (empty($roomName)) {
-                    $roomName = 'Ruang Kepala Puskesmas';
+            foreach ($sheets as $sheet) {
+                $rows = $sheet->toArray();
+                if (empty($rows) || count($rows) < 2) {
+                    continue; // Lewati sheet kosong
                 }
 
-                $groupedByRoom[$roomName][] = $row;
-            }
+                // 1. Deteksi nama ruangan dari metadata atas sheet (baris 0 - 15)
+                $metadataRoomName = null;
+                $sheetTitle = trim($sheet->getTitle());
+                $genericSheetTitles = ['sheet1', 'sheet 1', 'sheet2', 'sheet 2', 'sheet3', 'sheet 3', 'sheet', 'kir', 'template', 'data', 'rekap', 'table', 'halaman'];
 
-            foreach ($groupedByRoom as $roomName => $items) {
-                $room = Room::firstOrCreate(
-                    ['name' => $roomName],
-                    ['type' => 'Ruangan']
-                );
+                foreach (array_slice($rows, 0, 15) as $metaRow) {
+                    foreach ($metaRow as $cellVal) {
+                        $cellStr = trim((string)$cellVal);
+                        if (empty($cellStr)) continue;
 
-                $processedRooms[$room->id] = $room;
-
-                if ($replaceExisting) {
-                    // Hapus data kir_items sebelumnya pada ruangan ini (update berkala 6 bulan sekali)
-                    KirItem::where('room_id', $room->id)->delete();
+                        // Contoh: "RUANGAN : POLI GIGI" atau "RUANG: KEPALA PUSKESMAS" atau "LOKASI : UGD"
+                        if (preg_match('/(?:ruangan|ruang|lokasi)\s*[:\-=]\s*([^\r\n\|;]+)/i', $cellStr, $m)) {
+                            $extracted = trim($m[1]);
+                            // Pastikan bukan sekedar angka atau terlalu pendek
+                            if (!empty($extracted) && !is_numeric($extracted) && strlen($extracted) > 1) {
+                                $metadataRoomName = $extracted;
+                                break 2;
+                            }
+                        }
+                    }
                 }
 
-                foreach ($items as $row) {
-                    $nama = trim((string)($row[$colMap['name']] ?? ''));
+                // 2. Deteksi header kolom tabel (scan baris 0 - 15)
+                $headerRowIndex = -1;
+                $colMap = null;
+
+                for ($rIdx = 0; $rIdx < min(15, count($rows)); $rIdx++) {
+                    $row = $rows[$rIdx];
+                    $tempMap = [];
+                    $score = 0;
+
+                    foreach ($row as $cIdx => $cell) {
+                        $val = strtolower(trim((string)$cell));
+                        if ($val === '') continue;
+
+                        // Cek nama barang (wajib)
+                        if (str_contains($val, 'nama barang') || str_contains($val, 'jenis barang') || str_contains($val, 'uraian') || $val === 'nama' || $val === 'barang') {
+                            $tempMap['name'] = $cIdx;
+                            $score += 3;
+                        }
+                        // Cek ruang / lokasi (HANYA jika bukan "nomor" atau "no")
+                        elseif ((str_contains($val, 'ruang') || str_contains($val, 'lokasi')) && !str_starts_with($val, 'no') && !str_contains($val, 'nomor') && !str_contains($val, 'urut')) {
+                            $tempMap['room'] = $cIdx;
+                            $score += 2;
+                        }
+                        // Cek Merk
+                        elseif (str_contains($val, 'merek') || str_contains($val, 'merk') || str_contains($val, 'model') || str_contains($val, 'tipe') || $val === 'type') {
+                            $tempMap['merk'] = $cIdx;
+                            $score += 1;
+                        }
+                        // Cek Bahan
+                        elseif (str_contains($val, 'bahan') || str_contains($val, 'material')) {
+                            $tempMap['bahan'] = $cIdx;
+                            $score += 1;
+                        }
+                        // Cek Jumlah
+                        elseif (str_contains($val, 'jumlah') || str_contains($val, 'qty') || str_contains($val, 'banyak') || str_contains($val, 'total')) {
+                            $tempMap['jumlah'] = $cIdx;
+                            $score += 2;
+                        }
+                        // Cek Kurang Baik
+                        elseif (str_contains($val, 'kurang baik') || str_contains($val, 'rusak ringan') || $val === 'kb' || $val === 'rr') {
+                            $tempMap['kurang_baik'] = $cIdx;
+                            $score += 1;
+                        }
+                        // Cek Rusak Berat
+                        elseif (str_contains($val, 'rusak berat') || $val === 'rb') {
+                            $tempMap['rusak_berat'] = $cIdx;
+                            $score += 1;
+                        }
+                        // Cek Baik
+                        elseif ($val === 'baik' || str_contains($val, 'keadaan baik') || $val === 'b') {
+                            $tempMap['baik'] = $cIdx;
+                            $score += 1;
+                        }
+                        // Cek Keterangan
+                        elseif (str_contains($val, 'keterangan') || str_contains($val, 'mutasi') || $val === 'ket') {
+                            $tempMap['keterangan'] = $cIdx;
+                            $score += 1;
+                        }
+                    }
+
+                    if (isset($tempMap['name']) && $score >= 4) {
+                        $colMap = $tempMap;
+                        $headerRowIndex = $rIdx;
+                        break;
+                    }
+                }
+
+                // Fallback default kolom jika tidak terdeteksi via keyword
+                if ($colMap === null) {
+                    $colMap = [
+                        'room' => 0,
+                        'name' => 2,
+                        'merk' => 3,
+                        'bahan' => 4,
+                        'jumlah' => 5,
+                        'baik' => 6,
+                        'kurang_baik' => 7,
+                        'rusak_berat' => 8,
+                        'keterangan' => 9
+                    ];
+                    $headerRowIndex = 0;
+                }
+
+                $dataRows = array_slice($rows, $headerRowIndex + 1);
+
+                foreach ($dataRows as $row) {
+                    $namaBarang = isset($colMap['name']) ? trim((string)($row[$colMap['name']] ?? '')) : '';
+                    if (empty($namaBarang)) continue;
+
+                    $lowerName = strtolower($namaBarang);
+                    // Lewati baris header berulang atau baris tanda tangan / total
+                    if (str_contains($lowerName, 'nama barang') || str_contains($lowerName, 'jenis barang') || $lowerName === 'uraian') continue;
+                    if (str_starts_with($lowerName, 'total') || str_starts_with($lowerName, 'jumlah') || str_starts_with($lowerName, 'mengetahui') || str_starts_with($lowerName, 'kepala')) continue;
+
+                    // Tentukan nama ruangan untuk baris ini
+                    $targetRoomName = '';
+
+                    // 1. Cek dari kolom ruangan (JIKA BUKAN ANGKA dan valid)
+                    if (isset($colMap['room'])) {
+                        $candidate = trim((string)($row[$colMap['room']] ?? ''));
+                        // PENTING: Kolom nomor urut (1, 2, 3...) BUKAN nama ruangan
+                        if (!empty($candidate) && !is_numeric($candidate) && strlen($candidate) > 1) {
+                            $targetRoomName = $candidate;
+                        }
+                    }
+
+                    // 2. Jika tidak ada kolom ruangan per-baris, gunakan nama ruangan dari metadata sheet
+                    if (empty($targetRoomName) && !empty($metadataRoomName)) {
+                        $targetRoomName = $metadataRoomName;
+                    }
+
+                    // 3. Jika masih kosong, gunakan nama sheet jika tidak generik
+                    if (empty($targetRoomName) && !empty($sheetTitle) && !in_array(strtolower($sheetTitle), $genericSheetTitles) && strlen($sheetTitle) > 1) {
+                        $targetRoomName = $sheetTitle;
+                    }
+
+                    // 4. Jika masih kosong dan user memilih ruangan target di modal
+                    if (empty($targetRoomName) && $defaultRoom) {
+                        $targetRoomName = $defaultRoom->name;
+                    }
+
+                    // 5. Fallback terakhir
+                    if (empty($targetRoomName)) {
+                        $targetRoomName = 'Ruang Kepala Puskesmas';
+                    }
+
+                    // Pastikan selalu bertipe string untuk mencegah PostgreSQL type mismatch
+                    $targetRoomName = trim((string)$targetRoomName);
+
+                    // Cari atau buat Room secara aman di PostgreSQL (string parameter)
+                    $room = Room::whereRaw('LOWER(TRIM(name)) = ?', [strtolower($targetRoomName)])->first();
+                    if (!$room) {
+                        $room = Room::create([
+                            'name' => (string)$targetRoomName,
+                            'type' => 'Ruangan'
+                        ]);
+                    }
+
+                    $processedRooms[$room->id] = $room;
+
+                    // Bersihkan data lama jika opsi replace_existing dicentang (hanya sekali per ruangan)
+                    if ($replaceExisting && !isset($clearedRooms[$room->id])) {
+                        KirItem::where('room_id', $room->id)->delete();
+                        $clearedRooms[$room->id] = true;
+                    }
+
+                    // Parse atribut barang
                     $merk = isset($colMap['merk']) ? trim((string)($row[$colMap['merk']] ?? '')) : '';
                     if ($merk === '-' || empty($merk)) $merk = null;
 
                     $bahan = isset($colMap['bahan']) ? trim((string)($row[$colMap['bahan']] ?? '')) : 'Campuran';
                     if (empty($bahan) || $bahan === '-') $bahan = 'Campuran';
 
-                    $qty = isset($colMap['jumlah']) ? (int)preg_replace('/[^0-9]/', '', (string)($row[$colMap['jumlah']] ?? 1)) : 1;
+                    $qtyRaw = isset($colMap['jumlah']) ? (string)($row[$colMap['jumlah']] ?? '1') : '1';
+                    $qtyClean = preg_replace('/[^0-9]/', '', $qtyRaw);
+                    $qty = !empty($qtyClean) ? (int)$qtyClean : 1;
                     if ($qty < 1) $qty = 1;
 
-                    $baik = isset($colMap['baik']) ? (int)preg_replace('/[^0-9]/', '', (string)($row[$colMap['baik']] ?? 0)) : 0;
-                    $kb = isset($colMap['kurang_baik']) ? (int)preg_replace('/[^0-9]/', '', (string)($row[$colMap['kurang_baik']] ?? 0)) : 0;
-                    $rb = isset($colMap['rusak_berat']) ? (int)preg_replace('/[^0-9]/', '', (string)($row[$colMap['rusak_berat']] ?? 0)) : 0;
+                    $baikRaw = isset($colMap['baik']) ? (string)($row[$colMap['baik']] ?? '') : '';
+                    $kbRaw = isset($colMap['kurang_baik']) ? (string)($row[$colMap['kurang_baik']] ?? '') : '';
+                    $rbRaw = isset($colMap['rusak_berat']) ? (string)($row[$colMap['rusak_berat']] ?? '') : '';
+
+                    $baikClean = preg_replace('/[^0-9]/', '', $baikRaw);
+                    $kbClean = preg_replace('/[^0-9]/', '', $kbRaw);
+                    $rbClean = preg_replace('/[^0-9]/', '', $rbRaw);
+
+                    $baik = ($baikClean !== '') ? (int)$baikClean : 0;
+                    $kb = ($kbClean !== '') ? (int)$kbClean : 0;
+                    $rb = ($rbClean !== '') ? (int)$rbClean : 0;
 
                     if (($baik + $kb + $rb) === 0) {
                         $baik = $qty;
@@ -495,19 +613,20 @@ class KirController extends Controller
                     }
 
                     $ket = isset($colMap['keterangan']) ? trim((string)($row[$colMap['keterangan']] ?? '')) : '';
-                    if ($ket === '-') $ket = null;
+                    if ($ket === '-' || empty($ket)) $ket = null;
 
                     KirItem::create([
                         'room_id' => $room->id,
-                        'name' => $nama,
-                        'merk' => $merk,
-                        'bahan' => $bahan,
+                        'name' => (string)$namaBarang,
+                        'merk' => $merk ? (string)$merk : null,
+                        'bahan' => (string)$bahan,
                         'jumlah' => $qty,
                         'kondisi_baik' => $baik,
                         'kondisi_kurang_baik' => $kb,
                         'kondisi_rusak_berat' => $rb,
-                        'keterangan' => $ket,
+                        'keterangan' => $ket ? (string)$ket : null,
                     ]);
+
                     $totalItems++;
                 }
             }

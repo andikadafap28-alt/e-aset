@@ -306,26 +306,32 @@
         }
 
         .ttd-jabatan {
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
 
         .ttd-image-area {
-            height: 56px;
+            height: 82px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 2px 0;
+            position: relative;
+            overflow: visible;
         }
 
         .ttd-image-area img {
-            max-height: 52px;
+            max-height: 78px;
             max-width: 175px;
+            width: auto;
+            height: auto;
             object-fit: contain;
+            mix-blend-mode: multiply;
+            filter: contrast(105%) brightness(98%);
+            transition: transform 0.25s ease;
         }
 
         .ttd-nama {
             font-weight: bold;
-            text-transform: uppercase;
             text-decoration: underline;
             margin-top: 3px;
         }
@@ -363,8 +369,8 @@
         .density-normal table.kir-table th, .density-normal table.kir-table td { padding: 3.5px 4.5px; }
         .density-normal .ttd-wrapper { margin-top: 18px; }
         .density-normal .ttd-box { font-size: 9.5pt; }
-        .density-normal .ttd-image-area { height: 56px; }
-        .density-normal .ttd-image-area img { max-height: 52px; }
+        .density-normal .ttd-image-area { height: 82px; }
+        .density-normal .ttd-image-area img { max-height: 78px; max-width: 175px; }
 
         /* 2. Rapat (Compact: 19 - 28 barang) */
         .density-compact .kir-title { font-size: 12pt; margin-bottom: 8px; letter-spacing: 1px; }
@@ -375,9 +381,9 @@
         .density-compact table.kir-table tr.col-numbers th { font-size: 7pt; padding: 1px; }
         .density-compact .ttd-wrapper { margin-top: 10px; }
         .density-compact .ttd-box { font-size: 8.8pt; }
-        .density-compact .ttd-jabatan { margin-bottom: 3px; }
-        .density-compact .ttd-image-area { height: 44px; margin: 1px 0; }
-        .density-compact .ttd-image-area img { max-height: 40px; }
+        .density-compact .ttd-jabatan { margin-bottom: 6px; }
+        .density-compact .ttd-image-area { height: 68px; margin: 1px 0; }
+        .density-compact .ttd-image-area img { max-height: 68px; max-width: 165px; }
         .density-compact .ttd-nama { margin-top: 2px; }
 
         /* 3. Sangat Rapat (Dense: 29 - 40 barang) */
@@ -390,9 +396,9 @@
         .density-dense .ttd-wrapper { margin-top: 6px; }
         .density-dense .ttd-box { font-size: 8pt; }
         .density-dense .ttd-title { margin-bottom: 1px; }
-        .density-dense .ttd-jabatan { margin-bottom: 1px; }
-        .density-dense .ttd-image-area { height: 36px; margin: 1px 0; }
-        .density-dense .ttd-image-area img { max-height: 34px; }
+        .density-dense .ttd-jabatan { margin-bottom: 4px; }
+        .density-dense .ttd-image-area { height: 56px; margin: 1px 0; }
+        .density-dense .ttd-image-area img { max-height: 56px; max-width: 155px; }
         .density-dense .ttd-nama { margin-top: 1px; }
 
         /* 4. Ultra Rapat (Ultra: 41+ barang, contoh: 48 barang di R. Gigi) */
@@ -405,9 +411,9 @@
         .density-ultra .ttd-wrapper { margin-top: 5px; }
         .density-ultra .ttd-box { font-size: 7.2pt; }
         .density-ultra .ttd-title { margin-bottom: 0px; }
-        .density-ultra .ttd-jabatan { margin-bottom: 1px; }
-        .density-ultra .ttd-image-area { height: 30px; margin: 0; }
-        .density-ultra .ttd-image-area img { max-height: 28px; }
+        .density-ultra .ttd-jabatan { margin-bottom: 3px; }
+        .density-ultra .ttd-image-area { height: 46px; margin: 0; }
+        .density-ultra .ttd-image-area img { max-height: 46px; max-width: 145px; }
         .density-ultra .ttd-nama { margin-top: 1px; }
         /* Opsi Sembunyikan KEDUA Gambar Tanda Tangan (dr. MUHAMAD SUNARYADI & ANDIKA DAFA PENTA PRATAMA)
            Menyisakan ruang kosong yang rapi untuk tanda tangan basah (manual) kedua belah pihak */
@@ -423,8 +429,8 @@
         body.hide-ttd .ttd-image-area,
         .hide-ttd .ttd-image-area {
             visibility: hidden !important;
-            min-height: 48px !important;
-            height: 48px !important;
+            min-height: 78px !important;
+            height: 78px !important;
         }
 
         /* Mode Tampilan 2 Halaman vs 1 Halaman */
@@ -615,8 +621,8 @@
             body.hide-ttd .ttd-image-area,
             .hide-ttd .ttd-image-area {
                 visibility: hidden !important;
-                min-height: 48px !important;
-                height: 48px !important;
+                min-height: 78px !important;
+                height: 78px !important;
             }
 
             /* Mode 2 Halaman vs 1 Halaman saat Print */
@@ -693,8 +699,13 @@
             </button>
 
             <!-- Tombol Toggle Gambar Tanda Tangan (TTD) -->
-            <button type="button" id="toggleTtdBtn" onclick="toggleTtd()" class="btn" style="background: #1e293b; color: #f8fafc; border: 1px solid {{ (isset($showTtd) && !$showTtd) ? '#f87171' : '#475569' }};" title="Tampilkan kedua gambar tanda tangan atau kosongkan keduanya (ttd dr. Sunaryadi & ttd Andika Dafa) untuk tanda tangan basah secara manual">
-                ✍ Gambar TTD: <strong id="ttdStatusText" style="color: {{ (isset($showTtd) && !$showTtd) ? '#f87171' : '#4ade80' }};">{{ (isset($showTtd) && !$showTtd) ? 'KOSONG KEDUANYA (TTD BASAH)' : 'DITAMPILKAN' }}</strong>
+            <button type="button" id="toggleTtdBtn" onclick="toggleTtd()" class="btn" style="background: #1e293b; color: #f8fafc; border: 1px solid {{ (isset($showTtd) && !$showTtd) ? '#f87171' : '#475569' }};" title="Tampilkan gambar tanda tangan dr. Sunaryadi atau kosongkan untuk tanda tangan basah secara manual">
+                ✍ TTD dr. Sunaryadi: <strong id="ttdStatusText" style="color: {{ (isset($showTtd) && !$showTtd) ? '#f87171' : '#4ade80' }};">{{ (isset($showTtd) && !$showTtd) ? 'KOSONG (TTD BASAH)' : 'DITAMPILKAN' }}</strong>
+            </button>
+
+            <!-- Tombol Acak Variasi TTD -->
+            <button type="button" id="shuffleTtdBtn" onclick="shuffleTtd()" class="btn" style="background: #1e293b; color: #f8fafc; border: 1px solid #c084fc;" title="Acak ulang ukuran, rotasi kemiringan, dan posisi tanda tangan dr. Sunaryadi agar tampak alami dan tidak seperti tempelan">
+                🎲 Acak Variasi TTD
             </button>
 
             <!-- Tombol Toggle Kunci 1 Halaman -->
@@ -775,6 +786,22 @@
     <div class="sheet-wrapper">
         @php
             $renderRooms = isset($isBatch) && $isBatch ? $rooms : collect([$room]);
+
+            // Scan seluruh file PNG tanda tangan Pak Dokter dari folder public/images/ttd_kapus/
+            $kapusTtdDir = public_path('images/ttd_kapus');
+            $kapusTtdList = [];
+            if (is_dir($kapusTtdDir)) {
+                $scannedFiles = glob($kapusTtdDir . '/*.{png,PNG,webp,WEBP}', GLOB_BRACE);
+                if (!empty($scannedFiles)) {
+                    natsort($scannedFiles);
+                    foreach ($scannedFiles as $sf) {
+                        $kapusTtdList[] = 'images/ttd_kapus/' . basename($sf);
+                    }
+                }
+            }
+            if (empty($kapusTtdList)) {
+                $kapusTtdList = ['images/ttd_kapus_nostamp.png'];
+            }
         @endphp
 
         @foreach($renderRooms as $currentRoom)
@@ -801,6 +828,23 @@
                 // Level kerapatan untuk mode 2 halaman (karena per halaman hanya ~35-40 item)
                 $densityPage1 = count($itemsPage1) > 28 ? 'density-dense' : 'density-compact';
                 $densityPage2 = count($itemsPage2) > 28 ? 'density-dense' : 'density-compact';
+
+                // TTD Pak Dokter variatif & natural per ruangan (file acak, rotasi kemiringan, pergeseran posisi, dan skala ukuran)
+                $seed = crc32(($currentRoom->id ?? 1) . '_' . ($currentRoom->name ?? 'kir') . '_dr_sunaryadi');
+                $ttdIndex = abs($seed) % count($kapusTtdList);
+                $selectedKapusTtd = $kapusTtdList[$ttdIndex];
+                $kapusTtdVersion = file_exists(public_path($selectedKapusTtd)) ? filemtime(public_path($selectedKapusTtd)) : time();
+
+                // Variasi rotasi kemiringan: antara -2.2 derajat s/d +2.2 derajat (sudut tarikan tangan wajar)
+                $rotDeg = number_format(((abs($seed >> 3) % 45) - 22) / 10, 1);
+                // Variasi posisi horizontal: geser sedikit kiri/kanan (-8px s/d +10px)
+                $shiftX = (abs($seed >> 7) % 19) - 8;
+                // Variasi posisi vertikal: geser sedikit atas/bawah (-4px s/d +5px)
+                $shiftY = (abs($seed >> 11) % 10) - 4;
+                // Variasi ukuran: 94% s/d 106%
+                $scale = number_format(0.94 + ((abs($seed >> 15) % 13) / 100), 2);
+
+                $ttdTransform = "transform: translate({$shiftX}px, {$shiftY}px) rotate({$rotDeg}deg) scale({$scale}); transform-origin: center center;";
             @endphp
 
             @if($hasTwoPages)
@@ -964,7 +1008,7 @@
                                         <div class="ttd-title">Mengetahui</div>
                                         <div class="ttd-jabatan">Kepala Puskesmas Mantup</div>
                                         <div class="ttd-image-area">
-                                            <img src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" alt="TTD dr. Sunaryadi">
+                                            <img src="{{ asset($selectedKapusTtd) }}?v={{ $kapusTtdVersion }}" alt="TTD dr. Sunaryadi" style="{{ $ttdTransform }}">
                                         </div>
                                         <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
                                         <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
@@ -974,9 +1018,9 @@
                                         <div class="ttd-title">
                                             Mantup, <span class="doc-date-display" contenteditable="true" title="Klik untuk edit teks manual jika diperlukan">{{ $formattedDate }}</span>
                                         </div>
-                                        <div class="ttd-jabatan">Pengurus Barang Puskesmas Mantup</div>
+                                        <div class="ttd-jabatan">Pengurus Barang Pembantu</div>
                                         <div class="ttd-image-area">
-                                            <img src="{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}" alt="TTD Andika Dafa">
+                                            <!-- Kosong untuk tanda tangan basah Pengurus Barang Pembantu -->
                                         </div>
                                         <div class="ttd-nama">ANDIKA DAFA PENTA PRATAMA</div>
                                         <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
@@ -1075,7 +1119,7 @@
                                         <div class="ttd-title">Mengetahui</div>
                                         <div class="ttd-jabatan">Kepala Puskesmas Mantup</div>
                                         <div class="ttd-image-area">
-                                            <img src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" alt="TTD dr. Sunaryadi">
+                                            <img src="{{ asset($selectedKapusTtd) }}?v={{ $kapusTtdVersion }}" alt="TTD dr. Sunaryadi" style="{{ $ttdTransform }}">
                                         </div>
                                         <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
                                         <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
@@ -1084,9 +1128,9 @@
                                         <div class="ttd-title">
                                             Mantup, <span class="doc-date-display" contenteditable="true">{{ $formattedDate }}</span>
                                         </div>
-                                        <div class="ttd-jabatan">Pengurus Barang Puskesmas Mantup</div>
+                                        <div class="ttd-jabatan">Pengurus Barang Pembantu</div>
                                         <div class="ttd-image-area">
-                                            <img src="{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}" alt="TTD Andika Dafa">
+                                            <!-- Kosong untuk tanda tangan basah Pengurus Barang Pembantu -->
                                         </div>
                                         <div class="ttd-nama">ANDIKA DAFA PENTA PRATAMA</div>
                                         <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
@@ -1187,7 +1231,7 @@
                                 <div class="ttd-title">Mengetahui</div>
                                 <div class="ttd-jabatan">Kepala Puskesmas Mantup</div>
                                 <div class="ttd-image-area">
-                                    <img src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" alt="TTD dr. Sunaryadi">
+                                    <img src="{{ asset($selectedKapusTtd) }}?v={{ $kapusTtdVersion }}" alt="TTD dr. Sunaryadi" style="{{ $ttdTransform }}">
                                 </div>
                                 <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
                                 <div class="ttd-nip">NIP. 19690313 200212 1 007</div>
@@ -1196,9 +1240,9 @@
                                 <div class="ttd-title">
                                     Mantup, <span class="doc-date-display" contenteditable="true">{{ $formattedDate }}</span>
                                 </div>
-                                <div class="ttd-jabatan">Pengurus Barang Puskesmas Mantup</div>
+                                <div class="ttd-jabatan">Pengurus Barang Pembantu</div>
                                 <div class="ttd-image-area">
-                                    <img src="{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}" alt="TTD Andika Dafa">
+                                    <!-- Kosong untuk tanda tangan basah Pengurus Barang Pembantu -->
                                 </div>
                                 <div class="ttd-nama">ANDIKA DAFA PENTA PRATAMA</div>
                                 <div class="ttd-nip">NIP. 19990728 202504 1 003</div>
@@ -1456,7 +1500,7 @@
             } else {
                 body.classList.add('hide-ttd');
                 if (text) {
-                    text.textContent = 'KOSONG KEDUANYA (TTD BASAH)';
+                    text.textContent = 'KOSONG (TTD BASAH)';
                     text.style.color = '#f87171';
                 }
                 if (btn) btn.style.borderColor = '#f87171';
@@ -1655,6 +1699,33 @@
         window.addEventListener('resize', () => {
             applyAutoFit();
         });
+
+        // Daftar file TTD yang tersedia dari server
+        const kapusTtdFiles = @json($kapusTtdList);
+
+        // Fungsi mengacak variasi TTD secara interaktif langsung di layar
+        function shuffleTtd() {
+            if (!kapusTtdFiles || kapusTtdFiles.length === 0) return;
+
+            const ttdImages = document.querySelectorAll('.ttd-box-left .ttd-image-area img');
+            ttdImages.forEach((img, idx) => {
+                // Pilih file TTD acak
+                const randomFile = kapusTtdFiles[Math.floor(Math.random() * kapusTtdFiles.length)];
+                img.src = '{{ asset('') }}' + randomFile + '?v=' + Date.now();
+
+                // Variasi posisi horizontal: -9px s/d +11px
+                const shiftX = Math.floor(Math.random() * 21) - 9;
+                // Variasi posisi vertikal: -4px s/d +5px
+                const shiftY = Math.floor(Math.random() * 10) - 4;
+                // Variasi rotasi kemiringan: -2.2deg s/d +2.2deg
+                const rot = ((Math.random() * 4.4) - 2.2).toFixed(1);
+                // Variasi skala ukuran: 94% s/d 106%
+                const scale = (0.94 + Math.random() * 0.12).toFixed(2);
+
+                img.style.transform = `translate(${shiftX}px, ${shiftY}px) rotate(${rot}deg) scale(${scale})`;
+                img.style.transformOrigin = 'center center';
+            });
+        }
 
         // Inisialisasi awal saat halaman selesai dimuat
         document.addEventListener('DOMContentLoaded', () => {

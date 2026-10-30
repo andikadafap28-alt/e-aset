@@ -177,16 +177,23 @@
             line-height: 1.25;
         }
         .ttd-image-area {
-            height: 70px;
+            height: 84px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 2px 0;
+            margin: 3px 0;
+            position: relative;
+            overflow: visible;
         }
         .ttd-image-area img {
-            max-height: 65px;
-            max-width: 190px;
+            max-height: 80px;
+            max-width: 180px;
+            width: auto;
+            height: auto;
             object-fit: contain;
+            mix-blend-mode: multiply;
+            filter: contrast(105%) brightness(98%);
+            transition: transform 0.25s ease;
         }
         .ttd-nama {
             font-weight: bold;
@@ -229,6 +236,11 @@
                 <button type="button" class="btn-preset" onclick="setPresetDate('today')" title="Hari ini">Hari Ini</button>
             </div>
 
+            <!-- Tombol Acak Variasi TTD -->
+            <button type="button" onclick="shuffleTtd()" class="btn" style="background: #1e293b; color: #f8fafc; border: 1px solid #c084fc;" title="Acak variasi gambar, posisi, kemiringan, dan ukuran tanda tangan dr. Sunaryadi agar tampak alami">
+                🎲 Acak Variasi TTD
+            </button>
+
             <!-- Export Excel -->
             <a href="{{ route('kir.rekap.export') }}" class="btn btn-download">
                 Download Excel
@@ -243,6 +255,40 @@
 
     <!-- Lembar Cetak Dokumen F4 -->
     <div class="sheet-wrapper">
+        @php
+            $kapusTtdDir = public_path('images/ttd_kapus');
+            $kapusTtdList = [];
+            if (is_dir($kapusTtdDir)) {
+                $scannedFiles = glob($kapusTtdDir . '/*.{png,PNG,webp,WEBP}', GLOB_BRACE);
+                if (!empty($scannedFiles)) {
+                    natsort($scannedFiles);
+                    foreach ($scannedFiles as $sf) {
+                        if (is_file($sf) && basename($sf) !== 'ttd_kapus_1.png') {
+                            $kapusTtdList[] = 'images/ttd_kapus/' . basename($sf);
+                        }
+                    }
+                }
+            }
+            if (empty($kapusTtdList)) {
+                $kapusTtdList = ['images/ttd_kapus_nostamp.png'];
+            }
+
+            $seed = crc32('rekap_kir_mantup_ttd');
+            $ttdIndex = abs($seed) % count($kapusTtdList);
+            $selectedKapusTtd = $kapusTtdList[$ttdIndex];
+            $kapusTtdVersion = file_exists(public_path($selectedKapusTtd)) ? filemtime(public_path($selectedKapusTtd)) : time();
+
+            // Variasi rotasi kemiringan: antara -2.2 derajat s/d +2.2 derajat
+            $rotDeg = number_format(((abs($seed >> 3) % 45) - 22) / 10, 1);
+            // Variasi posisi horizontal: -8px s/d +10px
+            $shiftX = (abs($seed >> 7) % 19) - 8;
+            // Variasi posisi vertikal: -4px s/d +5px
+            $shiftY = (abs($seed >> 11) % 10) - 4;
+            // Variasi skala ukuran: 94% s/d 106%
+            $scale = number_format(0.95 + ((abs($seed >> 15) % 11) / 100), 2);
+
+            $ttdTransform = "transform: translate({$shiftX}px, {$shiftY}px) rotate({$rotDeg}deg) scale({$scale}); transform-origin: center center;";
+        @endphp
         <div class="page-sheet">
             <!-- Kop Surat -->
             <table class="kop-table">
@@ -329,7 +375,7 @@
                     <div>Mengetahui,</div>
                     <div><strong>Kepala Puskesmas Mantup</strong></div>
                     <div class="ttd-image-area">
-                        <img src="{{ asset('images/ttd_kapus_nostamp.png') }}?v={{ file_exists(public_path('images/ttd_kapus_nostamp.png')) ? filemtime(public_path('images/ttd_kapus_nostamp.png')) : time() }}" alt="TTD dr. Sunaryadi">
+                        <img src="{{ asset($selectedKapusTtd) }}?v={{ $kapusTtdVersion }}" alt="TTD dr. Sunaryadi" style="{{ $ttdTransform }}">
                     </div>
                     <div class="ttd-nama">dr. MUHAMAD SUNARYADI</div>
                     <div>NIP. 19690313 200212 1 007</div>
@@ -338,9 +384,9 @@
                 <!-- TTD Andika Dafa Penta Pratama (Tanggal Dinamis 6 Bulan Sekali) -->
                 <div class="ttd-box">
                     <div>Mantup, <span id="docDateDisplay" contenteditable="true">{{ $formattedDate }}</span></div>
-                    <div><strong>Pengurus Barang Puskesmas Mantup</strong></div>
+                    <div><strong>Pengurus Barang Pembantu</strong></div>
                     <div class="ttd-image-area">
-                        <img src="{{ asset('images/ttd_andika.png') }}?v={{ file_exists(public_path('images/ttd_andika.png')) ? filemtime(public_path('images/ttd_andika.png')) : time() }}" alt="TTD Andika Dafa">
+                        <!-- Kosong untuk tanda tangan basah Pengurus Barang Pembantu -->
                     </div>
                     <div class="ttd-nama">ANDIKA DAFA PENTA PRATAMA</div>
                     <div>NIP. 19990728 202504 1 003</div>
@@ -350,6 +396,22 @@
     </div>
 
     <script>
+        const kapusTtdFiles = @json($kapusTtdList);
+
+        function shuffleTtd() {
+            if (!kapusTtdFiles || kapusTtdFiles.length === 0) return;
+            document.querySelectorAll('.ttd-box .ttd-image-area img').forEach(img => {
+                const randomFile = kapusTtdFiles[Math.floor(Math.random() * kapusTtdFiles.length)];
+                img.src = '{{ asset('') }}' + randomFile + '?v=' + Date.now();
+                const shiftX = Math.floor(Math.random() * 21) - 9;
+                const shiftY = Math.floor(Math.random() * 10) - 4;
+                const rot = ((Math.random() * 4.4) - 2.2).toFixed(1);
+                const scale = (0.94 + Math.random() * 0.12).toFixed(2);
+                img.style.transform = `translate(${shiftX}px, ${shiftY}px) rotate(${rot}deg) scale(${scale})`;
+                img.style.transformOrigin = 'center center';
+            });
+        }
+
         const monthNames = [
             "Januari", "Februari", "Maret", "April", "Mei", "Juni",
             "Juli", "Agustus", "September", "Oktober", "November", "Desember"
