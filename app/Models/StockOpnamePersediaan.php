@@ -53,7 +53,7 @@ class StockOpnamePersediaan extends Model
     }
 
     /**
-     * Mengembalikan daftar rekening untuk Berita Acara (Halaman 1)
+     * Mengembalikan daftar rekening untuk Berita Acara (Halaman 1) & Ringkasan Indeks
      */
     public function getRekeningSummaryList()
     {
@@ -81,17 +81,32 @@ class StockOpnamePersediaan extends Model
             [
                 'key' => 'obat_blud',
                 'name' => 'Obat BLUD',
-                'val' => (float)$this->total_obat_blud
+                'val' => (float)$this->obat_blud
+            ],
+            [
+                'key' => 'bmhp_blud',
+                'name' => 'BMHP BLUD',
+                'val' => (float)$this->bmhp_blud
             ],
             [
                 'key' => 'obat_apbd',
                 'name' => 'Obat APBD',
-                'val' => (float)$this->total_obat_apbd
+                'val' => (float)$this->obat_apbd
+            ],
+            [
+                'key' => 'bmhp_apbd',
+                'name' => 'BMHP APBD',
+                'val' => (float)$this->bmhp_apbd
             ],
             [
                 'key' => 'obat_apbn',
                 'name' => 'Obat APBN',
-                'val' => (float)$this->total_obat_apbn
+                'val' => (float)$this->obat_apbn
+            ],
+            [
+                'key' => 'bmhp_apbn',
+                'name' => 'BMHP APBN',
+                'val' => (float)$this->bmhp_apbn
             ],
         ];
 

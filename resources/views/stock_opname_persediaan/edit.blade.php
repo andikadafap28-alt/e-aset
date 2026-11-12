@@ -128,7 +128,7 @@
                 </div>
                 <div>
                     <h2 class="font-bold text-slate-800 text-sm">3. Nilai Persediaan Obat &amp; BMHP (BLUD, APBD, &amp; APBN)</h2>
-                    <p class="text-xs text-slate-500">Masing-masing terdiri dari 2 inputan (Obat dan BMHP), yang di halaman pertama Berita Acara otomatis dijumlahkan dan hanya tertulis <strong>"Obat BLUD"</strong>, <strong>"Obat APBD"</strong>, dan <strong>"Obat APBN"</strong>.</p>
+                    <p class="text-xs text-slate-500">Masing-masing kategori terdiri dari 2 inputan terpisah (<strong>Obat</strong> dan <strong>BMHP</strong>). Rincian saldo masing-masing Obat dan BMHP untuk setiap kategori akan ditampilkan secara terpisah pada Berita Acara maupun Lampiran.</p>
                 </div>
             </div>
 
@@ -140,7 +140,7 @@
                         <h3 class="font-bold text-blue-900 text-sm">Persediaan Obat &amp; BMHP BLUD</h3>
                     </div>
                     <div class="text-xs font-bold text-blue-800 bg-blue-100/80 px-3 py-1 rounded-lg flex items-center gap-1.5">
-                        <span>Total Obat BLUD:</span>
+                        <span>Subtotal Obat &amp; BMHP BLUD:</span>
                         <span id="disp_total_blud" class="font-mono text-sm text-blue-950">Rp. 0,00</span>
                     </div>
                 </div>
@@ -171,7 +171,7 @@
                         <h3 class="font-bold text-emerald-900 text-sm">Persediaan Obat &amp; BMHP APBD</h3>
                     </div>
                     <div class="text-xs font-bold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-lg flex items-center gap-1.5">
-                        <span>Total Obat APBD:</span>
+                        <span>Subtotal Obat &amp; BMHP APBD:</span>
                         <span id="disp_total_apbd" class="font-mono text-sm text-emerald-950">Rp. 0,00</span>
                     </div>
                 </div>
@@ -202,7 +202,7 @@
                         <h3 class="font-bold text-purple-900 text-sm">Persediaan Obat &amp; BMHP APBN</h3>
                     </div>
                     <div class="text-xs font-bold text-purple-800 bg-purple-100/80 px-3 py-1 rounded-lg flex items-center gap-1.5">
-                        <span>Total Obat APBN:</span>
+                        <span>Subtotal Obat &amp; BMHP APBN:</span>
                         <span id="disp_total_apbn" class="font-mono text-sm text-purple-950">Rp. 0,00</span>
                     </div>
                 </div>
