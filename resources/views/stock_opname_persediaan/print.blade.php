@@ -768,8 +768,7 @@
                 <tr>
                     <th style="width: 35px;">NO</th>
                     <th colspan="2">JENIS REKENING</th>
-                    <th style="width: 200px;">NILAI HASIL STOCK OPNAME (RP)</th>
-                    <th style="width: 140px;">KONDISI</th>
+                    <th style="width: 220px;">NILAI HASIL STOCK OPNAME (RP)</th>
                 </tr>
             </thead>
             <tbody>
@@ -778,7 +777,6 @@
                     <td class="center font-bold">1</td>
                     <td colspan="2"><strong>Alat Tulis Kantor (ATK)</strong></td>
                     <td class="right font-semibold">{{ number_format($record->atk, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
                 </tr>
 
                 <!-- 2. Bahan Cetak -->
@@ -786,7 +784,6 @@
                     <td class="center font-bold">2</td>
                     <td colspan="2"><strong>Bahan Cetak</strong></td>
                     <td class="right font-semibold">{{ number_format($record->bahan_cetak, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
                 </tr>
 
                 <!-- 3. Benda Pos -->
@@ -794,7 +791,6 @@
                     <td class="center font-bold">3</td>
                     <td colspan="2"><strong>Benda Pos</strong></td>
                     <td class="right font-semibold">{{ number_format($record->benda_pos, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
                 </tr>
 
                 <!-- 4. Bahan Komputer -->
@@ -802,16 +798,14 @@
                     <td class="center font-bold">4</td>
                     <td colspan="2"><strong>Bahan Komputer</strong></td>
                     <td class="right font-semibold">{{ number_format($record->bahan_komputer, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
                 </tr>
 
                 <!-- 5. Obat BLUD -->
                 <tr>
                     <td class="center font-bold" rowspan="2">5</td>
-                    <td rowspan="2" style="width: 145px;"><strong>Obat BLUD</strong></td>
+                    <td rowspan="2" style="width: 155px;"><strong>Obat BLUD</strong></td>
                     <td>Obat</td>
                     <td class="right font-semibold">{{ number_format($record->obat_blud, 2, ',', '.') }}</td>
-                    <td class="center" rowspan="2">Baik / Lengkap</td>
                 </tr>
                 <tr>
                     <td>BMHP</td>
@@ -821,10 +815,9 @@
                 <!-- 6. Obat APBD -->
                 <tr>
                     <td class="center font-bold" rowspan="2">6</td>
-                    <td rowspan="2" style="width: 145px;"><strong>Obat APBD</strong></td>
+                    <td rowspan="2" style="width: 155px;"><strong>Obat APBD</strong></td>
                     <td>Obat</td>
                     <td class="right font-semibold">{{ number_format($record->obat_apbd, 2, ',', '.') }}</td>
-                    <td class="center" rowspan="2">Baik / Lengkap</td>
                 </tr>
                 <tr>
                     <td>BMHP</td>
@@ -834,10 +827,9 @@
                 <!-- 7. Obat APBN -->
                 <tr>
                     <td class="center font-bold" rowspan="2">7</td>
-                    <td rowspan="2" style="width: 145px;"><strong>Obat APBN</strong></td>
+                    <td rowspan="2" style="width: 155px;"><strong>Obat APBN</strong></td>
                     <td>Obat</td>
                     <td class="right font-semibold">{{ number_format($record->obat_apbn, 2, ',', '.') }}</td>
-                    <td class="center" rowspan="2">Baik / Lengkap</td>
                 </tr>
                 <tr>
                     <td>BMHP</td>
@@ -852,7 +844,6 @@
                     <td class="right" style="font-size: 10pt;">
                         <strong>Rp. {{ number_format($record->total_nilai, 2, ',', '.') }}</strong>
                     </td>
-                    <td class="center font-bold">Lengkap (Baik)</td>
                 </tr>
             </tbody>
         </table>
@@ -867,9 +858,8 @@
                     <th style="width: 28px;">NO</th>
                     <th style="width: 170px;">JENIS REKENING</th>
                     <th>KOMPONEN / RINCIAN SUB-BARANG</th>
-                    <th style="width: 110px;">NILAI (RP)</th>
-                    <th style="width: 125px;">SUBTOTAL REKENING (RP)</th>
-                    <th style="width: 90px;">KONDISI</th>
+                    <th style="width: 115px;">NILAI (RP)</th>
+                    <th style="width: 130px;">SUBTOTAL REKENING (RP)</th>
                 </tr>
             </thead>
             <tbody>
@@ -880,7 +870,6 @@
                     <td>Persediaan Alat Tulis Kantor &amp; Perlengkapan Administrasi</td>
                     <td class="right" style="color: #000000;">-</td>
                     <td class="right font-semibold">{{ number_format($record->atk, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
                 </tr>
 
                 <!-- 2. Bahan Cetak -->
@@ -890,7 +879,6 @@
                     <td>Karcis Retribusi, Formulir Rekam Medis &amp; Dokumen Cetak</td>
                     <td class="right" style="color: #000000;">-</td>
                     <td class="right font-semibold">{{ number_format($record->bahan_cetak, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
                 </tr>
 
                 <!-- 3. Benda Pos -->
@@ -900,7 +888,6 @@
                     <td>Materai, Perangko, &amp; Perlengkapan Pos</td>
                     <td class="right" style="color: #000000;">-</td>
                     <td class="right font-semibold">{{ number_format($record->benda_pos, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
                 </tr>
 
                 <!-- 4. Bahan Komputer -->
@@ -910,7 +897,6 @@
                     <td>Tinta Printer, Toner, Ribbon &amp; Aksesoris IT</td>
                     <td class="right" style="color: #000000;">-</td>
                     <td class="right font-semibold">{{ number_format($record->bahan_komputer, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
                 </tr>
 
                 <!-- 5. Obat BLUD -->
@@ -922,7 +908,6 @@
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
                         {{ number_format($record->total_obat_blud, 2, ',', '.') }}
                     </td>
-                    <td class="center" rowspan="2" style="vertical-align: middle;">Baik / Lengkap</td>
                 </tr>
                 <tr>
                     <td>&bull; BMHP</td>
@@ -938,7 +923,6 @@
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
                         {{ number_format($record->total_obat_apbd, 2, ',', '.') }}
                     </td>
-                    <td class="center" rowspan="2" style="vertical-align: middle;">Baik / Lengkap</td>
                 </tr>
                 <tr>
                     <td>&bull; BMHP</td>
@@ -954,7 +938,6 @@
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
                         {{ number_format($record->total_obat_apbn, 2, ',', '.') }}
                     </td>
-                    <td class="center" rowspan="2" style="vertical-align: middle;">Baik / Lengkap</td>
                 </tr>
                 <tr>
                     <td>&bull; BMHP</td>
@@ -969,7 +952,6 @@
                     <td class="right" style="font-size: 10pt;">
                         <strong>Rp. {{ number_format($record->total_nilai, 2, ',', '.') }}</strong>
                     </td>
-                    <td class="center">Lengkap (Baik)</td>
                 </tr>
             </tbody>
         </table>

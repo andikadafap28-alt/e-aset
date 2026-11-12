@@ -125,6 +125,8 @@ class StockOpnamePersediaanTest extends TestCase
         $this->assertStringContainsString('<strong>Obat APBN</strong>', $printHtml);
         $this->assertStringContainsString('<td>Obat</td>', $printHtml);
         $this->assertStringContainsString('<td>BMHP</td>', $printHtml);
+        $this->assertStringNotContainsString('>KONDISI</th>', $printHtml);
+        $this->assertStringNotContainsString('Baik / Lengkap', $printHtml);
 
         $printRes->assertSee('1.111.111,00');
         $printRes->assertSee('2.222.222,00');
