@@ -109,10 +109,24 @@
                             <td class="px-4 py-3.5 align-top text-xs">
                                 <div class="space-y-1">
                                     @foreach($itemsSummary as $it)
-                                        <div class="flex items-center justify-between max-w-sm text-slate-600">
-                                            <span>&bull; {{ $it['name'] }}</span>
-                                            <span class="font-mono font-medium text-slate-800">Rp. {{ number_format($it['val'], 2, ',', '.') }}</span>
-                                        </div>
+                                        @if(!empty($it['children']))
+                                            <div class="max-w-sm text-slate-700">
+                                                <div class="font-semibold">&bull; {{ $it['name'] }}</div>
+                                                <div class="pl-4 space-y-0.5 text-slate-600">
+                                                    @foreach($it['children'] as $child)
+                                                        <div class="flex items-center justify-between">
+                                                            <span>- {{ $child['name'] }}</span>
+                                                            <span class="font-mono font-medium text-slate-800">Rp. {{ number_format($child['val'], 2, ',', '.') }}</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="flex items-center justify-between max-w-sm text-slate-600">
+                                                <span>&bull; {{ $it['name'] }}</span>
+                                                <span class="font-mono font-medium text-slate-800">Rp. {{ number_format($it['val'], 2, ',', '.') }}</span>
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
                             </td>

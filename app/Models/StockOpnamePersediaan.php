@@ -81,32 +81,53 @@ class StockOpnamePersediaan extends Model
             [
                 'key' => 'obat_blud',
                 'name' => 'Obat BLUD',
-                'val' => (float)$this->obat_blud
-            ],
-            [
-                'key' => 'bmhp_blud',
-                'name' => 'BMHP BLUD',
-                'val' => (float)$this->bmhp_blud
+                'val' => (float)$this->total_obat_blud,
+                'children' => [
+                    [
+                        'key' => 'obat_blud',
+                        'name' => 'Obat',
+                        'val' => (float)$this->obat_blud,
+                    ],
+                    [
+                        'key' => 'bmhp_blud',
+                        'name' => 'BMHP',
+                        'val' => (float)$this->bmhp_blud,
+                    ],
+                ],
             ],
             [
                 'key' => 'obat_apbd',
                 'name' => 'Obat APBD',
-                'val' => (float)$this->obat_apbd
-            ],
-            [
-                'key' => 'bmhp_apbd',
-                'name' => 'BMHP APBD',
-                'val' => (float)$this->bmhp_apbd
+                'val' => (float)$this->total_obat_apbd,
+                'children' => [
+                    [
+                        'key' => 'obat_apbd',
+                        'name' => 'Obat',
+                        'val' => (float)$this->obat_apbd,
+                    ],
+                    [
+                        'key' => 'bmhp_apbd',
+                        'name' => 'BMHP',
+                        'val' => (float)$this->bmhp_apbd,
+                    ],
+                ],
             ],
             [
                 'key' => 'obat_apbn',
                 'name' => 'Obat APBN',
-                'val' => (float)$this->obat_apbn
-            ],
-            [
-                'key' => 'bmhp_apbn',
-                'name' => 'BMHP APBN',
-                'val' => (float)$this->bmhp_apbn
+                'val' => (float)$this->total_obat_apbn,
+                'children' => [
+                    [
+                        'key' => 'obat_apbn',
+                        'name' => 'Obat',
+                        'val' => (float)$this->obat_apbn,
+                    ],
+                    [
+                        'key' => 'bmhp_apbn',
+                        'name' => 'BMHP',
+                        'val' => (float)$this->bmhp_apbn,
+                    ],
+                ],
             ],
         ];
 

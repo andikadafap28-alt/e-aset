@@ -654,13 +654,29 @@
                 <table class="table-rekening">
                     @php $no = 1; @endphp
                     @foreach($rekeningList as $idx => $rek)
-                        <tr>
-                            <td class="r-num">{{ $no++ }}.</td>
-                            <td class="r-name">{{ $rek['name'] }}</td>
-                            <td class="r-colon">:</td>
-                            <td class="r-curr">Rp.</td>
-                            <td class="r-val">{{ number_format($rek['val'], 2, ',', '.') }}</td>
-                        </tr>
+                        @if(!empty($rek['children']))
+                            <tr>
+                                <td class="r-num">{{ $no++ }}.</td>
+                                <td class="r-name" colspan="4"><strong>{{ $rek['name'] }}</strong></td>
+                            </tr>
+                            @foreach($rek['children'] as $child)
+                                <tr>
+                                    <td class="r-num"></td>
+                                    <td class="r-name" style="padding-left: 16px;">&bull; {{ $child['name'] }}</td>
+                                    <td class="r-colon">:</td>
+                                    <td class="r-curr">Rp.</td>
+                                    <td class="r-val">{{ number_format($child['val'], 2, ',', '.') }}</td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td class="r-num">{{ $no++ }}.</td>
+                                <td class="r-name">{{ $rek['name'] }}</td>
+                                <td class="r-colon">:</td>
+                                <td class="r-curr">Rp.</td>
+                                <td class="r-val">{{ number_format($rek['val'], 2, ',', '.') }}</td>
+                            </tr>
+                        @endif
                     @endforeach
                     
                     <tr class="row-total-line">
@@ -751,7 +767,7 @@
             <thead>
                 <tr>
                     <th style="width: 35px;">NO</th>
-                    <th>JENIS REKENING</th>
+                    <th colspan="2">JENIS REKENING</th>
                     <th style="width: 200px;">NILAI HASIL STOCK OPNAME (RP)</th>
                     <th style="width: 140px;">KONDISI</th>
                 </tr>
@@ -760,7 +776,7 @@
                 <!-- 1. ATK -->
                 <tr>
                     <td class="center font-bold">1</td>
-                    <td><strong>Alat Tulis Kantor (ATK)</strong></td>
+                    <td colspan="2"><strong>Alat Tulis Kantor (ATK)</strong></td>
                     <td class="right font-semibold">{{ number_format($record->atk, 2, ',', '.') }}</td>
                     <td class="center">Baik / Lengkap</td>
                 </tr>
@@ -768,7 +784,7 @@
                 <!-- 2. Bahan Cetak -->
                 <tr>
                     <td class="center font-bold">2</td>
-                    <td><strong>Bahan Cetak</strong></td>
+                    <td colspan="2"><strong>Bahan Cetak</strong></td>
                     <td class="right font-semibold">{{ number_format($record->bahan_cetak, 2, ',', '.') }}</td>
                     <td class="center">Baik / Lengkap</td>
                 </tr>
@@ -776,7 +792,7 @@
                 <!-- 3. Benda Pos -->
                 <tr>
                     <td class="center font-bold">3</td>
-                    <td><strong>Benda Pos</strong></td>
+                    <td colspan="2"><strong>Benda Pos</strong></td>
                     <td class="right font-semibold">{{ number_format($record->benda_pos, 2, ',', '.') }}</td>
                     <td class="center">Baik / Lengkap</td>
                 </tr>
@@ -784,62 +800,53 @@
                 <!-- 4. Bahan Komputer -->
                 <tr>
                     <td class="center font-bold">4</td>
-                    <td><strong>Bahan Komputer</strong></td>
+                    <td colspan="2"><strong>Bahan Komputer</strong></td>
                     <td class="right font-semibold">{{ number_format($record->bahan_komputer, 2, ',', '.') }}</td>
                     <td class="center">Baik / Lengkap</td>
                 </tr>
 
                 <!-- 5. Obat BLUD -->
                 <tr>
-                    <td class="center font-bold">5</td>
-                    <td><strong>Obat BLUD</strong></td>
+                    <td class="center font-bold" rowspan="2">5</td>
+                    <td rowspan="2" style="width: 145px;"><strong>Obat BLUD</strong></td>
+                    <td>Obat</td>
                     <td class="right font-semibold">{{ number_format($record->obat_blud, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
+                    <td class="center" rowspan="2">Baik / Lengkap</td>
                 </tr>
-
-                <!-- 6. BMHP BLUD -->
                 <tr>
-                    <td class="center font-bold">6</td>
-                    <td><strong>BMHP BLUD</strong></td>
+                    <td>BMHP</td>
                     <td class="right font-semibold">{{ number_format($record->bmhp_blud, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
                 </tr>
 
-                <!-- 7. Obat APBD -->
+                <!-- 6. Obat APBD -->
                 <tr>
-                    <td class="center font-bold">7</td>
-                    <td><strong>Obat APBD</strong></td>
+                    <td class="center font-bold" rowspan="2">6</td>
+                    <td rowspan="2" style="width: 145px;"><strong>Obat APBD</strong></td>
+                    <td>Obat</td>
                     <td class="right font-semibold">{{ number_format($record->obat_apbd, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
+                    <td class="center" rowspan="2">Baik / Lengkap</td>
                 </tr>
-
-                <!-- 8. BMHP APBD -->
                 <tr>
-                    <td class="center font-bold">8</td>
-                    <td><strong>BMHP APBD</strong></td>
+                    <td>BMHP</td>
                     <td class="right font-semibold">{{ number_format($record->bmhp_apbd, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
                 </tr>
 
-                <!-- 9. Obat APBN -->
+                <!-- 7. Obat APBN -->
                 <tr>
-                    <td class="center font-bold">9</td>
-                    <td><strong>Obat APBN</strong></td>
+                    <td class="center font-bold" rowspan="2">7</td>
+                    <td rowspan="2" style="width: 145px;"><strong>Obat APBN</strong></td>
+                    <td>Obat</td>
                     <td class="right font-semibold">{{ number_format($record->obat_apbn, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
+                    <td class="center" rowspan="2">Baik / Lengkap</td>
                 </tr>
-
-                <!-- 10. BMHP APBN -->
                 <tr>
-                    <td class="center font-bold">10</td>
-                    <td><strong>BMHP APBN</strong></td>
+                    <td>BMHP</td>
                     <td class="right font-semibold">{{ number_format($record->bmhp_apbn, 2, ',', '.') }}</td>
-                    <td class="center">Baik / Lengkap</td>
                 </tr>
 
                 <!-- Baris Total Keseluruhan -->
                 <tr class="total-row">
-                    <td colspan="2" style="text-align: center; text-transform: uppercase;">
+                    <td colspan="3" style="text-align: center; text-transform: uppercase;">
                         TOTAL KESELURUHAN NILAI HASIL STOCK OPNAME :
                     </td>
                     <td class="right" style="font-size: 10pt;">
@@ -906,11 +913,11 @@
                     <td class="center">Baik / Lengkap</td>
                 </tr>
 
-                <!-- 5. Obat & BMHP BLUD -->
+                <!-- 5. Obat BLUD -->
                 <tr>
                     <td class="center font-bold" rowspan="2">5</td>
-                    <td rowspan="2"><strong>Obat &amp; BMHP BLUD</strong></td>
-                    <td>&bull; Obat-Obatan BLUD</td>
+                    <td rowspan="2"><strong>Obat BLUD</strong></td>
+                    <td>&bull; Obat</td>
                     <td class="right">{{ number_format($record->obat_blud, 2, ',', '.') }}</td>
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
                         {{ number_format($record->total_obat_blud, 2, ',', '.') }}
@@ -918,15 +925,15 @@
                     <td class="center" rowspan="2" style="vertical-align: middle;">Baik / Lengkap</td>
                 </tr>
                 <tr>
-                    <td>&bull; Bahan Medis Habis Pakai (BMHP) BLUD</td>
+                    <td>&bull; BMHP</td>
                     <td class="right">{{ number_format($record->bmhp_blud, 2, ',', '.') }}</td>
                 </tr>
 
-                <!-- 6. Obat & BMHP APBD -->
+                <!-- 6. Obat APBD -->
                 <tr>
                     <td class="center font-bold" rowspan="2">6</td>
-                    <td rowspan="2"><strong>Obat &amp; BMHP APBD</strong></td>
-                    <td>&bull; Obat-Obatan APBD</td>
+                    <td rowspan="2"><strong>Obat APBD</strong></td>
+                    <td>&bull; Obat</td>
                     <td class="right">{{ number_format($record->obat_apbd, 2, ',', '.') }}</td>
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
                         {{ number_format($record->total_obat_apbd, 2, ',', '.') }}
@@ -934,15 +941,15 @@
                     <td class="center" rowspan="2" style="vertical-align: middle;">Baik / Lengkap</td>
                 </tr>
                 <tr>
-                    <td>&bull; Bahan Medis Habis Pakai (BMHP) APBD</td>
+                    <td>&bull; BMHP</td>
                     <td class="right">{{ number_format($record->bmhp_apbd, 2, ',', '.') }}</td>
                 </tr>
 
-                <!-- 7. Obat & BMHP APBN -->
+                <!-- 7. Obat APBN -->
                 <tr>
                     <td class="center font-bold" rowspan="2">7</td>
-                    <td rowspan="2"><strong>Obat &amp; BMHP APBN</strong></td>
-                    <td>&bull; Obat-Obatan APBN</td>
+                    <td rowspan="2"><strong>Obat APBN</strong></td>
+                    <td>&bull; Obat</td>
                     <td class="right">{{ number_format($record->obat_apbn, 2, ',', '.') }}</td>
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
                         {{ number_format($record->total_obat_apbn, 2, ',', '.') }}
@@ -950,7 +957,7 @@
                     <td class="center" rowspan="2" style="vertical-align: middle;">Baik / Lengkap</td>
                 </tr>
                 <tr>
-                    <td>&bull; Bahan Medis Habis Pakai (BMHP) APBN</td>
+                    <td>&bull; BMHP</td>
                     <td class="right">{{ number_format($record->bmhp_apbn, 2, ',', '.') }}</td>
                 </tr>
 
