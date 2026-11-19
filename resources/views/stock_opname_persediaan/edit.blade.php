@@ -128,7 +128,7 @@
                 </div>
                 <div>
                     <h2 class="font-bold text-slate-800 text-sm">3. Nilai Persediaan Obat &amp; BMHP (BLUD, APBD, &amp; APBN)</h2>
-                    <p class="text-xs text-slate-500">Masing-masing kategori terdiri dari 2 inputan terpisah (<strong>Obat-obatan</strong> dan <strong>Bahan-bahan lainnya</strong>). Rincian saldo masing-masing Obat-obatan dan Bahan-bahan lainnya untuk setiap kategori akan ditampilkan secara terpisah pada Berita Acara maupun Lampiran.</p>
+                    <p class="text-xs text-slate-500">Masing-masing kategori terdiri dari 2 inputan terpisah (<strong>Obat-obatan</strong> dan <strong>Bahan Lainnya</strong>). Rincian saldo masing-masing Obat-obatan dan Bahan Lainnya untuk setiap kategori akan ditampilkan secara terpisah pada Berita Acara maupun Lampiran.</p>
                 </div>
             </div>
 
@@ -154,7 +154,7 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nilai Bahan-Bahan Lainnya (BMHP) BLUD</label>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nilai Bahan Lainnya (BMHP) BLUD</label>
                         <div class="relative">
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp.</span>
                             <input type="number" step="0.01" name="bmhp_blud" id="input_bmhp_blud" value="{{ old('bmhp_blud', $record->bmhp_blud) }}" placeholder="0.00" oninput="calcTotals()" class="w-full pl-10 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-sm font-mono font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500">
@@ -185,7 +185,7 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nilai Bahan-Bahan Lainnya (BMHP) APBD</label>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nilai Bahan Lainnya (BMHP) APBD</label>
                         <div class="relative">
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp.</span>
                             <input type="number" step="0.01" name="bmhp_apbd" id="input_bmhp_apbd" value="{{ old('bmhp_apbd', $record->bmhp_apbd) }}" placeholder="0.00" oninput="calcTotals()" class="w-full pl-10 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-sm font-mono font-semibold text-slate-800 focus:ring-2 focus:ring-emerald-500">
@@ -216,7 +216,7 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nilai Bahan-Bahan Lainnya (BMHP) APBN</label>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nilai Bahan Lainnya (BMHP) APBN</label>
                         <div class="relative">
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp.</span>
                             <input type="number" step="0.01" name="bmhp_apbn" id="input_bmhp_apbn" value="{{ old('bmhp_apbn', $record->bmhp_apbn) }}" placeholder="0.00" oninput="calcTotals()" class="w-full pl-10 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-sm font-mono font-semibold text-slate-800 focus:ring-2 focus:ring-purple-500">

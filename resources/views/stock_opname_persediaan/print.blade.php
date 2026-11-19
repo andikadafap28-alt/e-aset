@@ -808,7 +808,7 @@
                     <td class="right font-semibold">{{ number_format($record->obat_blud, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
-                    <td>Bahan-bahan lainnya</td>
+                    <td>Bahan Lainnya</td>
                     <td class="right font-semibold">{{ number_format($record->bmhp_blud, 2, ',', '.') }}</td>
                 </tr>
 
@@ -820,7 +820,7 @@
                     <td class="right font-semibold">{{ number_format($record->obat_apbd, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
-                    <td>Bahan-bahan lainnya</td>
+                    <td>Bahan Lainnya</td>
                     <td class="right font-semibold">{{ number_format($record->bmhp_apbd, 2, ',', '.') }}</td>
                 </tr>
 
@@ -832,7 +832,7 @@
                     <td class="right font-semibold">{{ number_format($record->obat_apbn, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
-                    <td>Bahan-bahan lainnya</td>
+                    <td>Bahan Lainnya</td>
                     <td class="right font-semibold">{{ number_format($record->bmhp_apbn, 2, ',', '.') }}</td>
                 </tr>
 
@@ -910,7 +910,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>&bull; Bahan-bahan lainnya</td>
+                    <td>&bull; Bahan Lainnya</td>
                     <td class="right">{{ number_format($record->bmhp_blud, 2, ',', '.') }}</td>
                 </tr>
 
@@ -925,7 +925,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>&bull; Bahan-bahan lainnya</td>
+                    <td>&bull; Bahan Lainnya</td>
                     <td class="right">{{ number_format($record->bmhp_apbd, 2, ',', '.') }}</td>
                 </tr>
 
@@ -940,7 +940,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>&bull; Bahan-bahan lainnya</td>
+                    <td>&bull; Bahan Lainnya</td>
                     <td class="right">{{ number_format($record->bmhp_apbn, 2, ',', '.') }}</td>
                 </tr>
 

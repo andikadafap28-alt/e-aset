@@ -90,7 +90,7 @@ class StockOpnamePersediaan extends Model
                     ],
                     [
                         'key' => 'bmhp_blud',
-                        'name' => 'Bahan-bahan lainnya',
+                        'name' => 'Bahan Lainnya',
                         'val' => (float)$this->bmhp_blud,
                     ],
                 ],
@@ -107,7 +107,7 @@ class StockOpnamePersediaan extends Model
                     ],
                     [
                         'key' => 'bmhp_apbd',
-                        'name' => 'Bahan-bahan lainnya',
+                        'name' => 'Bahan Lainnya',
                         'val' => (float)$this->bmhp_apbd,
                     ],
                 ],
@@ -124,7 +124,7 @@ class StockOpnamePersediaan extends Model
                     ],
                     [
                         'key' => 'bmhp_apbn',
-                        'name' => 'Bahan-bahan lainnya',
+                        'name' => 'Bahan Lainnya',
                         'val' => (float)$this->bmhp_apbn,
                     ],
                 ],
