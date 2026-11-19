@@ -630,7 +630,7 @@
                     Seluruh rincian jenis rekening persediaan, kuantitas fisik, dan akumulasi nilai per rekening tercantum secara terperinci dalam <strong>Daftar Rincian Hasil Stock Opname Barang Persediaan</strong> sebagaimana terlampir dalam Lampiran Berita Acara ini, yang merupakan satu kesatuan dan bagian tidak terpisahkan dari Berita Acara ini.
                 </li>
                 <li>
-                    Seluruh barang persediaan hasil stock opname berada dalam kondisi <strong>BAIK</strong> dan lengkap, dengan akumulasi total nilai saldo persediaan per {{ $tglFormat }} sebesar: <strong>Rp. {{ number_format($record->total_nilai, 2, ',', '.') }}</strong> ( <em>{{ $record->getTotalNilaiTerbilang() }}</em> ).
+                    Seluruh barang persediaan hasil stock opname berada dalam kondisi <strong>BAIK DAN LENGKAP</strong>, dengan akumulasi total nilai saldo persediaan per {{ $tglFormat }} sebesar: <strong>Rp. {{ number_format($record->total_nilai, 2, ',', '.') }}</strong> ( <em>{{ $record->getTotalNilaiTerbilang() }}</em> ).
                 </li>
                 <li>
                     Barang persediaan tersebut berada di bawah pengurusan dan tanggung jawab <strong>{{ $record->jabatan_diperiksa }} Puskesmas Mantup</strong> untuk dipergunakan dalam rangka menunjang kelancaran operasional pelayanan kesehatan kepada masyarakat.
@@ -804,11 +804,11 @@
                 <tr>
                     <td class="center font-bold" rowspan="2">5</td>
                     <td rowspan="2" style="width: 155px;"><strong>Obat BLUD</strong></td>
-                    <td>Obat</td>
+                    <td>Obat-obatan</td>
                     <td class="right font-semibold">{{ number_format($record->obat_blud, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
-                    <td>BMHP</td>
+                    <td>Bahan-bahan lainnya</td>
                     <td class="right font-semibold">{{ number_format($record->bmhp_blud, 2, ',', '.') }}</td>
                 </tr>
 
@@ -816,11 +816,11 @@
                 <tr>
                     <td class="center font-bold" rowspan="2">6</td>
                     <td rowspan="2" style="width: 155px;"><strong>Obat APBD</strong></td>
-                    <td>Obat</td>
+                    <td>Obat-obatan</td>
                     <td class="right font-semibold">{{ number_format($record->obat_apbd, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
-                    <td>BMHP</td>
+                    <td>Bahan-bahan lainnya</td>
                     <td class="right font-semibold">{{ number_format($record->bmhp_apbd, 2, ',', '.') }}</td>
                 </tr>
 
@@ -828,11 +828,11 @@
                 <tr>
                     <td class="center font-bold" rowspan="2">7</td>
                     <td rowspan="2" style="width: 155px;"><strong>Obat APBN</strong></td>
-                    <td>Obat</td>
+                    <td>Obat-obatan</td>
                     <td class="right font-semibold">{{ number_format($record->obat_apbn, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
-                    <td>BMHP</td>
+                    <td>Bahan-bahan lainnya</td>
                     <td class="right font-semibold">{{ number_format($record->bmhp_apbn, 2, ',', '.') }}</td>
                 </tr>
 
@@ -903,14 +903,14 @@
                 <tr>
                     <td class="center font-bold" rowspan="2">5</td>
                     <td rowspan="2"><strong>Obat BLUD</strong></td>
-                    <td>&bull; Obat</td>
+                    <td>&bull; Obat-obatan</td>
                     <td class="right">{{ number_format($record->obat_blud, 2, ',', '.') }}</td>
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
                         {{ number_format($record->total_obat_blud, 2, ',', '.') }}
                     </td>
                 </tr>
                 <tr>
-                    <td>&bull; BMHP</td>
+                    <td>&bull; Bahan-bahan lainnya</td>
                     <td class="right">{{ number_format($record->bmhp_blud, 2, ',', '.') }}</td>
                 </tr>
 
@@ -918,14 +918,14 @@
                 <tr>
                     <td class="center font-bold" rowspan="2">6</td>
                     <td rowspan="2"><strong>Obat APBD</strong></td>
-                    <td>&bull; Obat</td>
+                    <td>&bull; Obat-obatan</td>
                     <td class="right">{{ number_format($record->obat_apbd, 2, ',', '.') }}</td>
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
                         {{ number_format($record->total_obat_apbd, 2, ',', '.') }}
                     </td>
                 </tr>
                 <tr>
-                    <td>&bull; BMHP</td>
+                    <td>&bull; Bahan-bahan lainnya</td>
                     <td class="right">{{ number_format($record->bmhp_apbd, 2, ',', '.') }}</td>
                 </tr>
 
@@ -933,14 +933,14 @@
                 <tr>
                     <td class="center font-bold" rowspan="2">7</td>
                     <td rowspan="2"><strong>Obat APBN</strong></td>
-                    <td>&bull; Obat</td>
+                    <td>&bull; Obat-obatan</td>
                     <td class="right">{{ number_format($record->obat_apbn, 2, ',', '.') }}</td>
                     <td class="right font-bold" rowspan="2" style="background-color: #f8fafc; vertical-align: middle;">
                         {{ number_format($record->total_obat_apbn, 2, ',', '.') }}
                     </td>
                 </tr>
                 <tr>
-                    <td>&bull; BMHP</td>
+                    <td>&bull; Bahan-bahan lainnya</td>
                     <td class="right">{{ number_format($record->bmhp_apbn, 2, ',', '.') }}</td>
                 </tr>
 
@@ -958,7 +958,7 @@
 
         <!-- Catatan Kaki Lampiran -->
         <p class="content-p" style="font-size: 10.5pt; margin-top: 10px; color: #000000;">
-            Catatan: Seluruh barang persediaan di atas telah dilakukan pemeriksaan dan perhitungan fisik (Stock Opname) secara seksama dalam kondisi <strong>BAIK</strong> dan lengkap untuk dipergunakan sebagaimana mestinya dalam rangka menunjang kelancaran operasional pelayanan kesehatan di Puskesmas Mantup.
+            Catatan: Seluruh barang persediaan di atas telah dilakukan pemeriksaan dan perhitungan fisik (<em>Stock Opname</em>) secara seksama dalam kondisi <strong>BAIK DAN LENGKAP</strong> untuk dipergunakan sebagaimana mestinya dalam rangka menunjang kelancaran operasional pelayanan kesehatan di Puskesmas Mantup.
         </p>
 
         <!-- Area Tanda Tangan Lampiran -->

@@ -85,12 +85,12 @@ class StockOpnamePersediaan extends Model
                 'children' => [
                     [
                         'key' => 'obat_blud',
-                        'name' => 'Obat',
+                        'name' => 'Obat-obatan',
                         'val' => (float)$this->obat_blud,
                     ],
                     [
                         'key' => 'bmhp_blud',
-                        'name' => 'BMHP',
+                        'name' => 'Bahan-bahan lainnya',
                         'val' => (float)$this->bmhp_blud,
                     ],
                 ],
@@ -102,12 +102,12 @@ class StockOpnamePersediaan extends Model
                 'children' => [
                     [
                         'key' => 'obat_apbd',
-                        'name' => 'Obat',
+                        'name' => 'Obat-obatan',
                         'val' => (float)$this->obat_apbd,
                     ],
                     [
                         'key' => 'bmhp_apbd',
-                        'name' => 'BMHP',
+                        'name' => 'Bahan-bahan lainnya',
                         'val' => (float)$this->bmhp_apbd,
                     ],
                 ],
@@ -119,12 +119,12 @@ class StockOpnamePersediaan extends Model
                 'children' => [
                     [
                         'key' => 'obat_apbn',
-                        'name' => 'Obat',
+                        'name' => 'Obat-obatan',
                         'val' => (float)$this->obat_apbn,
                     ],
                     [
                         'key' => 'bmhp_apbn',
-                        'name' => 'BMHP',
+                        'name' => 'Bahan-bahan lainnya',
                         'val' => (float)$this->bmhp_apbn,
                     ],
                 ],

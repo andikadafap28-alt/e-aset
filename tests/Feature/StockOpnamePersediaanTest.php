@@ -61,21 +61,21 @@ class StockOpnamePersediaanTest extends TestCase
         $this->assertTrue($byKey->has('obat_apbn'));
 
         $this->assertSame('Obat BLUD', $byKey['obat_blud']['name']);
-        $this->assertSame('Obat', $byKey['obat_blud']['children'][0]['name']);
+        $this->assertSame('Obat-obatan', $byKey['obat_blud']['children'][0]['name']);
         $this->assertSame(1100000.0, $byKey['obat_blud']['children'][0]['val']);
-        $this->assertSame('BMHP', $byKey['obat_blud']['children'][1]['name']);
+        $this->assertSame('Bahan-bahan lainnya', $byKey['obat_blud']['children'][1]['name']);
         $this->assertSame(2200000.0, $byKey['obat_blud']['children'][1]['val']);
 
         $this->assertSame('Obat APBD', $byKey['obat_apbd']['name']);
-        $this->assertSame('Obat', $byKey['obat_apbd']['children'][0]['name']);
+        $this->assertSame('Obat-obatan', $byKey['obat_apbd']['children'][0]['name']);
         $this->assertSame(3300000.0, $byKey['obat_apbd']['children'][0]['val']);
-        $this->assertSame('BMHP', $byKey['obat_apbd']['children'][1]['name']);
+        $this->assertSame('Bahan-bahan lainnya', $byKey['obat_apbd']['children'][1]['name']);
         $this->assertSame(4400000.0, $byKey['obat_apbd']['children'][1]['val']);
 
         $this->assertSame('Obat APBN', $byKey['obat_apbn']['name']);
-        $this->assertSame('Obat', $byKey['obat_apbn']['children'][0]['name']);
+        $this->assertSame('Obat-obatan', $byKey['obat_apbn']['children'][0]['name']);
         $this->assertSame(5500000.0, $byKey['obat_apbn']['children'][0]['val']);
-        $this->assertSame('BMHP', $byKey['obat_apbn']['children'][1]['name']);
+        $this->assertSame('Bahan-bahan lainnya', $byKey['obat_apbn']['children'][1]['name']);
         $this->assertSame(6600000.0, $byKey['obat_apbn']['children'][1]['val']);
 
         $this->assertSame(24850000.0, $record->total_nilai);
@@ -123,8 +123,9 @@ class StockOpnamePersediaanTest extends TestCase
         $this->assertStringContainsString('<strong>Obat BLUD</strong>', $printHtml);
         $this->assertStringContainsString('<strong>Obat APBD</strong>', $printHtml);
         $this->assertStringContainsString('<strong>Obat APBN</strong>', $printHtml);
-        $this->assertStringContainsString('<td>Obat</td>', $printHtml);
-        $this->assertStringContainsString('<td>BMHP</td>', $printHtml);
+        $this->assertStringContainsString('<td>Obat-obatan</td>', $printHtml);
+        $this->assertStringContainsString('<td>Bahan-bahan lainnya</td>', $printHtml);
+        $this->assertStringContainsString('<strong>BAIK DAN LENGKAP</strong>', $printHtml);
         $this->assertStringNotContainsString('>KONDISI</th>', $printHtml);
         $this->assertStringNotContainsString('Baik / Lengkap', $printHtml);
 
